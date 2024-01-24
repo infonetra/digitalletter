@@ -1,0 +1,83 @@
+﻿@model IEnumerable<letterhead.Models.latterrvm>
+@{
+    int i = 0;
+}
+
+
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="//cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/jquery.table2excel.min.js"></script>
+<div class="card recent-sales overflow-auto">
+    <div class="filter" style="right:23px;">
+        <a class="btn btn-primary" style="background-color: #177324;color:white;" onclick="ExportToExcel('xlsx')"><i class="bi bi-file-excel-fill"></i></a>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">Filter Data</h5>
+
+        <table class="table table-borderless datatable" id="myTablee" style="font-size: 11px; width: 100%;">
+            <thead>
+                <tr>
+                    <th scope="col">S.No</th>
+                    <th scope="col">User Name</th>
+                    <th scope="col">Emp Code</th>
+                    <th scope="col">Site Name</th>
+                    <th scope="col">Letter No</th>
+                    <th scope="col">Letter Head No</th>
+                    <th scope="col">Remark</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    i = i + 1;
+                    <tr>
+                        <th scope="row"><a href="#">@i</a></th>
+                        <td>@item.FULLNAME</td>
+                        <td>@item.EMPCODE</td>
+                        <td>@item.TITLE</td>
+                        <td>@item.LATTERNO</td>
+                        <td>@item.LATTERNOSerice</td>
+                        <td>@item.REMARK</td>
+                        <td><a title="Print & Download" href="@Url.Action("printview", "Home", new {id=@item.ID})"> <i class="bi bi-printer"></i></a></td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#myTablee').DataTable({
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]]
+        });
+    });
+
+    function ExportToExcel(type, fn, dl) {
+        var table = $("#myTablee");
+        if (table && table.length) {
+            $(table).table2excel({
+                exclude: ".notToExport",
+                name: "Letterhead",
+                filename: "Sheet" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
+                fileext: ".xls",
+                exclude_img: true,
+                exclude_links: true,
+                exclude_inputs: true,
+                preserveColors: false
+            });
+        }
+    }
+</script>
+
+
+
+<script src="~/Scripts/jquery-loader.js"></script>

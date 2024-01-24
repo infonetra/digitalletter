@@ -1,0 +1,41 @@
+﻿
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+<script>
+    var error = '@TempData["error"]';
+    if (error != '' && error != undefined) {
+        Swal.fire({
+            icon: 'error',
+            text: error,
+        })
+    };
+
+    var success = '@TempData["success"]';
+    if (success != '' && success != undefined) {
+        Swal.fire({
+            icon: 'success',
+            text: success,
+        })
+    }
+
+
+    var sweettoaster = '@TempData["sweettoaster"]';
+    if (sweettoaster != '' && sweettoaster != undefined) {
+        Swal.fire({
+            position: 'top-end',
+            title: sweettoaster,
+            showClass: {
+                popup: 'animate__animated animate__fadeInDown'
+            },
+            hideClass: {
+                popup: 'animate__animated animate__fadeOutUp'
+            }
+        })
+    }
+
+    var sweetloader = '@TempData["Loader"]';
+    if (sweetloader != '' && sweetloader != undefined) {
+        Swal.showLoading();
+    }
+</script>

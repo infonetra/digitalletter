@@ -1,0 +1,71 @@
+﻿@model letterhead.Models.LatterRequest
+@{
+    ViewBag.Title = "Performa";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="section">
+    <div class="row">
+
+        <div class="col-lg-12">
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Letter Performa</h5>
+                    <!-- Custom Styled Validation -->
+                    @*@using (Html.BeginForm("Performa", "Home", FormMethod.Post, new { @class = "row g-3 needs-validation", @novalidate = "novalidate" }))
+                        {*@
+                    <div class="col-md-12">
+                        @Html.TextAreaFor(x => x.LatterData, new { @id = "idRichTextEditor", @class = "form-control", @required = "required", @rows = "10", @cols = "80" })
+                    </div>
+                    @Html.HiddenFor(a => a.ID)
+                    @Html.HiddenFor(a => a.LATTERNO)
+                    @Html.HiddenFor(a => a.REMARK)
+                    @Html.HiddenFor(a => a.ISACTIVE)
+                    @Html.HiddenFor(a => a.CREATEBY)
+                    @Html.HiddenFor(a => a.CRAETEDATE)
+                    <div class="col-12">
+                        <a class="btn btn-primary btnSubmit" onclick="datasave()">Submit</a>
+                        <a class="btn btn-danger" href="@Url.Action("Dashboard","Home")">Cancel</a>
+                    </div>
+                    @*}*@
+                    <!-- End Custom Styled Validation -->
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<script>
+    function datasave() {
+        debugger;
+          var Content = CKEDITOR.instances['idRichTextEditor'].getData();
+        var formdata = new FormData();
+        formdata.append("latterdata",Content);
+        formdata.append("id", @Model.ID);
+        debugger;
+        $.ajax({
+            async: true,
+            type: "Post",
+            contentType: false,
+            data: formdata,
+            url: '/Home/Performadata/',
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                if (data.success == true) {
+                    window.location.href = "/Home/LetterRequest";
+                }
+                else if (data.success == false) {
+                    alert("Error occured..!!")
+                }
+            },
+            error: function () {
+                alert("Error occured..!!");
+            },
+        })
+    }
+</script>
+

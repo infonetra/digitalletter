@@ -1,0 +1,87 @@
+﻿@model letterhead.Models.latterrvm
+@{
+    Layout = null;
+    var datet = DateTime.Now.ToString("dd-MM-yyyy");
+}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="~/Content/printpdf.css" rel="stylesheet" />
+</head>
+
+<body>
+    <style>
+        body {
+          /*  font-family: Verdana, sans-serif;
+            font-size: 12px;*/
+          font-family:@Session["fname"].ToString();
+          font-size:@Session["fsize"].ToString();
+        }
+    </style>
+    <div class="maindiv">
+        <div class="page-header" style="text-align: center">
+            <img src="~/Content/assets/img/topnew.jpg" style="margin-top:-16px;" />
+            @*<p style=" display: flex; font-weight: bold; justify-content: space-between; padding: 0 58px; "><b>@Model.LATTERNOSerice</b><span>@datet</span></p>*@
+            @*<br />*@
+            @*<button type="button" onClick="window.print()" style="background: pink; position: absolute; bottom: 0;">
+                PRINT ME!
+            </button>*@
+        </div>
+        <div class="page-headernew">
+            <p style=" display: flex; font-weight: bold; justify-content: space-between; padding: 0 48px; "><b>@Model.LATTERNOSerice</b><span>@(Session["datawise"]!=null? Session["datawise"].ToString():datet)</span></p>
+            @*<p style=" display: flex; font-weight: bold; justify-content: space-between; padding: 0 48px; "><b>@Model.LATTERNOSerice</b><span>@datet</span></p>*@
+        </div>
+        <div class="tspace">
+            <table>
+
+                <thead>
+                    <tr>
+                        <td>
+                            <!--place holder for the fixed-position header-->
+                            <div class="page-header-space"></div>
+                        </td>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>
+                            <!--*** CONTENT GOES HERE ***-->
+                            <div class="page">
+                                @Html.Raw(Model.LatterData)
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <td>
+                            <!--place holder for the fixed-position footer-->
+                            <div class="page-footer-space"></div>
+                        </td>
+                    </tr>
+                </tfoot>
+
+            </table>
+        </div>
+        <div class="page-footer">
+            <div>
+                <img src="~/Content/assets/img/d.jpg" />
+                <img src="~/Content/assets/img/footer.png" style=" margin-top: -3px;" />
+            </div>
+        </div>
+    </div>   
+    <script>
+
+        window.print();
+        window.onafterprint = function (event) {
+            var url = '@Url.Action("printview", "Home", new { id = Model.ID })';
+           window.location.href = url;            
+        };
+    </script>
+</body>
+
+</html>
+

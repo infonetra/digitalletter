@@ -1,0 +1,324 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="letterheadModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="LatterRequest">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="USERID" Type="int" />
+          <Property Name="LATTERNO" Type="nvarchar" MaxLength="300" />
+          <Property Name="LetterType" Type="int" />
+          <Property Name="REMARK" Type="nvarchar" MaxLength="500" />
+          <Property Name="LatterData" Type="nvarchar(max)" />
+          <Property Name="ISACTIVE" Type="bit" />
+          <Property Name="CREATEBY" Type="int" />
+          <Property Name="CRAETEDATE" Type="datetime" />
+        </EntityType>
+        <EntityType Name="LetterCrateType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TITLE" Type="nvarchar" MaxLength="100" />
+          <Property Name="ISACTIVE" Type="bit" />
+          <Property Name="CREATEDATE" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Mst_Role">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TITLE" Type="nvarchar" MaxLength="50" />
+          <Property Name="CREATEBY" Type="int" />
+          <Property Name="CRAETEDATE" Type="datetime" />
+          <Property Name="ISACTIVE" Type="bit" />
+        </EntityType>
+        <EntityType Name="Mst_SITE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TITLE" Type="nvarchar" MaxLength="50" />
+          <Property Name="CODE" Type="nvarchar" MaxLength="100" />
+          <Property Name="SITENO" Type="int" />
+          <Property Name="SITENONAME" Type="nvarchar" MaxLength="10" />
+          <Property Name="ISACTIVE" Type="bit" />
+          <Property Name="CREATEBY" Type="int" />
+          <Property Name="CRAETEDATE" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Mst_USER">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FULLNAME" Type="nvarchar" MaxLength="100" />
+          <Property Name="MOBILENO" Type="nvarchar" MaxLength="12" />
+          <Property Name="EMAILID" Type="nvarchar" MaxLength="300" />
+          <Property Name="EMPCODE" Type="nvarchar" MaxLength="100" />
+          <Property Name="USERNAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="USERPWD" Type="nvarchar" MaxLength="100" />
+          <Property Name="DEPTID" Type="int" />
+          <Property Name="SITEID" Type="int" />
+          <Property Name="ROLEID" Type="int" />
+          <Property Name="CANLOGIN" Type="bit" />
+          <Property Name="OneTimeUser" Type="bit" />
+          <Property Name="ISACTIVE" Type="bit" />
+          <Property Name="CREATEBY" Type="int" />
+          <Property Name="CRAETEDATE" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Mst104_DEPARTMENT">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CODE" Type="int" />
+          <Property Name="DEPARTMENT" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="ISACTIVE" Type="bit" />
+          <Property Name="CREATEBY" Type="int" />
+          <Property Name="CREATEDATE" Type="datetime" />
+        </EntityType>
+        <EntityType Name="setting">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CNAME" Type="nvarchar" MaxLength="100" />
+          <Property Name="FONTNAME" Type="nvarchar" MaxLength="100" />
+          <Property Name="FONTSIZE" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityContainer Name="letterheadModelStoreContainer">
+          <EntitySet Name="LatterRequest" EntityType="Self.LatterRequest" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LetterCrateType" EntityType="Self.LetterCrateType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Mst_Role" EntityType="Self.Mst_Role" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Mst_SITE" EntityType="Self.Mst_SITE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Mst_USER" EntityType="Self.Mst_USER" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Mst104_DEPARTMENT" EntityType="Self.Mst104_DEPARTMENT" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="setting" EntityType="Self.setting" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="letterheadModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="letterheadEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Mst_Role" EntityType="letterheadModel.Mst_Role" />
+          <EntitySet Name="Mst104_DEPARTMENT" EntityType="letterheadModel.Mst104_DEPARTMENT" />
+          <EntitySet Name="settings" EntityType="letterheadModel.setting" />
+          <EntitySet Name="Mst_SITE" EntityType="letterheadModel.Mst_SITE" />
+          <EntitySet Name="Mst_USER" EntityType="letterheadModel.Mst_USER" />
+          <EntitySet Name="LetterCrateTypes" EntityType="letterheadModel.LetterCrateType" />
+          <EntitySet Name="LatterRequests" EntityType="letterheadModel.LatterRequest" />
+        </EntityContainer>
+        <EntityType Name="Mst_Role">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TITLE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATEBY" Type="Int32" />
+          <Property Name="CRAETEDATE" Type="DateTime" Precision="3" />
+          <Property Name="ISACTIVE" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Mst104_DEPARTMENT">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CODE" Type="Int32" />
+          <Property Name="DEPARTMENT" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ISACTIVE" Type="Boolean" />
+          <Property Name="CREATEBY" Type="Int32" />
+          <Property Name="CREATEDATE" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="setting">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CNAME" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FONTNAME" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FONTSIZE" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Mst_SITE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TITLE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CODE" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="SITENO" Type="Int32" />
+          <Property Name="SITENONAME" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ISACTIVE" Type="Boolean" />
+          <Property Name="CREATEBY" Type="Int32" />
+          <Property Name="CRAETEDATE" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Mst_USER">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FULLNAME" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="MOBILENO" Type="String" MaxLength="12" FixedLength="false" Unicode="true" />
+          <Property Name="EMAILID" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="EMPCODE" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="USERNAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="USERPWD" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="DEPTID" Type="Int32" />
+          <Property Name="SITEID" Type="Int32" />
+          <Property Name="ROLEID" Type="Int32" />
+          <Property Name="CANLOGIN" Type="Boolean" />
+          <Property Name="OneTimeUser" Type="Boolean" />
+          <Property Name="ISACTIVE" Type="Boolean" />
+          <Property Name="CREATEBY" Type="Int32" />
+          <Property Name="CRAETEDATE" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="LetterCrateType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TITLE" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ISACTIVE" Type="Boolean" />
+          <Property Name="CREATEDATE" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="LatterRequest">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="USERID" Type="Int32" />
+          <Property Name="LATTERNO" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="LetterType" Type="Int32" />
+          <Property Name="REMARK" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="LatterData" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ISACTIVE" Type="Boolean" />
+          <Property Name="CREATEBY" Type="Int32" />
+          <Property Name="CRAETEDATE" Type="DateTime" Precision="3" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="letterheadModelStoreContainer" CdmEntityContainer="letterheadEntities">
+          <EntitySetMapping Name="Mst_Role">
+            <EntityTypeMapping TypeName="letterheadModel.Mst_Role">
+              <MappingFragment StoreEntitySet="Mst_Role">
+                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+                <ScalarProperty Name="CRAETEDATE" ColumnName="CRAETEDATE" />
+                <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+                <ScalarProperty Name="TITLE" ColumnName="TITLE" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Mst104_DEPARTMENT">
+            <EntityTypeMapping TypeName="letterheadModel.Mst104_DEPARTMENT">
+              <MappingFragment StoreEntitySet="Mst104_DEPARTMENT">
+                <ScalarProperty Name="CREATEDATE" ColumnName="CREATEDATE" />
+                <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+                <ScalarProperty Name="DEPARTMENT" ColumnName="DEPARTMENT" />
+                <ScalarProperty Name="CODE" ColumnName="CODE" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="settings">
+            <EntityTypeMapping TypeName="letterheadModel.setting">
+              <MappingFragment StoreEntitySet="setting">
+                <ScalarProperty Name="FONTSIZE" ColumnName="FONTSIZE" />
+                <ScalarProperty Name="FONTNAME" ColumnName="FONTNAME" />
+                <ScalarProperty Name="CNAME" ColumnName="CNAME" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Mst_SITE">
+            <EntityTypeMapping TypeName="letterheadModel.Mst_SITE">
+              <MappingFragment StoreEntitySet="Mst_SITE">
+                <ScalarProperty Name="CRAETEDATE" ColumnName="CRAETEDATE" />
+                <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+                <ScalarProperty Name="SITENONAME" ColumnName="SITENONAME" />
+                <ScalarProperty Name="SITENO" ColumnName="SITENO" />
+                <ScalarProperty Name="CODE" ColumnName="CODE" />
+                <ScalarProperty Name="TITLE" ColumnName="TITLE" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Mst_USER">
+            <EntityTypeMapping TypeName="letterheadModel.Mst_USER">
+              <MappingFragment StoreEntitySet="Mst_USER">
+                <ScalarProperty Name="CRAETEDATE" ColumnName="CRAETEDATE" />
+                <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+                <ScalarProperty Name="OneTimeUser" ColumnName="OneTimeUser" />
+                <ScalarProperty Name="CANLOGIN" ColumnName="CANLOGIN" />
+                <ScalarProperty Name="ROLEID" ColumnName="ROLEID" />
+                <ScalarProperty Name="SITEID" ColumnName="SITEID" />
+                <ScalarProperty Name="DEPTID" ColumnName="DEPTID" />
+                <ScalarProperty Name="USERPWD" ColumnName="USERPWD" />
+                <ScalarProperty Name="USERNAME" ColumnName="USERNAME" />
+                <ScalarProperty Name="EMPCODE" ColumnName="EMPCODE" />
+                <ScalarProperty Name="EMAILID" ColumnName="EMAILID" />
+                <ScalarProperty Name="MOBILENO" ColumnName="MOBILENO" />
+                <ScalarProperty Name="FULLNAME" ColumnName="FULLNAME" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LetterCrateTypes">
+            <EntityTypeMapping TypeName="letterheadModel.LetterCrateType">
+              <MappingFragment StoreEntitySet="LetterCrateType">
+                <ScalarProperty Name="CREATEDATE" ColumnName="CREATEDATE" />
+                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+                <ScalarProperty Name="TITLE" ColumnName="TITLE" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LatterRequests">
+            <EntityTypeMapping TypeName="letterheadModel.LatterRequest">
+              <MappingFragment StoreEntitySet="LatterRequest">
+                <ScalarProperty Name="CRAETEDATE" ColumnName="CRAETEDATE" />
+                <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+                <ScalarProperty Name="LatterData" ColumnName="LatterData" />
+                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+                <ScalarProperty Name="LetterType" ColumnName="LetterType" />
+                <ScalarProperty Name="LATTERNO" ColumnName="LATTERNO" />
+                <ScalarProperty Name="USERID" ColumnName="USERID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

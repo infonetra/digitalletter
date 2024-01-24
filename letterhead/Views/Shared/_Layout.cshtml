@@ -1,0 +1,344 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>@ViewBag.Title - HGIEL</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link href="~/Content/assets/img/favicon.png" rel="icon">
+    <link href="~/Content/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="~/Content/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/Content/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="~/Content/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="~/Content/assets/vendor/quill/quill.snow.css" rel="stylesheet">
+    <link href="~/Content/assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+    <link href="~/Content/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="~/Content/assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="~/Content/assets/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/3.5.4/select2.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/3.5.4/select2-bootstrap.min.css" />
+    <style>
+      /*  body {
+            font-family: Verdana, sans-serif;
+            font-size: 11px;
+        }*/
+        /* input {
+            text-transform: uppercase;
+        }*/
+        input {
+            text-transform: uppercase;
+        }
+
+        ::-webkit-input-placeholder { /* WebKit browsers */
+            text-transform: none;
+        }
+
+        :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+            text-transform: none;
+        }
+
+        ::-moz-placeholder { /* Mozilla Firefox 19+ */
+            text-transform: none;
+        }
+
+        :-ms-input-placeholder { /* Internet Explorer 10+ */
+            text-transform: none;
+        }
+
+        ::placeholder { /* Recent browsers */
+            text-transform: none;
+        }
+
+        .loading {
+            margin: auto;
+        }
+
+            .loading span {
+                line-height: 32px;
+                margin-left: 12px;
+                font-size: 16px;
+                vertical-align: middle;
+            }
+
+            .loading img {
+                vertical-align: middle;
+            }
+
+        .loading_wrp {
+            background-color: #FFF;
+            display: block;
+            height: 100%;
+            left: 0;
+            opacity: 0.5;
+            filter: alpha(opacity=50);
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 1020;
+        }
+
+            .loading_wrp .x16 span {
+                line-height: 16px;
+                font-size: 12px;
+                margin-left: 6px;
+            }
+
+            .loading_wrp .x32 img {
+                width: 32px;
+                height: 32px;
+            }
+
+
+    </style>
+   
+</head>
+
+<body>
+    <!-- ======= Header ======= -->
+    <header id="header" class="header fixed-top d-flex align-items-center">
+
+        <div class="d-flex align-items-center justify-content-between">
+            <a href="#" class="logo d-flex align-items-center">
+                <img src="~/Content/assets/img/logo.png" alt="">
+                @*<span class="d-none d-lg-block">HGIEL</span>*@
+            </a>
+            @*<i class="bi bi-list toggle-sidebar-btn"></i>*@
+        </div><!-- End Logo -->
+
+
+        <nav class="header-nav ms-auto">
+            <ul class="d-flex align-items-center">
+
+                <li class="nav-item dropdown pe-3">
+
+                    <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                        <img src="~/Content/assets/img/favicon.png" alt="Profile" class="rounded-circle">
+                        <span class="d-none d-md-block dropdown-toggle filters-2" style="text-transform: uppercase;">@Session["username"].ToString()</span>
+                    </a><!-- End Profile Iamge Icon -->
+
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                        <li class="dropdown-header" style="text-transform: uppercase;">
+                            <h6>@Session["username"].ToString()</h6>
+                            @*<span>Web Designer</span>*@
+                        </li>
+
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="@Url.Action("Logout", "Account")">
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span>Sign Out</span>
+                            </a>
+                        </li>
+
+                    </ul><!-- End Profile Dropdown Items -->
+                </li><!-- End Profile Nav -->
+
+            </ul>
+        </nav><!-- End Icons Navigation -->
+
+    </header><!-- End Header -->
+    <!-- ======= Sidebar ======= -->
+    <aside id="sidebar" class="sidebar">
+
+        <ul class="sidebar-nav" id="sidebar-nav">
+
+            @if (Session["userrole"].ToString() == "1")
+            {
+                <li class="nav-item">
+                    <a class="nav-link " href="@Url.Action("Dashboard", "Home")">
+                        <i class="bi person-fill"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+
+
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("RoleMaster", "Home")">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Role Master</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("LetterTypeMaster", "Home")">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Request Type Master</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("DepartmentList", "Home")">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Department Master</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("SiteMaster", "Home")">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Projects Master</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("UserMaster", "Home")">
+                        <i class="bi bi-person-fill"></i>
+                        <span>User Master</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("Reports", "Home")">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Reports</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("Setting","Home")">
+                        <i class="bi bi-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+
+            }
+
+
+            @if (Session["userrole"].ToString() == "2")
+            {
+                <li class="nav-item">
+                    <a class="nav-link " href="@Url.Action("Dashboard", "Home")">
+                        <i class="bi bi-grid"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("LetterRequest", "Home")">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Request Letterhead</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("Reports", "Home")">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Reports</span>
+                    </a>
+                </li>
+            }
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="@Url.Action("ChangePassword","Home")">
+                    <i class="bi bi-lock-fill"></i>
+                    <span>Change Password</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="@Url.Action("Logout","Account")">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    <span>Sign Out</span>
+                </a>
+            </li><!-- End Login Page Nav -->
+        </ul>
+
+    </aside><!-- End Sidebar-->
+
+    <main id="main" class="main">
+        <div class="alert alert-success alert-dismissible fade hide" id="successalt" style="display:none" role="alert">
+            <p id="successmsg"></p>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div class="alert alert-danger alert-dismissible fade hide" id="dangeralt" style="display:none" role="alert">
+            <p id="dangermsg"></p>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @*<div class="pagetitle">
+                <h1>@ViewBag.Title</h1>
+            </div>*@
+        <!-- End Page Title -->
+
+        @RenderBody()
+
+    </main><!-- End #main -->
+    <!-- ======= Footer ======= -->
+    <footer id="footer" class="footer">
+        <div class="copyright">
+            &copy; 2024 Copyright <strong><span>HGIEL</span></strong>. All Rights Reserved
+        </div>
+        <div class="credits">
+            Designed by <a href="https://HGIPPL.com/">HGIEL</a>
+        </div>
+    </footer><!-- End Footer -->
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+
+
+    <!-- Vendor JS Files -->
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+
+    <script src="~/Content/assets/vendor/apexcharts/apexcharts.min.js"></script>
+    <script src="~/Content/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Content/assets/vendor/chart.js/chart.min.js"></script>
+    <script src="~/Content/assets/vendor/echarts/echarts.min.js"></script>
+    <script src="~/Content/assets/vendor/quill/quill.min.js"></script>
+    <script src="~/Content/assets/vendor/simple-datatables/simple-datatables.js"></script>
+    <script src="~/Content/assets/vendor/tinymce/tinymce.min.js"></script>
+    <script src="~/Content/assets/vendor/php-email-form/validate.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/jquery.table2excel.min.js"></script>
+    <script src="~/Scripts/jquery-loader.js"></script>
+    <!-- Template Main JS File -->
+    <script src="~/Content/assets/js/main.js"></script>
+    <script src="https://cdn.gaic.com/cdn/ui-bootstrap/0.58.0/js/lib/ckeditor/ckeditor.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js" integrity="sha512-234m/ySxaBP6BRdJ4g7jYG7uI9y2E74dvMua1JzkqM3LyWP43tosIqET873f3m6OQ/0N6TKyqXG4fLeHN9vKkg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/3.5.4/select2.min.js"></script>
+    <script type="text/javascript">
+
+        function printDiv(divId) {
+
+            let mywindow = window.open('', 'PRINT');
+            mywindow.document.write(document.getElementById(divId).innerHTML);
+
+            mywindow.document.close(); // necessary for IE >= 10
+            mywindow.focus(); // necessary for IE >= 10*/
+
+            mywindow.print();
+            mywindow.close();
+
+            return true;
+
+            //var doc = new jsPDF();
+            //var specialElementHandlers = {
+            //    '#editor': function (element, renderer) {
+            //        return true;
+            //    }
+            //};
+            //doc.fromHTML($('#Printed').html(), 15, 15, {
+            //    'width': 190,
+            //    'elementHandlers': specialElementHandlers
+            //});
+            //doc.save('sample-page.pdf');
+        }
+    </script>
+    <script>
+
+        
+        CKEDITOR.plugins.addExternal('filebrowser', '/Content/filebrowser/', 'plugin.js');
+        CKEDITOR.replace('idRichTextEditor', {
+            extraPlugins: 'filebrowser'
+        });
+    </script>
+</body>
+
+</html>
