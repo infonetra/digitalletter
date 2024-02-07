@@ -32,5 +32,6 @@ namespace letterhead.Models
         public virtual DbSet<Mst_USER> Mst_USER { get; set; }
         public virtual DbSet<LetterCrateType> LetterCrateTypes { get; set; }
         public virtual DbSet<LatterRequest> LatterRequests { get; set; }
+        public virtual DbSet<USERSIGN> USERSIGNs { get; set; }
     }
 }

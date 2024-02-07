@@ -298,6 +298,9 @@
     <Compile Include="Models\setting.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\USERSIGN.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -307,6 +310,7 @@
     <Content Include="Content\assets\img\d.jpg" />
     <Content Include="Content\assets\img\favicon.png" />
     <Content Include="Content\assets\img\footer.png" />
+    <Content Include="Content\assets\img\HGI-EL Pad.jpg" />
     <Content Include="Content\assets\img\line.png" />
     <Content Include="Content\assets\img\logo.png" />
     <Content Include="Content\assets\img\not-found.svg" />
@@ -1263,9 +1267,12 @@
     <Content Include="Views\Home\LetterTypeMaster.cshtml" />
     <Content Include="Views\Home\AddLetterType.cshtml" />
     <Content Include="Views\Home\EditLetterType.cshtml" />
+    <Content Include="Views\Home\UploadSign.cshtml" />
+    <Content Include="Views\Home\SignList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="SignImage\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

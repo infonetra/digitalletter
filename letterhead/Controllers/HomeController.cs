@@ -1014,7 +1014,8 @@ namespace letterhead.Controllers
             {
                 if (Session["userid"] != null && Session["userrole"].ToString() == "2")
                 {
-
+                    int uid = Convert.ToInt32(Session["userid"].ToString());
+                    ViewBag.ltype = db.USERSIGNs.Where(x => x.IsActive == true && uid== uid).Select(x => new SelectListItem { Text = x.SIGNTITLE, Value = x.ID.ToString() }).ToList(); ;
                     var data = db.LatterRequests.Where(x => x.ID == id).FirstOrDefault();
                     return View(data);
 
@@ -1040,6 +1041,20 @@ namespace letterhead.Controllers
                     db.SaveChanges();
                     TempData["success"] = "Thanks.";
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new { success = false }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult getsign(int id = 0)
+        {
+            try
+            {
+                var data = db.USERSIGNs.Where(a => a.ID == id).FirstOrDefault();                                            
+                return Json(new { success = true,link=data.SIGNIMAGE }, JsonRequestBehavior.AllowGet);
             }
             catch
             {
@@ -1218,6 +1233,114 @@ namespace letterhead.Controllers
                 return RedirectToAction("Dashboard", "Home", new {id=1});
             }
             return RedirectToAction("Dashboard", "Home", new { id = 1 });
+        }
+
+
+        public ActionResult SignList()
+        {
+            try
+            {
+                if (Session["userid"] != null)
+                {
+                    int userid = Convert.ToInt32(Session["userid"].ToString());
+                    var data = db.USERSIGNs.Where(a => a.USERID == userid && a.IsActive==true).ToList();
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+        public ActionResult UploadSign()
+        {
+            try
+            {
+                if (Session["userid"] != null)
+                {                        
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        public ActionResult SignDeactive(int id)
+        {
+            try
+            {
+                if (Session["userid"] != null)
+                {
+                    var data = db.USERSIGNs.Where(a => a.ID == id).FirstOrDefault();
+                    data.IsActive = false;
+                    db.SaveChanges();
+                    return RedirectToAction("SignList", "Home");
+                }
+                else
+                {
+                    return RedirectToAction("SignList", "Home");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }            
+        }
+
+
+        [HttpPost]
+        public ActionResult UploadSign(USERSIGN model,HttpPostedFileBase imgProfileC = null)
+        {
+            try
+            {
+                if (Session["userid"] != null)
+                {
+                    USERSIGN uSERSIGN = new USERSIGN();
+                    int userid = Convert.ToInt32(Session["userid"].ToString());
+                    var data = db.Mst_USER.Where(a => a.ID == userid).FirstOrDefault();
+                    string Domain = Request.Url.Scheme + System.Uri.SchemeDelimiter + Request.Url.Host + (Request.Url.IsDefaultPort ? "" : ":" + Request.Url.Port);
+
+                    string guid = Guid.NewGuid().ToString("N");
+                    string ActualPathjoing = string.Concat(Domain + "/SignImage/", string.Concat(guid, Path.GetExtension(imgProfileC.FileName)));
+                    var ServerPath = Path.Combine(Server.MapPath("~/SignImage"), string.Concat(guid, Path.GetExtension(imgProfileC.FileName)));
+                    string extn = Path.GetExtension(ServerPath);
+                    if (extn != ".pdf")
+                    {
+                        imgProfileC.SaveAs(ServerPath);
+                        if (System.IO.File.Exists(ServerPath))
+                        {
+                            uSERSIGN.SIGNIMAGE = ActualPathjoing;
+                        }
+                        uSERSIGN.USERID = data.ID;
+                        uSERSIGN.SIGNTITLE = model.SIGNTITLE;
+                        uSERSIGN.CREATEDATE = DateTime.Now;
+                        uSERSIGN.IsActive = true;
+                        uSERSIGN.CRERATEBY = data.ID;
+                        db.USERSIGNs.Add(uSERSIGN);
+                        db.SaveChanges();
+                    }
+
+                    return RedirectToAction("SignList", "Home");
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
         }
 
     }

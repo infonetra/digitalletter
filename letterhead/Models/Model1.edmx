@@ -91,6 +91,18 @@
           <Property Name="FONTNAME" Type="nvarchar" MaxLength="100" />
           <Property Name="FONTSIZE" Type="nvarchar" MaxLength="100" />
         </EntityType>
+        <EntityType Name="USERSIGN">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="USERID" Type="int" />
+          <Property Name="SIGNTITLE" Type="nvarchar" MaxLength="100" />
+          <Property Name="SIGNIMAGE" Type="nvarchar(max)" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CRERATEBY" Type="int" />
+          <Property Name="CREATEDATE" Type="datetime" />
+        </EntityType>
         <EntityContainer Name="letterheadModelStoreContainer">
           <EntitySet Name="LatterRequest" EntityType="Self.LatterRequest" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LetterCrateType" EntityType="Self.LetterCrateType" Schema="dbo" store:Type="Tables" />
@@ -99,6 +111,7 @@
           <EntitySet Name="Mst_USER" EntityType="Self.Mst_USER" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Mst104_DEPARTMENT" EntityType="Self.Mst104_DEPARTMENT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="setting" EntityType="Self.setting" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="USERSIGN" EntityType="Self.USERSIGN" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -112,6 +125,7 @@
           <EntitySet Name="Mst_USER" EntityType="letterheadModel.Mst_USER" />
           <EntitySet Name="LetterCrateTypes" EntityType="letterheadModel.LetterCrateType" />
           <EntitySet Name="LatterRequests" EntityType="letterheadModel.LatterRequest" />
+          <EntitySet Name="USERSIGNs" EntityType="letterheadModel.USERSIGN" />
         </EntityContainer>
         <EntityType Name="Mst_Role">
           <Key>
@@ -198,6 +212,18 @@
           <Property Name="ISACTIVE" Type="Boolean" />
           <Property Name="CREATEBY" Type="Int32" />
           <Property Name="CRAETEDATE" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="USERSIGN">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="USERID" Type="Int32" />
+          <Property Name="SIGNTITLE" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="SIGNIMAGE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CRERATEBY" Type="Int32" />
+          <Property Name="CREATEDATE" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -293,6 +319,19 @@
                 <ScalarProperty Name="REMARK" ColumnName="REMARK" />
                 <ScalarProperty Name="LetterType" ColumnName="LetterType" />
                 <ScalarProperty Name="LATTERNO" ColumnName="LATTERNO" />
+                <ScalarProperty Name="USERID" ColumnName="USERID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="USERSIGNs">
+            <EntityTypeMapping TypeName="letterheadModel.USERSIGN">
+              <MappingFragment StoreEntitySet="USERSIGN">
+                <ScalarProperty Name="CREATEDATE" ColumnName="CREATEDATE" />
+                <ScalarProperty Name="CRERATEBY" ColumnName="CRERATEBY" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="SIGNIMAGE" ColumnName="SIGNIMAGE" />
+                <ScalarProperty Name="SIGNTITLE" ColumnName="SIGNTITLE" />
                 <ScalarProperty Name="USERID" ColumnName="USERID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
