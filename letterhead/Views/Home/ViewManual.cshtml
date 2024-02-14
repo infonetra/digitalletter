@@ -1,0 +1,37 @@
+﻿@model letterhead.Models.usermanual
+@{
+    ViewBag.Title = "ViewManual";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="pagetitle">
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">Home</li>
+            <li class="breadcrumb-item active">View Manual</li>
+        </ol>
+    </nav>
+</div>
+<section class="section dashboard">
+    <div class="row">
+        <div class="col-12">
+            <div class="card recent-sales overflow-auto">
+                <div class="filter" style="right:23px;">
+                    @*<button type="button" class="btn btn-primary"><i class="bi bi-star me-1"></i> With Text</button>*@
+                    <a class="btn btn-danger" href="@Url.Action("Dashboard","Home")">Cancel</a>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">View Manual</h5>
+
+                   <iframe frameborder="0" height="500px" width="100%" src="@Model.ManualLink"></iframe>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@Html.Partial("_Alerts")

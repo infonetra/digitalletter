@@ -29,9 +29,12 @@ namespace letterhead.Models
         public virtual DbSet<Mst104_DEPARTMENT> Mst104_DEPARTMENT { get; set; }
         public virtual DbSet<setting> settings { get; set; }
         public virtual DbSet<Mst_SITE> Mst_SITE { get; set; }
-        public virtual DbSet<Mst_USER> Mst_USER { get; set; }
         public virtual DbSet<LetterCrateType> LetterCrateTypes { get; set; }
-        public virtual DbSet<LatterRequest> LatterRequests { get; set; }
         public virtual DbSet<USERSIGN> USERSIGNs { get; set; }
+        public virtual DbSet<usermanual> usermanuals { get; set; }
+        public virtual DbSet<LatterRequest> LatterRequests { get; set; }
+        public virtual DbSet<Letter_Log_Process> Letter_Log_Process { get; set; }
+        public virtual DbSet<mst_status> mst_status { get; set; }
+        public virtual DbSet<Mst_USER> Mst_USER { get; set; }
     }
 }

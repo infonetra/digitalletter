@@ -24,8 +24,10 @@ namespace letterhead.Models
         public Nullable<int> DEPTID { get; set; }
         public Nullable<int> SITEID { get; set; }
         public Nullable<int> ROLEID { get; set; }
+        public Nullable<int> Approver { get; set; }
         public Nullable<bool> CANLOGIN { get; set; }
         public Nullable<bool> OneTimeUser { get; set; }
+        public Nullable<int> IsApprover { get; set; }
         public Nullable<bool> ISACTIVE { get; set; }
         public Nullable<int> CREATEBY { get; set; }
         public Nullable<System.DateTime> CRAETEDATE { get; set; }

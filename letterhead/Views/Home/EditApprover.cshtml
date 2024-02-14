@@ -1,8 +1,10 @@
 ﻿@model letterhead.Models.Mst_USER
 @{
-    ViewBag.Title = "EditUser";
+    ViewBag.Title = "EditApprover";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+
 
 <section class="section">
     <div class="row">
@@ -11,9 +13,9 @@
 
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">User  Master </h5>
+                    <h5 class="card-title">Approver  Master </h5>
                     <!-- Custom Styled Validation -->
-                    @using (Html.BeginForm("EditUser", "Home", FormMethod.Post, new { @class = "row g-3 needs-validation", @novalidate = "novalidate" }))
+                    @using (Html.BeginForm("EditApprover", "Home", FormMethod.Post, new { @class = "row g-3 needs-validation", @novalidate = "novalidate" }))
                     {
                         <div class="col-md-4">
                             <label for="validationCustom01" class="form-label">Full Name <span style="color:red;">*</span></label>
@@ -26,19 +28,11 @@
                         <div class="col-md-4">
                             <label class="form-label">Department<span style="color:red;">*</span></label>
                             @Html.DropDownListFor(x => x.DEPTID, ViewBag.dept as List<SelectListItem>, "Select Department", new { @class = "form-control select2 UserType" })
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Approver<span style="color:red;">*</span></label>
-                            @Html.DropDownListFor(x => x.Approver, ViewBag.user as List<SelectListItem>, "Select Approver", new { @class = "form-control select2 UserType" })
-                        </div>
+                        </div>                       
                         <div class="col-md-4">
                             <label for="validationCustom01" class="form-label">EMP Code <span style="color:red;">*</span></label>
                             @Html.TextBoxFor(x => x.EMPCODE, new { @class = "form-control", placeholder = "Enter EMP Code", @required = "required" })
-                        </div>
-                        @*<div class="col-md-4">
-                <label for="validationCustom01" class="form-label">User Name <span style="color:red;">*</span></label>
-                @Html.TextBoxFor(x => x.USERNAME, new { @class = "form-control", placeholder = "Enter User Name", @required = "required" })
-            </div>*@
+                        </div>                     
                         <div class="col-md-4">
                             <label for="validationCustom01" class="form-label">Password <span style="color:red;">*</span></label>
                             @Html.TextBoxFor(x => x.USERPWD, new { @class = "form-control", placeholder = "Enter Password", @required = "required" })
@@ -46,19 +40,7 @@
                         <div class="col-md-4">
                             <label for="validationCustom01" class="form-label">Mobile No <span style="color:red;">*</span></label>
                             @Html.TextBoxFor(x => x.MOBILENO, new { @class = "form-control", placeholder = "Enter Mobile No", @required = "required" })
-                        </div>
-                        @*<div class="col-md-4">
-                <label for="validationCustom01" class="form-label">Email <span style="color:red;">*</span></label>
-                @Html.TextBoxFor(x => x.EMAILID, new { @class = "form-control", placeholder = "Enter Email", @required = "required" })
-            </div>*@
-                        @*<div class="col-md-4">
-                <label for="validationDefault04" class="form-label">Can Login <span style="color:red;">*</span></label>
-                @Html.DropDownListFor(x => x.CANLOGIN, new List<SelectListItem>
-            {
-               new SelectListItem{Text="Active",Value="true",Selected=true},
-               new SelectListItem{Text="DeActive",Value="false"}
-            }, new { @id = "IsActive", @class = "form-select", @required = "required" })
-            </div>*@
+                        </div>                      
                         <div class="col-md-4">
                             <label for="validationDefault04" class="form-label">Status <span style="color:red;">*</span></label>
                             @Html.DropDownListFor(x => x.ISACTIVE, new List<SelectListItem>
@@ -72,6 +54,7 @@
                         @Html.HiddenFor(a => a.CREATEBY)
                         @Html.HiddenFor(a => a.CRAETEDATE)
                         @Html.HiddenFor(a => a.OneTimeUser)
+                        @Html.HiddenFor(a=>a.IsApprover)
                         <div class="col-12">
                             <button class="btn btn-primary" type="submit">Submit</button>
                             <a class="btn btn-danger" href="@Url.Action("Dashboard","Home")">Cancel</a>

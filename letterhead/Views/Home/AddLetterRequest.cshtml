@@ -21,7 +21,7 @@
                             @Html.TextBoxFor(x => x.LATTERNO, new { @class = "form-control", placeholder = "Latter No", @required = "required", @readonly = "readonly" })
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Project Authorized<span style="color:red;">*</span></label>
+                            <label class="form-label">Letter Used For<span style="color:red;">*</span></label>
                             @Html.DropDownListFor(x => x.LetterType, ViewBag.ltype as List<SelectListItem>, "Select Type", new { @class = "form-control select2 UserType" })
                         </div>
                         @*<div class="col-md-4">

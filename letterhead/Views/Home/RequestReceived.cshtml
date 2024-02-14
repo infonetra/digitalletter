@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<letterhead.Models.latterrvm>
 @{
-    ViewBag.Title = "LetterRequest";
+    ViewBag.Title = "RequestReceived";
     Layout = "~/Views/Shared/_Layout.cshtml";
     int i = 0;
 }
@@ -9,7 +9,7 @@
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">Home</li>
-            <li class="breadcrumb-item active">Letterhead List</li>
+            <li class="breadcrumb-item active">Request Received List</li>
         </ol>
     </nav>
 </div>
@@ -17,20 +17,17 @@
     <div class="row">
         <div class="col-12">
             <div class="card recent-sales overflow-auto">
-                <div class="filter" style="right:23px;">
-                    @*<button type="button" class="btn btn-primary"><i class="bi bi-star me-1"></i> With Text</button>*@
-                    <a class="btn btn-primary" href="@Url.Action("AddLetterRequest", "Home")"><i class="bi bi-person-plus"></i>Create Letterhead</a>
+                <div class="filter" style="right:23px;">                                 
                     <a class="btn btn-danger" href="@Url.Action("Dashboard","Home")">Cancel</a>
                 </div>
                 <div class="card-body">
-                    <h5 class="card-title">Letter Create</h5>
+                    <h5 class="card-title">Request Received</h5>
 
                     <table class="table table-borderless datatable">
                         <thead>
                             <tr>
                                 <th scope="col">S.No</th>
-                                <th scope="col">Site Name</th>
-                                <th scope="col">Remark</th>                               
+                                <th scope="col">Site Name</th>                              
                                 <th scope="col">Letterhead No</th>
                                 <th scope="col">Action</th>
                             </tr>
@@ -41,32 +38,30 @@
                                 i = i + 1;
                                 <tr>
                                     <th scope="row"><a href="#">@i</a></th>
-                                    <td>@item.TITLE</td>
-                                    <td>@item.REMARK</td>
+                                    <td>@item.TITLE</td>                                   
                                     <td>@item.LATTERNOSerice</td>
 
                                     <td>
-                                        @if (item.StatusID == 5)
+                                        @if (item.StatusID != 4)
                                         {
-                                            <a href="@Url.Action("Printwithdate", "Home", new {@id=item.ID})">specific date</a>
+                                            <a class="btn btn-outline-success" href="@Url.Action("Printwithdate", "Home", new {@id=item.ID})">Approve</a>
                                             <span>|</span>
-                                            <a title="View" href="@Url.Action("printview", "Home", new {id=item.ID})"><i class="bi bi-eye-fill"></i></a>
-                                            <span>|</span>
-                                            <a title="Edit" href="@Url.Action("Performa", "Home", new {id=@item.ID})"><i class="bi bi-pencil"></i></a>
+                                            <a class="btn btn-outline-danger" title="View" href="@Url.Action("printview", "Home", new {id=item.ID})">Send Back</a>
                                             <span>| </span>
                                             <a title="Print & Download" href="@Url.Action("performaview", "Home", new {id=@item.ID})"> <i class="bi bi-printer"></i></a>
+                                            <span>| </span>
+                                            <a title="Log" href="@Url.Action("performaview", "Home", new {id=@item.ID})"> <i class="bi bi-ticket-detailed"></i></a>
                                         }
                                         else
                                         {
-                                            <a href="@Url.Action("Printwithdate", "Home", new {@id=item.ID})">specific date</a>
-                                            <span>|</span>
-                                            <a title="View" href="@Url.Action("printview", "Home", new {id=item.ID})"><i class="bi bi-eye-fill"></i></a>                                           
-                                            <span>| </span>
                                             <a title="Print & Download" href="@Url.Action("performaview", "Home", new {id=@item.ID})"> <i class="bi bi-printer"></i></a>
+                                            <span>| </span>
+                                            <a title="Log" href="@Url.Action("performaview", "Home", new {id=@item.ID})"> <i class="bi bi-ticket-detailed"></i></a>
                                         }
+
                                     </td>
 
-                                    </tr>
+                                </tr>
                             }
 
                         </tbody>
@@ -84,6 +79,4 @@
 </div>
 
 @Html.Partial("_Alerts")
-
-
 

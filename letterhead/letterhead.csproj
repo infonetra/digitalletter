@@ -268,6 +268,9 @@
     <Compile Include="Models\LetterCrateType.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Letter_Log_Process.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Model1.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -292,10 +295,16 @@
     <Compile Include="Models\Mst_SITE.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\mst_status.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Mst_USER.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\setting.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\usermanual.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\USERSIGN.cs">
@@ -1269,10 +1278,18 @@
     <Content Include="Views\Home\EditLetterType.cshtml" />
     <Content Include="Views\Home\UploadSign.cshtml" />
     <Content Include="Views\Home\SignList.cshtml" />
+    <Content Include="Views\Home\UploadManual.cshtml" />
+    <Content Include="Views\Home\EditUploadManual.cshtml" />
+    <Content Include="Views\Home\ViewManual.cshtml" />
+    <Content Include="Views\Home\ApproverMaster.cshtml" />
+    <Content Include="Views\Home\AddApprover.cshtml" />
+    <Content Include="Views\Home\EditApprover.cshtml" />
+    <Content Include="Views\Home\RequestReceived.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="SignImage\" />
+    <Folder Include="UserManual\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

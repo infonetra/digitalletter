@@ -51,6 +51,7 @@ namespace letterhead.Models
         public Nullable<bool> ISACTIVE { get; set; }
         public Nullable<int> CREATEBY { get; set; }
         public Nullable<System.DateTime> CRAETEDATE { get; set; }
+        public Nullable<int> StatusID { get; set; }
 
     }
 

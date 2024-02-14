@@ -40,6 +40,7 @@ namespace letterhead.Controllers
                             Session["userid"] = auth.ID;
                             Session["userrole"] = auth.ROLEID;
                             Session["username"] = auth.USERNAME;
+                            Session["isapprover"] = auth.IsApprover;
                             Session["loginstatus"] = "1";
                             return RedirectToAction("Dashboard", "Home");
                         }
@@ -53,6 +54,7 @@ namespace letterhead.Controllers
                             Session["userid"] = auth.ID;
                             Session["userrole"] = auth.ROLEID;
                             Session["username"] = auth.FULLNAME;
+                            Session["isapprover"] = auth.IsApprover;
                             Session["loginstatus"] = "1";
                             return RedirectToAction("Dashboard", "Home");
                         }

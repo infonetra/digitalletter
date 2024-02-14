@@ -77,7 +77,7 @@
 
         window.print();
         window.onafterprint = function (event) {
-            var url = '@Url.Action("printview", "Home", new { id = Model.ID })';
+            var url = '@Url.Action("LetterRequest", "Home", new { id = Model.ID })';
            window.location.href = url;            
         };
     </script>

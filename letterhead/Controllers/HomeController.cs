@@ -480,6 +480,7 @@ namespace letterhead.Controllers
                     var data = (from user in db.Mst_USER
                                 join site in db.Mst_SITE on user.SITEID equals site.ID  
                                 join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID
+                                where user.ISACTIVE==true && user.IsApprover!=1
                                 select new uservm
                                 {
                                     ID = user.ID,
@@ -519,8 +520,10 @@ namespace letterhead.Controllers
             {
                 if (Session["userid"] != null && Session["userrole"].ToString() == "1")
                 {
+                    int UserID = Convert.ToInt32(Session["userid"].ToString());
                     ViewBag.SITE = db.Mst_SITE.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE +"/"+x.SITENONAME, Value = x.ID.ToString() }).ToList();
                     ViewBag.dept = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT, Value = x.ID.ToString() }).ToList(); ;
+                    ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.IsApprover==1).Select(x => new SelectListItem { Text = x.FULLNAME, Value = x.ID.ToString() }).ToList();
                     return View();
                 }
                 else
@@ -552,6 +555,7 @@ namespace letterhead.Controllers
                     model.OneTimeUser = true;
                     model.CREATEBY = 1;
                     model.ROLEID = 2;
+                    model.IsApprover = 0;
                     model.CANLOGIN = true;
                     model.CRAETEDATE = DateTime.Now;
                     db.Mst_USER.Add(model);
@@ -578,8 +582,10 @@ namespace letterhead.Controllers
             {
                 if (Session["userid"] != null && Session["userrole"].ToString() == "1")
                 {
+                    int UserID = Convert.ToInt32(Session["userid"].ToString());
                     ViewBag.SITE = db.Mst_SITE.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE + "/" + x.SITENONAME, Value = x.ID.ToString() }).ToList();
                     ViewBag.dept = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT, Value = x.ID.ToString() }).ToList(); ;
+                    ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.IsApprover== 1).Select(x => new SelectListItem { Text = x.FULLNAME, Value = x.ID.ToString() }).ToList();
                     var prd = db.Mst_USER.Where(x => x.ID == id).FirstOrDefault();
                     return View(prd);
                 }
@@ -610,6 +616,8 @@ namespace letterhead.Controllers
                     site.MOBILENO = model.MOBILENO;
                     site.EMAILID = model.EMAILID;
                     site.ROLEID = model.ROLEID;
+                    site.IsApprover = 0;
+                    site.Approver = model.Approver;
                     site.CANLOGIN = true;
                     site.ISACTIVE = model.ISACTIVE;
                     site.CREATEBY = model.CREATEBY;
@@ -620,6 +628,179 @@ namespace letterhead.Controllers
                     TempData["success"] = "User has been updated successfully";
 
                     return RedirectToAction("UserMaster");
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        #endregion
+
+        #region approver
+
+        public ActionResult ApproverMaster()
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    var data = (from user in db.Mst_USER
+                                join site in db.Mst_SITE on user.SITEID equals site.ID
+                                join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID
+                                where user.ISACTIVE == true && user.IsApprover == 1
+                                select new uservm
+                                {
+                                    ID = user.ID,
+                                    FULLNAME = user.FULLNAME,
+                                    MOBILENO = user.MOBILENO,
+                                    EMAILID = user.EMAILID,
+                                    TITLE = site.TITLE,
+                                    SITENO = site.SITENO,
+                                    SITENONAME = site.SITENONAME,
+                                    Department = dept.DEPARTMENT,
+                                    EMPCODE = user.EMPCODE,
+                                    DeptID = dept.ID,
+                                    USERNAME = user.USERNAME,
+                                    USERPWD = user.USERPWD,
+                                    CANLOGIN = user.CANLOGIN,
+                                    CREATEBY = user.CREATEBY,
+                                    CRAETEDATE = user.CRAETEDATE,
+                                    ISACTIVE = user.ISACTIVE
+                                }).ToList();
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+
+        }
+
+        public ActionResult AddApprover()
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    int UserID = Convert.ToInt32(Session["userid"].ToString());
+                    ViewBag.SITE = db.Mst_SITE.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE + "/" + x.SITENONAME, Value = x.ID.ToString() }).ToList();
+                    ViewBag.dept = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT, Value = x.ID.ToString() }).ToList(); ;
+                   // ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.IsApprover == 1).Select(x => new SelectListItem { Text = x.FULLNAME, Value = x.ID.ToString() }).ToList();
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult AddApprover(Mst_USER model)
+        {
+            //TempData["confirm"] = "true";
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    var data = db.Mst_USER.Where(a => a.EMPCODE == model.EMPCODE && a.ISACTIVE == true).Count();
+                    if (data > 0)
+                    {
+                        TempData["error"] = "Already assign with another user!";
+                        return RedirectToAction("ApproverMaster");
+                    }
+                    model.USERPWD = model.EMPCODE;
+                    model.OneTimeUser = true;
+                    model.CREATEBY = 1;
+                    model.ROLEID = 2;
+                    model.IsApprover = 1;
+                    model.CANLOGIN = true;
+                    model.CRAETEDATE = DateTime.Now;
+                    db.Mst_USER.Add(model);
+                    db.SaveChanges();
+                    TempData["success"] = "Approver Added successfully.";
+                    return RedirectToAction("ApproverMaster");
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+
+        }
+
+        public ActionResult EditApprover(int id = 0)
+        {
+
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    int UserID = Convert.ToInt32(Session["userid"].ToString());
+                    ViewBag.SITE = db.Mst_SITE.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE + "/" + x.SITENONAME, Value = x.ID.ToString() }).ToList();
+                    ViewBag.dept = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT, Value = x.ID.ToString() }).ToList(); ;
+                    //ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.IsApprover == 1).Select(x => new SelectListItem { Text = x.FULLNAME, Value = x.ID.ToString() }).ToList();
+                    var prd = db.Mst_USER.Where(x => x.ID == id).FirstOrDefault();
+                    return View(prd);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult EditApprover(Mst_USER model)
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    var site = db.Mst_USER.Where(x => x.ID == model.ID).FirstOrDefault();
+                    site.ID = model.ID;
+                    site.FULLNAME = model.FULLNAME;
+                    site.USERPWD = model.USERPWD;
+                    site.USERNAME = model.USERNAME;
+                    site.SITEID = model.SITEID;
+                    site.MOBILENO = model.MOBILENO;
+                    site.EMAILID = model.EMAILID;
+                    site.ROLEID = model.ROLEID;
+                    site.IsApprover = model.IsApprover;
+                    site.Approver = model.Approver;
+                    site.CANLOGIN = true;
+                    site.ISACTIVE = model.ISACTIVE;
+                    site.CREATEBY = model.CREATEBY;
+                    site.CRAETEDATE = model.CRAETEDATE;
+
+                    db.SaveChanges();
+
+                    TempData["success"] = "Approver has been updated successfully";
+
+                    return RedirectToAction("ApproverMaster");
                 }
                 else
                 {
@@ -913,6 +1094,7 @@ namespace letterhead.Controllers
                                     FULLNAME = user.FULLNAME,   
                                     LATTERNO=later.LATTERNO,
                                     LatterData= later.LatterData,
+                                    StatusID=later.StatusId,
                                     Department=dept.DEPARTMENT,
                                     DeptID=dept.ID,
                                     LATTERNOSerice= ("HGIEL/" + site.TITLE+"/"+site.SITENONAME+"/"+dept.DEPARTMENT+ "/2023-24/" + later.LATTERNO.ToString()),
@@ -989,6 +1171,7 @@ namespace letterhead.Controllers
                     model.USERID = Convert.ToInt32(Session["userid"].ToString());
                     model.CREATEBY = 1;
                     model.ISACTIVE = true;
+                    model.StatusId = 5;
                     model.CRAETEDATE = DateTime.Now;
                     db.LatterRequests.Add(model);
                     db.SaveChanges();
@@ -1038,6 +1221,7 @@ namespace letterhead.Controllers
             {                
                     var data = db.LatterRequests.Where(a => a.ID == id).FirstOrDefault();                   
                     data.LatterData = latterdata;
+                    data.StatusId = 1;
                     db.SaveChanges();
                     TempData["success"] = "Thanks.";
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
@@ -1081,6 +1265,7 @@ namespace letterhead.Controllers
                                     LATTERNO = later.LATTERNO,
                                     LatterData = later.LatterData,
                                     Department = dept.DEPARTMENT,
+                                    StatusID=later.StatusId,
                                     DeptID = dept.ID,
                                     LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + site.SITENONAME + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
                                     REMARK = later.REMARK,
@@ -1341,6 +1526,150 @@ namespace letterhead.Controllers
             {
                 return View();
             }
+        }
+
+        public ActionResult UploadManual()
+        {
+            try
+            {
+                if (Session["userid"] != null)
+                {
+                    var data = db.usermanuals.ToList();
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        public ActionResult EditUploadManual(int id)
+        {
+            try
+            {
+                if (Session["userid"] != null)
+                {
+                    var data = db.usermanuals.Where(a=>a.ID==id).FirstOrDefault();
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult EditUploadManual(usermanual model, HttpPostedFileBase imgProfileC = null)
+        {
+            try
+            {
+                if (Session["userid"] != null)
+                {                    
+                    var data = db.usermanuals.Where(a => a.ID == model.ID).FirstOrDefault();
+                    string Domain = Request.Url.Scheme + System.Uri.SchemeDelimiter + Request.Url.Host + (Request.Url.IsDefaultPort ? "" : ":" + Request.Url.Port);
+
+                    string guid = Guid.NewGuid().ToString("N");
+                    string ActualPathjoing = string.Concat(Domain + "/UserManual/", string.Concat(guid, Path.GetExtension(imgProfileC.FileName)));
+                    var ServerPath = Path.Combine(Server.MapPath("~/UserManual"), string.Concat(guid, Path.GetExtension(imgProfileC.FileName)));
+                    string extn = Path.GetExtension(ServerPath);
+                    if (extn == ".pdf")
+                    {
+                        imgProfileC.SaveAs(ServerPath);
+                        if (System.IO.File.Exists(ServerPath))
+                        {
+                            data.ManualLink = ActualPathjoing;
+                        }
+                        data.IsActive = model.IsActive;
+                        data.ManualTitle = model.ManualTitle;                                          
+                        db.SaveChanges();
+                    }
+
+                    return RedirectToAction("UploadManual", "Home");
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+        public ActionResult ViewManual(int id)
+        {
+            try
+            {
+                if (Session["userid"] != null)
+                {
+                    var data = db.usermanuals.Where(a => a.ID == id).FirstOrDefault();
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+
+        public ActionResult RequestReceived()
+        {
+            try
+            {
+                if (Session["userid"] != null)
+                {
+                    int userid = Convert.ToInt32(Session["userid"].ToString());
+                    var data = (from later in db.LatterRequests
+                                join user in db.Mst_USER on later.USERID equals user.ID
+                                join site in db.Mst_SITE on user.SITEID equals site.ID
+                                join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID
+                                where user.Approver == userid && later.StatusId != 5
+                                select new latterrvm
+                                {
+                                    ID = later.ID,
+                                    FULLNAME = user.FULLNAME,
+                                    LATTERNO = later.LATTERNO,
+                                    LatterData = later.LatterData,
+                                    Department = dept.DEPARTMENT,
+                                    DeptID = dept.ID,
+                                    LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + site.SITENONAME + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                    REMARK = later.REMARK,
+                                    TITLE = site.TITLE,
+                                    SITEID = site.ID,
+                                    EMPCODE = user.EMPCODE,
+                                    CODE = site.CODE,
+                                    SITENO = site.SITENO,
+                                    SITENONAME = site.SITENONAME,
+                                    CREATEBY = later.CREATEBY,
+                                    CRAETEDATE = later.CRAETEDATE,
+                                    ISACTIVE = later.ISACTIVE
+                                }).OrderByDescending(a => a.CRAETEDATE).Take(5).ToList();
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }           
         }
 
     }

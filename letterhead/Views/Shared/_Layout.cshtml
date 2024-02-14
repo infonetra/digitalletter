@@ -191,9 +191,21 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("ApproverMaster", "Home")">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Approver Master</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link collapsed" href="@Url.Action("UserMaster", "Home")">
                         <i class="bi bi-person-fill"></i>
                         <span>User Master</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("UploadManual", "Home")">
+                        <i class="bi bi-upload"></i>
+                        <span>User Manual</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -227,10 +239,25 @@
                         <span>Request Letterhead</span>
                     </a>
                 </li>
+                if (Session["isapprover"].ToString() == "1")
+                {
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="@Url.Action("RequestReceived", "Home")">
+                            <i class="bi bi-person-fill"></i>
+                            <span>Request Received</span>
+                        </a>
+                    </li>
+                }
                 <li class="nav-item">
                     <a class="nav-link collapsed" href="@Url.Action("SignList", "Home")">
                         <i class="bi bi-person-fill"></i>
                         <span>Upload Signtaure</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("ViewManual", "Home", new {id=1})">
+                        <i class="bi bi-upload"></i>
+                        <span>User Manual</span>
                     </a>
                 </li>
                 <li class="nav-item">
