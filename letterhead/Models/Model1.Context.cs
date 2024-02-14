@@ -12,6 +12,8 @@ namespace letterhead.Models
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class letterheadEntities : DbContext
     {
@@ -33,8 +35,29 @@ namespace letterhead.Models
         public virtual DbSet<USERSIGN> USERSIGNs { get; set; }
         public virtual DbSet<usermanual> usermanuals { get; set; }
         public virtual DbSet<LatterRequest> LatterRequests { get; set; }
-        public virtual DbSet<Letter_Log_Process> Letter_Log_Process { get; set; }
         public virtual DbSet<mst_status> mst_status { get; set; }
         public virtual DbSet<Mst_USER> Mst_USER { get; set; }
+        public virtual DbSet<Letter_Log_Process> Letter_Log_Process { get; set; }
+    
+        public virtual ObjectResult<Nullable<int>> loginsert(Nullable<int> lid, string remark, Nullable<int> stsusid, Nullable<int> createby)
+        {
+            var lidParameter = lid.HasValue ?
+                new ObjectParameter("lid", lid) :
+                new ObjectParameter("lid", typeof(int));
+    
+            var remarkParameter = remark != null ?
+                new ObjectParameter("remark", remark) :
+                new ObjectParameter("remark", typeof(string));
+    
+            var stsusidParameter = stsusid.HasValue ?
+                new ObjectParameter("stsusid", stsusid) :
+                new ObjectParameter("stsusid", typeof(int));
+    
+            var createbyParameter = createby.HasValue ?
+                new ObjectParameter("createby", createby) :
+                new ObjectParameter("createby", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("loginsert", lidParameter, remarkParameter, stsusidParameter, createbyParameter);
+        }
     }
 }

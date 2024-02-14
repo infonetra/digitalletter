@@ -1168,6 +1168,7 @@ namespace letterhead.Controllers
             {
                 if (Session["userid"] != null && Session["userrole"].ToString() == "2")
                 {
+                    ViewBag.ltype = db.LetterCrateTypes.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE, Value = x.ID.ToString() }).ToList(); ;
                     model.USERID = Convert.ToInt32(Session["userid"].ToString());
                     model.CREATEBY = 1;
                     model.ISACTIVE = true;
@@ -1175,8 +1176,10 @@ namespace letterhead.Controllers
                     model.CRAETEDATE = DateTime.Now;
                     db.LatterRequests.Add(model);
                     db.SaveChanges();
+                    int cid = Convert.ToInt32(Session["userid"].ToString());
+                    db.loginsert(model.ID, "Letter create", 5,cid);                   
                     TempData["success"] = "Letter Issued Succesfully";
-                    return RedirectToAction("LetterRequest");
+                   return RedirectToAction("LetterRequest","Home");
                 }
                 else
                 {
@@ -1223,7 +1226,9 @@ namespace letterhead.Controllers
                     data.LatterData = latterdata;
                     data.StatusId = 1;
                     db.SaveChanges();
-                    TempData["success"] = "Thanks.";
+                int cid = Convert.ToInt32(Session["userid"].ToString());
+                db.loginsert(data.ID, "In Progress", 1,cid);
+                TempData["success"] = "Thanks.";
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
             catch
@@ -1670,6 +1675,48 @@ namespace letterhead.Controllers
             {
                 return View();
             }           
+        }
+
+        public ActionResult ApproveData(int id)
+        {
+            var data = db.LatterRequests.Where(a => a.ID == id).FirstOrDefault();
+            data.StatusId = 4;
+            db.SaveChanges();
+            int cid = Convert.ToInt32(Session["userid"].ToString());
+            db.loginsert(data.ID, "Approve", 4,cid);           
+            TempData["success"] = "Request Approved.";
+            return View("RequestReceived", "Home");
+        }
+      
+        [HttpPost]
+        public ActionResult SendBack(string sendback,int sbid)
+        {
+            var data = db.LatterRequests.Where(a => a.ID == sbid).FirstOrDefault();
+            data.StatusId = 3;
+            db.SaveChanges();
+            
+            var remark= "Send To Back Reason are "+ sendback;
+            int cid = Convert.ToInt32(Session["userid"].ToString());
+            db.loginsert(data.ID, remark, 3,cid);
+            TempData["success"] = "Request Send To Back.";
+            return View("RequestReceived", "Home");
+        }
+
+        public ActionResult GetEmployeeLog(int id)
+        {
+            var data = (from log in db.Letter_Log_Process
+                        join user in db.Mst_USER on log.CREATEBY equals user.ID
+                        join ststus in db.mst_status on log.STATUSID equals ststus.ID
+                        where log.LID == id
+                        select new LogRequestVM
+                        {
+                            Remark = log.REMARK,
+                            createbyname = user.FULLNAME,
+                            CRAETEDATE=log.CREATEDATE,
+                            Status=ststus.TITLE,
+                           StatusID=ststus.ID
+                        }).ToList();
+            return Json(data: new { success = true, adata = data }, JsonRequestBehavior.AllowGet);
         }
 
     }

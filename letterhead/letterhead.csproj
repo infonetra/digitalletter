@@ -1285,6 +1285,7 @@
     <Content Include="Views\Home\AddApprover.cshtml" />
     <Content Include="Views\Home\EditApprover.cshtml" />
     <Content Include="Views\Home\RequestReceived.cshtml" />
+    <Content Include="Views\Home\SendBack.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

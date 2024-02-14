@@ -27,7 +27,7 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="LID" Type="int" />
           <Property Name="STATUSID" Type="int" />
-          <Property Name="REMARK" Type="nvarchar" MaxLength="1" />
+          <Property Name="REMARK" Type="nvarchar(max)" />
           <Property Name="CREATEDATE" Type="datetime" />
           <Property Name="CREATEBY" Type="int" />
           <Property Name="ISACTIVE" Type="bit" />
@@ -135,6 +135,12 @@
           <Property Name="CRERATEBY" Type="int" />
           <Property Name="CREATEDATE" Type="datetime" />
         </EntityType>
+        <Function Name="loginsert" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="lid" Type="int" Mode="In" />
+          <Parameter Name="remark" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="stsusid" Type="int" Mode="In" />
+          <Parameter Name="createby" Type="int" Mode="In" />
+        </Function>
         <EntityContainer Name="letterheadModelStoreContainer">
           <EntitySet Name="LatterRequest" EntityType="Self.LatterRequest" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Letter_Log_Process" EntityType="Self.Letter_Log_Process" Schema="dbo" store:Type="Tables" />
@@ -161,9 +167,15 @@
           <EntitySet Name="USERSIGNs" EntityType="letterheadModel.USERSIGN" />
           <EntitySet Name="usermanuals" EntityType="letterheadModel.usermanual" />
           <EntitySet Name="LatterRequests" EntityType="letterheadModel.LatterRequest" />
-          <EntitySet Name="Letter_Log_Process" EntityType="letterheadModel.Letter_Log_Process" />
           <EntitySet Name="mst_status" EntityType="letterheadModel.mst_status" />
           <EntitySet Name="Mst_USER" EntityType="letterheadModel.Mst_USER" />
+          <EntitySet Name="Letter_Log_Process" EntityType="letterheadModel.Letter_Log_Process" />
+          <FunctionImport Name="loginsert" ReturnType="Collection(Int32)">
+            <Parameter Name="lid" Mode="In" Type="Int32" />
+            <Parameter Name="remark" Mode="In" Type="String" />
+            <Parameter Name="stsusid" Mode="In" Type="Int32" />
+            <Parameter Name="createby" Mode="In" Type="Int32" />
+          </FunctionImport>
         </EntityContainer>
         <EntityType Name="Mst_Role">
           <Key>
@@ -253,18 +265,6 @@
           <Property Name="CREATEBY" Type="Int32" />
           <Property Name="CRAETEDATE" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityType Name="Letter_Log_Process">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="LID" Type="Int32" />
-          <Property Name="STATUSID" Type="Int32" />
-          <Property Name="REMARK" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
-          <Property Name="CREATEDATE" Type="DateTime" Precision="3" />
-          <Property Name="CREATEBY" Type="Int32" />
-          <Property Name="ISACTIVE" Type="Boolean" />
-        </EntityType>
         <EntityType Name="mst_status">
           <Key>
             <PropertyRef Name="ID" />
@@ -294,6 +294,18 @@
           <Property Name="ISACTIVE" Type="Boolean" />
           <Property Name="CREATEBY" Type="Int32" />
           <Property Name="CRAETEDATE" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Letter_Log_Process">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LID" Type="Int32" />
+          <Property Name="STATUSID" Type="Int32" />
+          <Property Name="REMARK" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CREATEDATE" Type="DateTime" Precision="3" />
+          <Property Name="CREATEBY" Type="Int32" />
+          <Property Name="ISACTIVE" Type="Boolean" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -397,19 +409,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Letter_Log_Process">
-            <EntityTypeMapping TypeName="letterheadModel.Letter_Log_Process">
-              <MappingFragment StoreEntitySet="Letter_Log_Process">
-                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-                <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
-                <ScalarProperty Name="CREATEDATE" ColumnName="CREATEDATE" />
-                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
-                <ScalarProperty Name="STATUSID" ColumnName="STATUSID" />
-                <ScalarProperty Name="LID" ColumnName="LID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="mst_status">
             <EntityTypeMapping TypeName="letterheadModel.mst_status">
               <MappingFragment StoreEntitySet="mst_status">
@@ -442,6 +441,20 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Letter_Log_Process">
+            <EntityTypeMapping TypeName="letterheadModel.Letter_Log_Process">
+              <MappingFragment StoreEntitySet="Letter_Log_Process">
+                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+                <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+                <ScalarProperty Name="CREATEDATE" ColumnName="CREATEDATE" />
+                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+                <ScalarProperty Name="STATUSID" ColumnName="STATUSID" />
+                <ScalarProperty Name="LID" ColumnName="LID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="loginsert" FunctionName="letterheadModel.Store.loginsert" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

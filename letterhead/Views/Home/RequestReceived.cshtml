@@ -4,7 +4,60 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     int i = 0;
 }
+<div class="modal fade" id="searchModal" tabindex="-1">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content" style="background: rgba(9, 30, 62, .7);">
+            <div class="modal-header border-0">
+                <button type="button" class="btn bg-white btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex align-items-center justify-content-center">
+                <div class="input-group" style="max-width: 600px;">
+                    <table id="myTable" class="table table-bordered" style="font-size:14px;color:wheat;">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Status</th>
+                                <th>Remark</th>
+                                <th>Action By</th>
+                                <th>Action Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="LogBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<div class="modal fade" id="SendToBackModal" tabindex="-1">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content" style="background: rgba(9, 30, 62, .7);">
+            <div class="modal-header border-0">
+                <button type="button" class="btn bg-white btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex align-items-center justify-content-center">
+                <div class="input-group" style="max-width: 600px;">
+                    <div class="card">
+                        @using (Html.BeginForm("SendBack", "Home", FormMethod.Post, new { @class = "row g-3 needs-validation", @novalidate = "novalidate" }))
+                        {
+                            <input type="hidden" id="sbid" name="sbid" />
+                            <div class="col-md-4">
+                                <label for="validationCustom01" class="form-label">Send To Back Remark <span style="color:red;">*</span></label>
+                                <input class="form-control" type="text" name="sendback" id="sendback" placeholder="enter remark" required />
+                            </div>
+                            <div class="col-12">
+                                <button class="btn btn-primary" type="submit">Submit</button>                               
+                            </div>
+                        }
+                    </div>
+                   
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="pagetitle">
     <nav>
         <ol class="breadcrumb">
@@ -44,19 +97,19 @@
                                     <td>
                                         @if (item.StatusID != 4)
                                         {
-                                            <a class="btn btn-outline-success" href="@Url.Action("Printwithdate", "Home", new {@id=item.ID})">Approve</a>
+                                            <a class="btn btn-outline-success" href="@Url.Action("ApproveData", "Home", new {@id=item.ID})">Approve</a>
                                             <span>|</span>
-                                            <a class="btn btn-outline-danger" title="View" href="@Url.Action("printview", "Home", new {id=item.ID})">Send Back</a>
+                                            <a class="btn btn-outline-danger" title="View" onclick="SendToBackModal(this)" item-id="@item.ID" data-bs-toggle="modal" data-bs-target="#SendToBackModal">Send Back</a>
                                             <span>| </span>
                                             <a title="Print & Download" href="@Url.Action("performaview", "Home", new {id=@item.ID})"> <i class="bi bi-printer"></i></a>
                                             <span>| </span>
-                                            <a title="Log" href="@Url.Action("performaview", "Home", new {id=@item.ID})"> <i class="bi bi-ticket-detailed"></i></a>
+                                            <a title="Log" onclick="getempattendance(this)" item-id="@item.ID" data-bs-toggle="modal" data-bs-target="#searchModal"> <i class="bi bi-ticket-detailed"></i></a>
                                         }
                                         else
                                         {
                                             <a title="Print & Download" href="@Url.Action("performaview", "Home", new {id=@item.ID})"> <i class="bi bi-printer"></i></a>
                                             <span>| </span>
-                                            <a title="Log" href="@Url.Action("performaview", "Home", new {id=@item.ID})"> <i class="bi bi-ticket-detailed"></i></a>
+                                            <a title="Log"  onclick="getempattendance(this)" item-id="@item.ID" data-bs-toggle="modal" data-bs-target="#searchModal"> <i class="bi bi-ticket-detailed"></i></a>
                                         }
 
                                     </td>
@@ -79,4 +132,46 @@
 </div>
 
 @Html.Partial("_Alerts")
+
+<script>     
+
+    function sendtobackprocess(item) {
+        var tid = $(item).attr('item-id')
+        $("#sbid").val(tid);
+    }
+    function getempattendance(item) {
+        debugger;
+        var tid = $(item).attr('item-id')
+        var formdata = new FormData();
+        formdata.append("id", tid);
+        $.ajax({
+            async: true,
+            type: "Post",
+            contentType: false,
+            data: formdata,
+            url: '/Home/GetEmployeeLog/',
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                debugger;
+                if (data.success) {
+                    var logs = data.adata;
+                    console.log(logs)
+                    $('#LogBody').html('');
+                    $(logs).each(function (i, item) {
+                        $('#LogBody').append(`<tr>
+                                <td>${i + 1}</td>
+                                <td>${item.StatusID}</td>
+                                <td>${item.Remark}</td>
+                                <td>${item.createbyname}</td>
+                                <td>${item.CRAETEDATE}</td>
+                            </tr>`)
+                    })
+                }
+            }
+        })
+    }
+
+
+</script>
 

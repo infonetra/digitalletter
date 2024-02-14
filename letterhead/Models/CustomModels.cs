@@ -55,6 +55,17 @@ namespace letterhead.Models
 
     }
 
+    public class LogRequestVM
+    {
+        public int ID { get; set; }
+        public string Remark { get; set; }
+        public string Status { get; set; }
+        public int StatusID { get; set; }
+        public string createbyname { get; set; }       
+        public Nullable<System.DateTime> CRAETEDATE { get; set; }
+
+    }
+
     public class sitevm
     {
         public int ID { get; set; }
