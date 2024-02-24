@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Web;
 using System.Web.Mvc;
 
@@ -11,6 +13,7 @@ namespace letterhead.Controllers
     public class HomeController : Controller
     {
         letterheadEntities db = new letterheadEntities();
+        EmailTemplate etemp = new EmailTemplate();
         public ActionResult Dashboard(int? id=0)
         {
             if (Session["userid"] == null)
@@ -27,6 +30,15 @@ namespace letterhead.Controllers
             }
             int role = Convert.ToInt32(Session["userrole"]);
             int userid = Convert.ToInt32(Session["userid"]);
+            int spvletter = db.AssignSPVs.Where(a => a.UserID == userid).Count();
+            if (spvletter >= 1)
+            {
+                Session["spvshow"] = "1";
+            }
+            else
+            {
+                Session["spvshow"] = "0";
+            }
             ViewBag.totalsite = db.Mst_SITE.Where(a => a.ISACTIVE == true).Count();
             ViewBag.totaluser=db.Mst_USER.Where(a=>a.ISACTIVE == true).Count();
             ViewBag.totalatter=db.LatterRequests.Where(a => a.ISACTIVE == true).Count();
@@ -51,7 +63,7 @@ namespace letterhead.Controllers
                                 LatterData = later.LatterData,
                                 Department = dept.DEPARTMENT,
                                 DeptID = dept.ID,
-                                LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + site.SITENONAME + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
                                 REMARK = later.REMARK,
                                 TITLE = site.TITLE,
                                 SITEID = site.ID,
@@ -78,7 +90,7 @@ namespace letterhead.Controllers
                                 LatterData = later.LatterData,
                                 Department = dept.DEPARTMENT,
                                 DeptID = dept.ID,
-                                LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + site.SITENONAME + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
                                 REMARK = later.REMARK,
                                 TITLE = site.TITLE,
                                 SITEID = site.ID,
@@ -204,6 +216,269 @@ namespace letterhead.Controllers
                     TempData["success"] = "Role has been updated successfully";
 
                     return RedirectToAction("RoleMaster");
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        #endregion
+
+
+
+
+        public ActionResult SPVLetterRequest()
+        {
+
+            return View();
+        }
+
+        #region AssignSPV
+
+        public ActionResult AssignSPVList()
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    var data = (from assign in db.AssignSPVs                               
+                                join user in db.Mst_USER on assign.UserID equals user.ID
+                                join spv in db.spvmasters on assign.SpvID equals spv.ID                                                              
+                                select new SPVvm
+                                {
+                                    ID = assign.ID, 
+                                    username=user.FULLNAME,
+                                    empcode=user.EMPCODE,
+                                    spvtitle=spv.TITLE,
+                                    CREATEBY = assign.CREATEBY,
+                                    CRAETEDATE = assign.CREATEDATE,
+                                    ISACTIVE=assign.IsActive
+                                }).ToList().OrderBy(a=>a.username);
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+        public ActionResult AssignSPVAdd()
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    ViewBag.spv = db.spvmasters.Where(x => x.IsActive == true).Select(x => new SelectListItem { Text = x.TITLE, Value = x.ID.ToString() }).ToList();
+                    ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.ROLEID==2).Select(x => new SelectListItem { Text = x.FULLNAME+"/ "+x.EMPCODE, Value = x.ID.ToString() }).ToList();
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult AssignSPVAdd(AssignSPV model)
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    ViewBag.spv = db.spvmasters.Where(x => x.IsActive == true).Select(x => new SelectListItem { Text = x.TITLE, Value = x.ID.ToString() }).ToList();
+                    int userid = Convert.ToInt32(Session["userid"].ToString());
+                    model.CREATEBY = userid;
+                    model.CREATEDATE = DateTime.Now;
+                    db.AssignSPVs.Add(model);
+                    db.SaveChanges();
+                    TempData["success"] = "Assigned successfully.";
+                    return RedirectToAction("AssignSPVList");
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        public ActionResult AssignSPVEdit(int id)
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    ViewBag.spv = db.spvmasters.Where(x => x.IsActive == true).Select(x => new SelectListItem { Text = x.TITLE, Value = x.ID.ToString() }).ToList();
+                    ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.ROLEID == 2).Select(x => new SelectListItem { Text = x.FULLNAME + "/ " + x.EMPCODE, Value = x.ID.ToString() }).ToList();
+                    var data = db.AssignSPVs.Where(a=>a.ID==id).FirstOrDefault();
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult AssignSPVEdit(AssignSPV model)
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    ViewBag.spv = db.spvmasters.Where(x => x.IsActive == true).Select(x => new SelectListItem { Text = x.TITLE, Value = x.ID.ToString() }).ToList();
+                    ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.ROLEID == 2).Select(x => new SelectListItem { Text = x.FULLNAME + "/ " + x.EMPCODE, Value = x.ID.ToString() }).ToList();
+                    var data = db.AssignSPVs.Where(a => a.ID == model.ID).FirstOrDefault();  
+                    data.UserID=model.UserID;
+                    data.SpvID = model.SpvID;
+                    db.SaveChanges();
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        #endregion
+
+        #region SPVMaster
+        public ActionResult SPVMaster()
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    var data = db.spvmasters.ToList();
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+
+        }
+
+        public ActionResult AddSPV()
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult AddSPV(spvmaster model)
+        {
+            //TempData["confirm"] = "true";
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+
+                    model.CREATEBY = 1;
+                    model.CREATEDATE = DateTime.Now;
+                    db.spvmasters.Add(model);
+                    db.SaveChanges();
+                    TempData["success"] = "SPV created successfully.";
+                    return RedirectToAction("SPVMaster");
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+
+        }
+
+        public ActionResult EditSPV(int id = 0)
+        {
+
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    var prd = db.spvmasters.Where(x => x.ID == id).FirstOrDefault();
+                    return View(prd);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult EditSPV(spvmaster model)
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    var role = db.spvmasters.Where(x => x.ID == model.ID).FirstOrDefault();
+                    role.ID = model.ID;
+                    role.IsActive = model.IsActive;
+                    role.CREATEBY = model.CREATEBY;
+                    role.CREATEDATE = model.CREATEDATE;
+                    role.TITLE = model.TITLE;
+                    role.StartName = model.StartName;
+                    db.SaveChanges();
+
+                    TempData["success"] = "SPV has been updated successfully";
+
+                    return RedirectToAction("SPVMaster");
                 }
                 else
                 {
@@ -480,7 +755,7 @@ namespace letterhead.Controllers
                     var data = (from user in db.Mst_USER
                                 join site in db.Mst_SITE on user.SITEID equals site.ID  
                                 join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID
-                                where user.ISACTIVE==true && user.IsApprover!=1
+                                where user.ISACTIVE==true 
                                 select new uservm
                                 {
                                     ID = user.ID,
@@ -523,7 +798,7 @@ namespace letterhead.Controllers
                     int UserID = Convert.ToInt32(Session["userid"].ToString());
                     ViewBag.SITE = db.Mst_SITE.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE +"/"+x.SITENONAME, Value = x.ID.ToString() }).ToList();
                     ViewBag.dept = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT, Value = x.ID.ToString() }).ToList(); ;
-                    ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.IsApprover==1).Select(x => new SelectListItem { Text = x.FULLNAME, Value = x.ID.ToString() }).ToList();
+                    ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.IsApprover==1).Select(x => new SelectListItem { Text = x.FULLNAME + "/ " + x.EMPCODE, Value = x.ID.ToString() }).ToList();
                     return View();
                 }
                 else
@@ -544,7 +819,7 @@ namespace letterhead.Controllers
             try
             {
                 if (Session["userid"] != null && Session["userrole"].ToString() == "1")
-                {
+                {                   
                     var data = db.Mst_USER.Where(a => a.EMPCODE == model.EMPCODE && a.ISACTIVE == true).Count();
                     if (data > 0)
                     {
@@ -585,7 +860,7 @@ namespace letterhead.Controllers
                     int UserID = Convert.ToInt32(Session["userid"].ToString());
                     ViewBag.SITE = db.Mst_SITE.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE + "/" + x.SITENONAME, Value = x.ID.ToString() }).ToList();
                     ViewBag.dept = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT, Value = x.ID.ToString() }).ToList(); ;
-                    ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.IsApprover== 1).Select(x => new SelectListItem { Text = x.FULLNAME, Value = x.ID.ToString() }).ToList();
+                    ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.IsApprover== 1).Select(x => new SelectListItem { Text = x.FULLNAME + "/ " + x.EMPCODE, Value = x.ID.ToString() }).ToList();
                     var prd = db.Mst_USER.Where(x => x.ID == id).FirstOrDefault();
                     return View(prd);
                 }
@@ -615,8 +890,7 @@ namespace letterhead.Controllers
                     site.SITEID = model.SITEID;
                     site.MOBILENO = model.MOBILENO;
                     site.EMAILID = model.EMAILID;
-                    site.ROLEID = model.ROLEID;
-                    site.IsApprover = 0;
+                    site.ROLEID = model.ROLEID;                   
                     site.Approver = model.Approver;
                     site.CANLOGIN = true;
                     site.ISACTIVE = model.ISACTIVE;
@@ -696,7 +970,8 @@ namespace letterhead.Controllers
                     int UserID = Convert.ToInt32(Session["userid"].ToString());
                     ViewBag.SITE = db.Mst_SITE.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE + "/" + x.SITENONAME, Value = x.ID.ToString() }).ToList();
                     ViewBag.dept = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT, Value = x.ID.ToString() }).ToList(); ;
-                   // ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.IsApprover == 1).Select(x => new SelectListItem { Text = x.FULLNAME, Value = x.ID.ToString() }).ToList();
+                    
+                    // ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.IsApprover == 1).Select(x => new SelectListItem { Text = x.FULLNAME, Value = x.ID.ToString() }).ToList();
                     return View();
                 }
                 else
@@ -728,7 +1003,7 @@ namespace letterhead.Controllers
                     model.OneTimeUser = true;
                     model.CREATEBY = 1;
                     model.ROLEID = 2;
-                    model.IsApprover = 1;
+                    model.IsApprover = 1;                    
                     model.CANLOGIN = true;
                     model.CRAETEDATE = DateTime.Now;
                     db.Mst_USER.Add(model);
@@ -757,7 +1032,7 @@ namespace letterhead.Controllers
                 {
                     int UserID = Convert.ToInt32(Session["userid"].ToString());
                     ViewBag.SITE = db.Mst_SITE.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE + "/" + x.SITENONAME, Value = x.ID.ToString() }).ToList();
-                    ViewBag.dept = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT, Value = x.ID.ToString() }).ToList(); ;
+                    ViewBag.dept = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT, Value = x.ID.ToString() }).ToList(); ;                   
                     //ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.IsApprover == 1).Select(x => new SelectListItem { Text = x.FULLNAME, Value = x.ID.ToString() }).ToList();
                     var prd = db.Mst_USER.Where(x => x.ID == id).FirstOrDefault();
                     return View(prd);
@@ -1019,7 +1294,7 @@ namespace letterhead.Controllers
                             LatterData = later.LatterData,
                             Department = dept.DEPARTMENT,
                             DeptID = dept.ID,
-                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + site.SITENONAME + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
                             REMARK = later.REMARK,
                             TITLE = site.TITLE,
                             SITEID = site.ID,
@@ -1049,7 +1324,7 @@ namespace letterhead.Controllers
                             LatterData = later.LatterData,
                             Department = dept.DEPARTMENT,
                             DeptID = dept.ID,
-                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + site.SITENONAME + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
                             REMARK = later.REMARK,
                             TITLE = site.TITLE,
                             SITEID = site.ID,
@@ -1075,12 +1350,17 @@ namespace letterhead.Controllers
         #region latter request     
 
 
-        public ActionResult LetterRequest()
+        public ActionResult LetterRequest(int? aid)
         {
             try
             {
                 if (Session["userid"] != null && Session["userrole"].ToString() == "2")
                 {
+                    if (aid == 1)
+                    {
+                        TempData["error"] = "You are not authorized! please contact to admin.";
+                        return RedirectToAction("Dashboard", "Home");
+                    }
                     int userid = Convert.ToInt32(Session["userid"]);                   
                     var data = (from later in db.LatterRequests
                                 join ltype in db.LetterCrateTypes on later.LetterType equals ltype.ID
@@ -1092,7 +1372,9 @@ namespace letterhead.Controllers
                                 {
                                     ID = later.ID,
                                     FULLNAME = user.FULLNAME,   
-                                    LATTERNO=later.LATTERNO,
+                                    LATTERNO=later.LATTERNO,  
+                                    isapv=later.IsSpv,
+                                    spvid=later.SPVID,
                                     LatterData= later.LatterData,
                                     StatusID=later.StatusId,
                                     Department=dept.DEPARTMENT,
@@ -1123,6 +1405,62 @@ namespace letterhead.Controllers
 
         }
 
+        public ActionResult LetterSpvRequest(int? aid)
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "2")
+                {
+                    if (aid == 1)
+                    {
+                        TempData["error"] = "You are not map with approver! please contact with admin and try again.";
+                    }
+                    int userid = Convert.ToInt32(Session["userid"]);
+                    var data = (from later in db.LatterSPVRequests
+                                join ltype in db.LetterCrateTypes on later.LetterType equals ltype.ID
+                                join user in db.Mst_USER on later.USERID equals user.ID
+                                join site in db.Mst_SITE on user.SITEID equals site.ID
+                                join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID
+                                join spvm in db.spvmasters on later.SPVID equals spvm.ID
+                                where later.USERID == userid 
+                                select new latterrvm
+                                {
+                                    ID = later.ID,
+                                    FULLNAME = user.FULLNAME,
+                                    LATTERNO = later.LATTERNO,
+                                    isapv = later.IsSpv,
+                                    spvid = later.SPVID,
+                                    LatterData = later.LatterData,
+                                    StatusID = later.StatusId,
+                                    Department = dept.DEPARTMENT,
+                                    DeptID = dept.ID,
+                                    LATTERNOSerice = (spvm.StartName+ "/" + site.TITLE + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                    REMARK = ltype.TITLE,
+                                    TITLE = site.TITLE,
+                                    SITEID = site.ID,
+                                    CODE = site.CODE,
+                                    EMPCODE = user.EMPCODE,
+                                    SITENO = site.SITENO,
+                                    SITENONAME = site.SITENONAME,
+                                    CREATEBY = later.CREATEBY,
+                                    CRAETEDATE = later.CRAETEDATE,
+                                    ISACTIVE = later.ISACTIVE
+                                }).ToList();
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+
+        }
+
+
         public ActionResult Printwithdate(int id)
         {
             ViewBag.pid = id;
@@ -1141,10 +1479,17 @@ namespace letterhead.Controllers
             {
                 if (Session["userid"] != null && Session["userrole"].ToString() == "2")
                 {
-                    ViewBag.ltype = db.LetterCrateTypes.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE, Value = x.ID.ToString() }).ToList(); ;
                     int userid = Convert.ToInt32(Session["userid"]);
+                    var approverin = db.Mst_USER.Where(a => a.ID == userid && a.Approver != null).Count();
+                    if (approverin ==0)
+                    {
+                        return RedirectToAction("LetterRequest", "Home", new {aid=1});
+                    }
+
+                    ViewBag.ltype = db.LetterCrateTypes.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE, Value = x.ID.ToString() }).ToList(); ;
+                    
                     var date = new DateTime(DateTime.Now.Year, 4, 6);
-                    int lastinsert = db.LatterRequests.Where(a => a.USERID == userid).Count();
+                    int lastinsert = db.LatterRequests.Where(a => a.USERID == userid && a.IsSpv==false).Count();
                     LatterRequest latter = new LatterRequest();
                     latter.LATTERNO = Convert.ToString(lastinsert + 1);
                     return View(latter);
@@ -1173,11 +1518,16 @@ namespace letterhead.Controllers
                     model.CREATEBY = 1;
                     model.ISACTIVE = true;
                     model.StatusId = 5;
+                    model.IsSpv = false;
                     model.CRAETEDATE = DateTime.Now;
                     db.LatterRequests.Add(model);
                     db.SaveChanges();
                     int cid = Convert.ToInt32(Session["userid"].ToString());
-                    db.loginsert(model.ID, "Letter create", 5,cid);                   
+                    db.loginsert(model.ID, "Letter create", 5,cid);
+                    var userdata = db.Mst_USER.Where(a => a.ID == cid).FirstOrDefault();
+                    var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
+                    var msgtemp = etemp.RequestCreate(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
+                    mailsend(approver.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
                     TempData["success"] = "Letter Issued Succesfully";
                    return RedirectToAction("LetterRequest","Home");
                 }
@@ -1188,6 +1538,105 @@ namespace letterhead.Controllers
             }
             catch (Exception ex)
             {
+                errorlog err = new errorlog();
+                err.actionname = "AddLetterRequest";
+                err.errormessage = ex.Message;
+                err.createdate = DateTime.Now;
+                db.errorlogs.Add(err);
+                db.SaveChanges();
+                return View();
+            }
+
+        }
+
+
+        public ActionResult AddSpvLetterRequest()
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "2")
+                {
+                    int userid = Convert.ToInt32(Session["userid"]);
+                    var approverin = db.Mst_USER.Where(a => a.ID == userid && a.Approver != null).Count();
+                    if (approverin == 0)
+                    {
+                        return RedirectToAction("LetterSpvRequest", "Home", new { aid = 1 });
+                    }
+
+                    ViewBag.ltype = db.LetterCrateTypes.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE, Value = x.ID.ToString() }).ToList(); ;                    
+                    ViewBag.spvtype = (from p in db.AssignSPVs
+                                        join l in db.spvmasters on p.SpvID equals l.ID
+                                        where l.IsActive == true && p.UserID == userid
+                                       select new SelectListItem
+                                        {
+                                            Text = l.TITLE,
+                                            Value = l.ID.ToString()
+                                        }).ToList();
+                    var date = new DateTime(DateTime.Now.Year, 4, 6);
+                    int lastinsert = db.LatterSPVRequests.Where(a => a.USERID == userid).Count();
+                    LatterRequest latter = new LatterRequest();
+                    latter.LATTERNO = Convert.ToString(lastinsert + 1);
+                    return View(latter);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult AddSpvLetterRequest(LatterSPVRequest model)
+        {
+            //TempData["confirm"] = "true";
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "2")
+                {
+                    int userid = Convert.ToInt32(Session["userid"]);
+                    ViewBag.ltype = db.LetterCrateTypes.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE, Value = x.ID.ToString() }).ToList(); ;
+                    ViewBag.spvtype = (from p in db.AssignSPVs
+                                       join l in db.spvmasters on p.SpvID equals l.ID
+                                       where l.IsActive == true && p.UserID == userid
+                                       select new SelectListItem
+                                       {
+                                           Text = l.TITLE,
+                                           Value = l.ID.ToString()
+                                       }).ToList();
+                    model.USERID = Convert.ToInt32(Session["userid"].ToString());
+                    model.CREATEBY = 1;
+                    model.ISACTIVE = true;
+                    model.StatusId = 5;
+                    model.IsSpv = true;
+                    model.CRAETEDATE = DateTime.Now;
+                    db.LatterSPVRequests.Add(model);
+                    db.SaveChanges();
+                    int cid = Convert.ToInt32(Session["userid"].ToString());
+                    db.loginsertSPV(model.ID, "Letter create", 5, cid);
+                    var userdata = db.Mst_USER.Where(a => a.ID == cid).FirstOrDefault();
+                    var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
+                    var msgtemp = etemp.RequestCreate(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
+                    mailsend(approver.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
+                    TempData["success"] = "Letter Issued Succesfully";
+                    return RedirectToAction("LetterSpvRequest", "Home");
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                errorlog err = new errorlog();
+                err.actionname = "AddLetterRequest";
+                err.errormessage = ex.Message;
+                err.createdate = DateTime.Now;
+                db.errorlogs.Add(err);
+                db.SaveChanges();
                 return View();
             }
 
@@ -1201,8 +1650,31 @@ namespace letterhead.Controllers
                 if (Session["userid"] != null && Session["userrole"].ToString() == "2")
                 {
                     int uid = Convert.ToInt32(Session["userid"].ToString());
-                    ViewBag.ltype = db.USERSIGNs.Where(x => x.IsActive == true && uid== uid).Select(x => new SelectListItem { Text = x.SIGNTITLE, Value = x.ID.ToString() }).ToList(); ;
+                    ViewBag.ltype = db.USERSIGNs.Where(x => x.IsActive == true && x.USERID== uid).Select(x => new SelectListItem { Text = x.SIGNTITLE, Value = x.ID.ToString() }).ToList(); ;
                     var data = db.LatterRequests.Where(x => x.ID == id).FirstOrDefault();
+                    return View(data);
+
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        public ActionResult PerformaSPV(int id = 0)
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "2")
+                {
+                    int uid = Convert.ToInt32(Session["userid"].ToString());
+                    ViewBag.ltype = db.USERSIGNs.Where(x => x.IsActive == true && x.USERID == uid).Select(x => new SelectListItem { Text = x.SIGNTITLE, Value = x.ID.ToString() }).ToList(); ;
+                    var data = db.LatterSPVRequests.Where(x => x.ID == id).FirstOrDefault();
                     return View(data);
 
                 }
@@ -1228,11 +1700,55 @@ namespace letterhead.Controllers
                     db.SaveChanges();
                 int cid = Convert.ToInt32(Session["userid"].ToString());
                 db.loginsert(data.ID, "In Progress", 1,cid);
+                
+                var userdata = db.Mst_USER.Where(a => a.ID == cid).FirstOrDefault();
+                var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
+                var msgtemp = etemp.RequestSend(userdata.FULLNAME,userdata.EMPCODE,approver.FULLNAME);
+                mailsend(approver.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
+
                 TempData["success"] = "Thanks.";
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
-            catch
+            catch(Exception ex)
             {
+                errorlog err = new errorlog();
+                err.actionname = "Performadata";
+                err.errormessage = ex.Message;
+                err.createdate = DateTime.Now;
+                db.errorlogs.Add(err);
+                db.SaveChanges();
+                return Json(new { success = false }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost, ValidateInput(false)]
+        public ActionResult PerformaSPVdata(string latterdata = null, int id = 0)
+        {
+            try
+            {
+                var data = db.LatterSPVRequests.Where(a => a.ID == id).FirstOrDefault();
+                data.LatterData = latterdata;
+                data.StatusId = 1;
+                db.SaveChanges();
+                int cid = Convert.ToInt32(Session["userid"].ToString());
+                db.loginsertSPV(data.ID, "In Progress", 1, cid);
+
+                var userdata = db.Mst_USER.Where(a => a.ID == cid).FirstOrDefault();
+                var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
+                var msgtemp = etemp.RequestSend(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
+                mailsend(approver.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
+
+                TempData["success"] = "Thanks.";
+                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                errorlog err = new errorlog();
+                err.actionname = "Performadata";
+                err.errormessage = ex.Message;
+                err.createdate = DateTime.Now;
+                db.errorlogs.Add(err);
+                db.SaveChanges();
                 return Json(new { success = false }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -1272,7 +1788,7 @@ namespace letterhead.Controllers
                                     Department = dept.DEPARTMENT,
                                     StatusID=later.StatusId,
                                     DeptID = dept.ID,
-                                    LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + site.SITENONAME + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                    LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
                                     REMARK = later.REMARK,
                                     TITLE = site.TITLE,
                                     SITEID = site.ID,
@@ -1295,8 +1811,54 @@ namespace letterhead.Controllers
                 return View();
             }
         }
+
+        public ActionResult printviewSPV(int id = 0)
+        {
+            try
+            {
+                if (Session["userid"] != null)
+                {
+                    var data = (from later in db.LatterSPVRequests
+                                join user in db.Mst_USER on later.USERID equals user.ID
+                                join site in db.Mst_SITE on user.SITEID equals site.ID
+                                join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID
+                                join SPVM in db.spvmasters on later.SPVID equals SPVM.ID
+                                where later.ID == id
+                                select new latterrvm
+                                {
+                                    ID = later.ID,
+                                    FULLNAME = user.FULLNAME,
+                                    LATTERNO = later.LATTERNO,
+                                    LatterData = later.LatterData,
+                                    Department = dept.DEPARTMENT,
+                                    StatusID = later.StatusId,
+                                    svptitle=SPVM.TITLE,
+                                    DeptID = dept.ID,
+                                    LATTERNOSerice = (SPVM.StartName+"/" + site.TITLE + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                    REMARK = later.REMARK,
+                                    TITLE = site.TITLE,
+                                    SITEID = site.ID,
+                                    CODE = site.CODE,
+                                    SITENO = site.SITENO,
+                                    SITENONAME = site.SITENONAME,
+                                    CREATEBY = later.CREATEBY,
+                                    CRAETEDATE = later.CRAETEDATE,
+                                    ISACTIVE = later.ISACTIVE
+                                }).FirstOrDefault();
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
         #endregion
-      
+
 
         public ActionResult performaview(int id = 0, string date=null)
         {
@@ -1319,7 +1881,79 @@ namespace letterhead.Controllers
                             LatterData = later.LatterData,
                             Department = dept.DEPARTMENT,
                             DeptID = dept.ID,
-                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + site.SITENONAME + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                            REMARK = later.REMARK,
+                            TITLE = site.TITLE,
+                            SITEID = site.ID,
+                            CODE = site.CODE,
+                            SITENO = site.SITENO,
+                            SITENONAME = site.SITENONAME,
+                            CREATEBY = later.CREATEBY,
+                            CRAETEDATE = later.CRAETEDATE,
+                            ISACTIVE = later.ISACTIVE
+                        }).FirstOrDefault();
+            return View(data);
+        }
+
+        public ActionResult performaviewREQUEST(int id = 0, string date = null)
+        {
+            Session["datawise"] = null;
+            if (date != null)
+            {
+                DateTime dateTime = DateTime.Parse(date);
+                Session["datawise"] = dateTime.ToString("dd-MM-yyyy");
+            }
+            var data = (from later in db.LatterRequests
+                        join user in db.Mst_USER on later.USERID equals user.ID
+                        join site in db.Mst_SITE on user.SITEID equals site.ID
+                        join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID
+                        where later.ID == id
+                        select new latterrvm
+                        {
+                            ID = later.ID,
+                            FULLNAME = user.FULLNAME,
+                            LATTERNO = later.LATTERNO,
+                            LatterData = later.LatterData,
+                            Department = dept.DEPARTMENT,
+                            DeptID = dept.ID,
+                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                            REMARK = later.REMARK,
+                            TITLE = site.TITLE,
+                            SITEID = site.ID,
+                            CODE = site.CODE,
+                            SITENO = site.SITENO,
+                            SITENONAME = site.SITENONAME,
+                            CREATEBY = later.CREATEBY,
+                            CRAETEDATE = later.CRAETEDATE,
+                            ISACTIVE = later.ISACTIVE
+                        }).FirstOrDefault();
+            return View(data);
+        }
+
+        public ActionResult performaSPVview(int id = 0, string date = null)
+        {
+            Session["datawise"] = null;
+            if (date != null)
+            {
+                DateTime dateTime = DateTime.Parse(date);
+                Session["datawise"] = dateTime.ToString("dd-MM-yyyy");
+            }
+            var data = (from later in db.LatterSPVRequests
+                        join user in db.Mst_USER on later.USERID equals user.ID
+                        join site in db.Mst_SITE on user.SITEID equals site.ID
+                        join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID
+                        join spvm in db.spvmasters on later.SPVID equals spvm.ID
+                        where later.ID == id
+                        select new latterrvm
+                        {
+                            ID = later.ID,
+                            FULLNAME = user.FULLNAME,
+                            LATTERNO = later.LATTERNO,
+                            LatterData = later.LatterData,
+                            Department = dept.DEPARTMENT,
+                            svptitle=spvm.TITLE,
+                            DeptID = dept.ID,
+                            LATTERNOSerice = (spvm.StartName +"/" + site.TITLE + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
                             REMARK = later.REMARK,
                             TITLE = site.TITLE,
                             SITEID = site.ID,
@@ -1496,8 +2130,7 @@ namespace letterhead.Controllers
                 if (Session["userid"] != null)
                 {
                     USERSIGN uSERSIGN = new USERSIGN();
-                    int userid = Convert.ToInt32(Session["userid"].ToString());
-                    var data = db.Mst_USER.Where(a => a.ID == userid).FirstOrDefault();
+                    int userid = Convert.ToInt32(Session["userid"].ToString());                   
                     string Domain = Request.Url.Scheme + System.Uri.SchemeDelimiter + Request.Url.Host + (Request.Url.IsDefaultPort ? "" : ":" + Request.Url.Port);
 
                     string guid = Guid.NewGuid().ToString("N");
@@ -1511,11 +2144,11 @@ namespace letterhead.Controllers
                         {
                             uSERSIGN.SIGNIMAGE = ActualPathjoing;
                         }
-                        uSERSIGN.USERID = data.ID;
+                        uSERSIGN.USERID = userid;
                         uSERSIGN.SIGNTITLE = model.SIGNTITLE;
                         uSERSIGN.CREATEDATE = DateTime.Now;
                         uSERSIGN.IsActive = true;
-                        uSERSIGN.CRERATEBY = data.ID;
+                        uSERSIGN.CRERATEBY = userid;
                         db.USERSIGNs.Add(uSERSIGN);
                         db.SaveChanges();
                     }
@@ -1643,16 +2276,19 @@ namespace letterhead.Controllers
                                 join user in db.Mst_USER on later.USERID equals user.ID
                                 join site in db.Mst_SITE on user.SITEID equals site.ID
                                 join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID
-                                where user.Approver == userid && later.StatusId != 5
+                                join status in db.mst_status on later.StatusId equals status.ID
+                                where user.Approver == userid && later.StatusId != 5 
                                 select new latterrvm
                                 {
                                     ID = later.ID,
                                     FULLNAME = user.FULLNAME,
                                     LATTERNO = later.LATTERNO,
                                     LatterData = later.LatterData,
+                                    StatusData=status.TITLE,
+                                    StatusID=later.StatusId,
                                     Department = dept.DEPARTMENT,
                                     DeptID = dept.ID,
-                                    LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + site.SITENONAME + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                    LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
                                     REMARK = later.REMARK,
                                     TITLE = site.TITLE,
                                     SITEID = site.ID,
@@ -1677,29 +2313,240 @@ namespace letterhead.Controllers
             }           
         }
 
+        public ActionResult RequestReceivedSPV()
+        {
+            try
+            {
+                if (Session["userid"] != null)
+                {
+                    int userid = Convert.ToInt32(Session["userid"].ToString());
+                    var data = (from later in db.LatterSPVRequests
+                                join user in db.Mst_USER on later.USERID equals user.ID
+                                join site in db.Mst_SITE on user.SITEID equals site.ID
+                                join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID
+                                join status in db.mst_status on later.StatusId equals status.ID
+                                join spvm in db.spvmasters on later.SPVID equals spvm.ID
+                                where user.Approver == userid && later.StatusId != 5
+                                select new latterrvm
+                                {
+                                    ID = later.ID,
+                                    FULLNAME = user.FULLNAME,
+                                    LATTERNO = later.LATTERNO,
+                                    LatterData = later.LatterData,
+                                    StatusData = status.TITLE,
+                                    StatusID = later.StatusId,
+                                    Department = dept.DEPARTMENT,
+                                    DeptID = dept.ID,
+                                    LATTERNOSerice = (spvm.StartName+"/" + site.TITLE + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                    REMARK = later.REMARK,
+                                    TITLE = site.TITLE,
+                                    SITEID = site.ID,
+                                    EMPCODE = user.EMPCODE,
+                                    CODE = site.CODE,
+                                    SITENO = site.SITENO,
+                                    SITENONAME = site.SITENONAME,
+                                    CREATEBY = later.CREATEBY,
+                                    CRAETEDATE = later.CRAETEDATE,
+                                    ISACTIVE = later.ISACTIVE
+                                }).OrderByDescending(a => a.CRAETEDATE).Take(5).ToList();
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+        //RejectRequest
         public ActionResult ApproveData(int id)
         {
-            var data = db.LatterRequests.Where(a => a.ID == id).FirstOrDefault();
-            data.StatusId = 4;
-            db.SaveChanges();
-            int cid = Convert.ToInt32(Session["userid"].ToString());
-            db.loginsert(data.ID, "Approve", 4,cid);           
-            TempData["success"] = "Request Approved.";
-            return View("RequestReceived", "Home");
+            try
+            {
+                var data = db.LatterRequests.Where(a => a.ID == id).FirstOrDefault();
+                data.StatusId = 4;
+                db.SaveChanges();
+                int cid = Convert.ToInt32(Session["userid"].ToString());
+                db.loginsert(data.ID, "Approve", 4, cid);
+
+                var userdata = db.Mst_USER.Where(a => a.ID == data.USERID).FirstOrDefault();
+                var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
+                var msgtemp = etemp.RequestApprove(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
+                mailsend(userdata.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
+                TempData["success"] = "Request Approved.";
+                return RedirectToAction("RequestReceived", "Home");
+            }
+            catch(Exception ex)
+            {
+                errorlog err = new errorlog();
+                err.actionname = "Performadata";
+                err.errormessage = ex.Message;
+                err.createdate = DateTime.Now;
+                db.errorlogs.Add(err);
+                db.SaveChanges();
+                return RedirectToAction("RequestReceived", "Home");
+
+            }
+            
         }
-      
+
+        public ActionResult RejectRequest(int id)
+        {
+            try
+            {
+                var data = db.LatterRequests.Where(a => a.ID == id).FirstOrDefault();
+                data.StatusId = 2;
+                db.SaveChanges();
+                int cid = Convert.ToInt32(Session["userid"].ToString());
+                db.loginsert(data.ID, "Reject", 2, cid);
+
+                var userdata = db.Mst_USER.Where(a => a.ID == data.USERID).FirstOrDefault();
+                var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
+                var msgtemp = etemp.RequestReject(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
+                mailsend(userdata.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
+                TempData["success"] = "Request Rejected.";
+                return RedirectToAction("RequestReceived", "Home");
+            }
+            catch (Exception ex)
+            {
+                errorlog err = new errorlog();
+                err.actionname = "Performadata";
+                err.errormessage = ex.Message;
+                err.createdate = DateTime.Now;
+                db.errorlogs.Add(err);
+                db.SaveChanges();
+                return RedirectToAction("RequestReceived", "Home");
+
+            }
+
+        }
+
+        public ActionResult ApproveDataSPV(int id)
+        {
+            try
+            {
+                var data = db.LatterSPVRequests.Where(a => a.ID == id).FirstOrDefault();
+                data.StatusId = 4;
+                db.SaveChanges();
+                int cid = Convert.ToInt32(Session["userid"].ToString());
+                db.loginsertSPV(data.ID, "Approve", 4, cid);
+
+                var userdata = db.Mst_USER.Where(a => a.ID == data.USERID).FirstOrDefault();
+                var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
+                var msgtemp = etemp.RequestApprove(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
+                mailsend(userdata.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
+                TempData["success"] = "Request Approved.";
+                return RedirectToAction("RequestReceivedSPV", "Home");
+            }
+            catch (Exception ex)
+            {
+                errorlog err = new errorlog();
+                err.actionname = "Performadata";
+                err.errormessage = ex.Message;
+                err.createdate = DateTime.Now;
+                db.errorlogs.Add(err);
+                db.SaveChanges();
+                return RedirectToAction("RequestReceivedSPV", "Home");
+
+            }
+
+        }
+
+        public ActionResult RejectRequestSPV(int id)
+        {
+            try
+            {
+                var data = db.LatterRequests.Where(a => a.ID == id).FirstOrDefault();
+                data.StatusId = 2;
+                db.SaveChanges();
+                int cid = Convert.ToInt32(Session["userid"].ToString());
+                db.loginsertSPV(data.ID, "Reject", 2, cid);
+
+                var userdata = db.Mst_USER.Where(a => a.ID == data.USERID).FirstOrDefault();
+                var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
+                var msgtemp = etemp.RequestReject(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
+                mailsend(userdata.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
+                TempData["success"] = "Request Rejected.";
+                return RedirectToAction("RequestReceivedSPV", "Home");
+            }
+            catch (Exception ex)
+            {
+                errorlog err = new errorlog();
+                err.actionname = "Performadata";
+                err.errormessage = ex.Message;
+                err.createdate = DateTime.Now;
+                db.errorlogs.Add(err);
+                db.SaveChanges();
+                return RedirectToAction("RequestReceivedSPV", "Home");
+
+            }
+
+        }
+
         [HttpPost]
         public ActionResult SendBack(string sendback,int sbid)
         {
-            var data = db.LatterRequests.Where(a => a.ID == sbid).FirstOrDefault();
-            data.StatusId = 3;
-            db.SaveChanges();
-            
-            var remark= "Send To Back Reason are "+ sendback;
-            int cid = Convert.ToInt32(Session["userid"].ToString());
-            db.loginsert(data.ID, remark, 3,cid);
-            TempData["success"] = "Request Send To Back.";
-            return View("RequestReceived", "Home");
+            try
+            {
+                var data = db.LatterRequests.Where(a => a.ID == sbid).FirstOrDefault();
+                data.StatusId = 3;
+                db.SaveChanges();
+                var remark = "Send To Back Reason are " + sendback;
+                int cid = Convert.ToInt32(Session["userid"].ToString());
+                db.loginsert(data.ID, remark, 3, cid);
+                var userdata = db.Mst_USER.Where(a => a.ID == data.USERID).FirstOrDefault();
+                var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
+                var msgtemp = etemp.RequestSendtoback(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
+                mailsend(userdata.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
+                TempData["success"] = "Request Send To Back.";
+                return RedirectToAction("RequestReceived", "Home");
+            }
+            catch(Exception ex)
+            {
+                errorlog err = new errorlog();
+                err.actionname = "Performadata";
+                err.errormessage = ex.Message;
+                err.createdate = DateTime.Now;
+                db.errorlogs.Add(err);
+                db.SaveChanges();
+                return RedirectToAction("RequestReceived", "Home");
+            }
+           
+        }
+
+
+        [HttpPost]
+        public ActionResult SendBackSPV(string sendback, int sbid)
+        {
+            try
+            {
+                var data = db.LatterSPVRequests.Where(a => a.ID == sbid).FirstOrDefault();
+                data.StatusId = 3;
+                db.SaveChanges();
+                var remark = "Send To Back Reason are " + sendback;
+                int cid = Convert.ToInt32(Session["userid"].ToString());
+                db.loginsertSPV(data.ID, remark, 3, cid);
+                var userdata = db.Mst_USER.Where(a => a.ID == data.USERID).FirstOrDefault();
+                var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
+                var msgtemp = etemp.RequestSendtoback(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
+                mailsend(userdata.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
+                TempData["success"] = "Request Send To Back.";
+                return RedirectToAction("RequestReceivedSPV", "Home");
+            }
+            catch (Exception ex)
+            {
+                errorlog err = new errorlog();
+                err.actionname = "Performadata";
+                err.errormessage = ex.Message;
+                err.createdate = DateTime.Now;
+                db.errorlogs.Add(err);
+                db.SaveChanges();
+                return RedirectToAction("RequestReceivedSPV", "Home");
+            }
+
         }
 
         public ActionResult GetEmployeeLog(int id)
@@ -1713,11 +2560,67 @@ namespace letterhead.Controllers
                             Remark = log.REMARK,
                             createbyname = user.FULLNAME,
                             CRAETEDATE=log.CREATEDATE,
-                            Status=ststus.TITLE,
+                            createdates=log.CREATEDATE.ToString(),
+                            Status =ststus.TITLE,
                            StatusID=ststus.ID
                         }).ToList();
             return Json(data: new { success = true, adata = data }, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult GetEmployeeLogSPV(int id)
+        {
+            var data = (from log in db.Letter_Log_SPV_Process
+                        join user in db.Mst_USER on log.CREATEBY equals user.ID
+                        join ststus in db.mst_status on log.STATUSID equals ststus.ID
+                        where log.LID == id
+                        select new LogRequestVM
+                        {
+                            Remark = log.REMARK,
+                            createbyname = user.FULLNAME,
+                            CRAETEDATE = log.CREATEDATE,
+                            createdates = log.CREATEDATE.ToString(),
+                            Status = ststus.TITLE,
+                            StatusID = ststus.ID
+                        }).ToList();
+            return Json(data: new { success = true, adata = data }, JsonRequestBehavior.AllowGet);
+        }
+
+        public bool mailsend(string tomail, string message, string subject, bool mb)
+        {
+            try
+            {
+                MailMessage mc = new MailMessage(System.Configuration.ConfigurationManager.AppSettings["Email"].ToString(), tomail);
+                mc.Subject = subject;
+                mc.Body = message;
+                if (mb == true)
+                {
+                    mc.IsBodyHtml = true;
+                }
+                SmtpClient smtp = new SmtpClient(System.Configuration.ConfigurationManager.AppSettings["smtpserver"].ToString(), 587);
+                smtp.Timeout = 1000000;
+                smtp.EnableSsl = true;
+                smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                NetworkCredential nc = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["Email"].ToString(), System.Configuration.ConfigurationManager.AppSettings["Password"].ToString());
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = nc;
+                smtp.Send(mc);
+            }
+            catch (Exception ex)
+            {
+                Session["mailerror"] = ex.Message;
+                errorlog err = new errorlog();
+                err.actionname = "Mailsend";
+                err.errormessage = ex.Message;
+                err.createdate = DateTime.Now;
+                db.errorlogs.Add(err);
+                db.SaveChanges();
+            }
+
+            return true;
+
+        }
+
+
 
     }
 }

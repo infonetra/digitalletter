@@ -1,6 +1,6 @@
-﻿@model IEnumerable<letterhead.Models.Mst_SITE>
+﻿@model IEnumerable<letterhead.Models.SPVvm>
 @{
-    ViewBag.Title = "Projects Master";
+    ViewBag.Title = "AssignSPVList";
     Layout = "~/Views/Shared/_Layout.cshtml";
     int i = 0;
 }
@@ -9,7 +9,7 @@
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">Masters</li>
-            <li class="breadcrumb-item active">Project</li>
+            <li class="breadcrumb-item active">Assign SPV</li>
         </ol>
     </nav>
 </div>
@@ -19,19 +19,19 @@
             <div class="card recent-sales overflow-auto">
                 <div class="filter" style="right:23px;">
                     @*<button type="button" class="btn btn-primary"><i class="bi bi-star me-1"></i> With Text</button>*@
-                    <a class="btn btn-primary" href="@Url.Action("AddSite", "Home")"><i class="bi bi-person-plus"></i>Add Projects</a>
+                    <a class="btn btn-primary" href="@Url.Action("AssignSPVAdd", "Home")"><i class="bi bi-person-plus"></i>Assign SPV</a>
                     <a class="btn btn-danger" href="@Url.Action("Dashboard","Home")">Cancel</a>
                 </div>
                 <div class="card-body">
-                    <h5 class="card-title">Project Master</h5>
+                    <h5 class="card-title">SPV Assign</h5>
 
                     <table class="table table-borderless datatable">
                         <thead>
                             <tr>
                                 <th scope="col">S.No</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Plant Code</th>                              
-                                @*<th scope="col">Camp Name</th>*@                             
+                                <th scope="col">SPV Name</th>
+                                <th scope="col">User Name</th>
+                                <th scope="col">EmpCode</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Action</th>
                             </tr>
@@ -42,11 +42,11 @@
                                 i = i + 1;
                                 <tr>
                                     <th scope="row"><a href="#">@i</a></th>
-                                    <td>@item.TITLE</td>
-                                    <td>@item.CODE</td>                                 
-                                    @*<td>@item.SITENONAME</td>*@                                 
+                                    <td>@item.spvtitle</td>
+                                    <td>@item.username</td>
+                                    <td>@item.empcode</td>
                                     <td><span class="badge bg-@(item.ISACTIVE==true?"success":"danger")">@(item.ISACTIVE==true? "Active" : "De-Active")</span></td>
-                                    <td><a href="@Url.Action("EditSite", "Home", new {id=@item.ID})"><i class="bi bi-pencil"></i></a></td>
+                                    <td><a href="@Url.Action("AssignSPVEdit", "Home", new {id=@item.ID})"><i class="bi bi-pencil"></i></a></td>
                                 </tr>
                             }
 
@@ -61,6 +61,5 @@
 </section>
 
 @Html.Partial("_Alerts")
-
 
 

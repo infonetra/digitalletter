@@ -1,6 +1,6 @@
-﻿@model letterhead.Models.Mst_SITE
+﻿@model letterhead.Models.AssignSPV
 @{
-    ViewBag.Title = "Add Projects";
+    ViewBag.Title = "AssignSPVAdd";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -11,25 +11,22 @@
 
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Project  Master </h5>
+                    <h5 class="card-title">Assign  Master </h5>
                     <!-- Custom Styled Validation -->
-                    @using (Html.BeginForm("AddSite", "Home", FormMethod.Post, new { @class = "row g-3 needs-validation", @novalidate = "novalidate" }))
-                    {
+                    @using (Html.BeginForm("AssignSPVAdd", "Home", FormMethod.Post, new { @class = "row g-3 needs-validation", @novalidate = "novalidate" }))
+                    {                                               
                         <div class="col-md-4">
-                            <label for="validationCustom01" class="form-label">Project Name <span style="color:red;">*</span></label>
-                            @Html.TextBoxFor(x => x.TITLE, new { @class = "form-control", placeholder = "Project Name", @required = "required" })
+                            <label class="form-label">User<span style="color:red;">*</span></label>
+                            @Html.DropDownListFor(x => x.UserID, ViewBag.user as List<SelectListItem>, "Select User", new { @class = "form-control select2 UserType" })
                         </div>
                         <div class="col-md-4">
-                            <label for="validationCustom01" class="form-label">Plant Code <span style="color:red;">*</span></label>
-                            @Html.TextBoxFor(x => x.CODE, new { @class = "form-control", placeholder = "Code", @required = "required" })
+                            <label class="form-label">SPV<span style="color:red;">*</span></label>
+                            @Html.DropDownListFor(x => x.SpvID, ViewBag.spv as List<SelectListItem>, "Select SPV", new { @class = "form-control select2 UserType" })
                         </div>                       
-                        @*<div class="col-md-4">
-                            <label for="validationCustom01" class="form-label">Camp Name </label>
-                            @Html.TextBoxFor(x => x.SITENONAME, new { @class = "form-control", placeholder = "Camp Name"})
-                        </div>*@                       
+                        
                         <div class="col-md-4">
                             <label for="validationDefault04" class="form-label">Status <span style="color:red;">*</span></label>
-                            @Html.DropDownListFor(x => x.ISACTIVE, new List<SelectListItem>
+                            @Html.DropDownListFor(x => x.IsActive, new List<SelectListItem>
                         {
                            new SelectListItem{Text="Active",Value="true",Selected=true},
                            new SelectListItem{Text="DeActive",Value="false"}
@@ -48,6 +45,5 @@
         </div>
     </div>
 </section>
-
 
 

@@ -12,7 +12,7 @@ namespace letterhead.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class LatterRequest
+    public partial class LatterSPVRequest
     {
         public int ID { get; set; }
         public Nullable<int> USERID { get; set; }

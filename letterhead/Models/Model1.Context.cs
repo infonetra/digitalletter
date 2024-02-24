@@ -30,14 +30,19 @@ namespace letterhead.Models
         public virtual DbSet<Mst_Role> Mst_Role { get; set; }
         public virtual DbSet<Mst104_DEPARTMENT> Mst104_DEPARTMENT { get; set; }
         public virtual DbSet<setting> settings { get; set; }
-        public virtual DbSet<Mst_SITE> Mst_SITE { get; set; }
         public virtual DbSet<LetterCrateType> LetterCrateTypes { get; set; }
         public virtual DbSet<USERSIGN> USERSIGNs { get; set; }
         public virtual DbSet<usermanual> usermanuals { get; set; }
-        public virtual DbSet<LatterRequest> LatterRequests { get; set; }
         public virtual DbSet<mst_status> mst_status { get; set; }
         public virtual DbSet<Mst_USER> Mst_USER { get; set; }
         public virtual DbSet<Letter_Log_Process> Letter_Log_Process { get; set; }
+        public virtual DbSet<AssignSPV> AssignSPVs { get; set; }
+        public virtual DbSet<errorlog> errorlogs { get; set; }
+        public virtual DbSet<LatterRequest> LatterRequests { get; set; }
+        public virtual DbSet<spvmaster> spvmasters { get; set; }
+        public virtual DbSet<LatterSPVRequest> LatterSPVRequests { get; set; }
+        public virtual DbSet<Letter_Log_SPV_Process> Letter_Log_SPV_Process { get; set; }
+        public virtual DbSet<Mst_SITE> Mst_SITE { get; set; }
     
         public virtual ObjectResult<Nullable<int>> loginsert(Nullable<int> lid, string remark, Nullable<int> stsusid, Nullable<int> createby)
         {
@@ -58,6 +63,27 @@ namespace letterhead.Models
                 new ObjectParameter("createby", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("loginsert", lidParameter, remarkParameter, stsusidParameter, createbyParameter);
+        }
+    
+        public virtual ObjectResult<Nullable<int>> loginsertSPV(Nullable<int> lid, string remark, Nullable<int> stsusid, Nullable<int> createby)
+        {
+            var lidParameter = lid.HasValue ?
+                new ObjectParameter("lid", lid) :
+                new ObjectParameter("lid", typeof(int));
+    
+            var remarkParameter = remark != null ?
+                new ObjectParameter("remark", remark) :
+                new ObjectParameter("remark", typeof(string));
+    
+            var stsusidParameter = stsusid.HasValue ?
+                new ObjectParameter("stsusid", stsusid) :
+                new ObjectParameter("stsusid", typeof(int));
+    
+            var createbyParameter = createby.HasValue ?
+                new ObjectParameter("createby", createby) :
+                new ObjectParameter("createby", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("loginsertSPV", lidParameter, remarkParameter, stsusidParameter, createbyParameter);
         }
     }
 }

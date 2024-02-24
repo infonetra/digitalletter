@@ -32,7 +32,7 @@
                         <div class="col-md-4">
                             <label for="validationCustom01" class="form-label">EMP Code <span style="color:red;">*</span></label>
                             @Html.TextBoxFor(x => x.EMPCODE, new { @class = "form-control", placeholder = "Enter EMP Code", @required = "required" })
-                        </div>                     
+                        </div>
                         <div class="col-md-4">
                             <label for="validationCustom01" class="form-label">Password <span style="color:red;">*</span></label>
                             @Html.TextBoxFor(x => x.USERPWD, new { @class = "form-control", placeholder = "Enter Password", @required = "required" })
@@ -40,7 +40,11 @@
                         <div class="col-md-4">
                             <label for="validationCustom01" class="form-label">Mobile No <span style="color:red;">*</span></label>
                             @Html.TextBoxFor(x => x.MOBILENO, new { @class = "form-control", placeholder = "Enter Mobile No", @required = "required" })
-                        </div>                      
+                        </div>
+                        <div class="col-md-4">
+                            <label for="validationCustom01" class="form-label">Email ID <span style="color:red;">*</span></label>
+                            @Html.TextBoxFor(x => x.EMAILID, new { @class = "form-control", placeholder = "Enter Email", @required = "required" })
+                        </div>
                         <div class="col-md-4">
                             <label for="validationDefault04" class="form-label">Status <span style="color:red;">*</span></label>
                             @Html.DropDownListFor(x => x.ISACTIVE, new List<SelectListItem>
@@ -54,7 +58,7 @@
                         @Html.HiddenFor(a => a.CREATEBY)
                         @Html.HiddenFor(a => a.CRAETEDATE)
                         @Html.HiddenFor(a => a.OneTimeUser)
-                        @Html.HiddenFor(a=>a.IsApprover)
+                        @Html.HiddenFor(a => a.IsApprover)
                         <div class="col-12">
                             <button class="btn btn-primary" type="submit">Submit</button>
                             <a class="btn btn-danger" href="@Url.Action("Dashboard","Home")">Cancel</a>

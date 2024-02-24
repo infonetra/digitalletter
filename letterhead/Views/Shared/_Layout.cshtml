@@ -173,6 +173,18 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("SPVMaster", "Home")">
+                        <i class="bi bi-person-fill"></i>
+                        <span>SPV Master</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("AssignSPVList", "Home")">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Assign SPV</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link collapsed" href="@Url.Action("LetterTypeMaster", "Home")">
                         <i class="bi bi-person-fill"></i>
                         <span>Request Type Master</span>
@@ -239,12 +251,27 @@
                         <span>Request Letterhead</span>
                     </a>
                 </li>
+                if (Session["spvshow"].ToString() == "1")
+                {
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="@Url.Action("LetterSpvRequest", "Home")">
+                            <i class="bi bi-person-fill"></i>
+                            <span>SPV Request</span>
+                        </a>
+                    </li>
+                }
                 if (Session["isapprover"].ToString() == "1")
                 {
                     <li class="nav-item">
                         <a class="nav-link collapsed" href="@Url.Action("RequestReceived", "Home")">
                             <i class="bi bi-person-fill"></i>
                             <span>Request Received</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="@Url.Action("RequestReceivedSPV", "Home")">
+                            <i class="bi bi-person-fill"></i>
+                            <span>SPV-Request Received</span>
                         </a>
                     </li>
                 }

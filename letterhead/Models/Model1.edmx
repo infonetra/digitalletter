@@ -5,6 +5,26 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="letterheadModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AssignSPV">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" />
+          <Property Name="SpvID" Type="int" />
+          <Property Name="CREATEBY" Type="int" />
+          <Property Name="CREATEDATE" Type="datetime" />
+          <Property Name="IsActive" Type="bit" />
+        </EntityType>
+        <EntityType Name="errorlog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="actionname" Type="nvarchar" MaxLength="200" />
+          <Property Name="errormessage" Type="nvarchar(max)" />
+          <Property Name="createdate" Type="datetime" />
+        </EntityType>
         <EntityType Name="LatterRequest">
           <Key>
             <PropertyRef Name="ID" />
@@ -16,11 +36,42 @@
           <Property Name="REMARK" Type="nvarchar" MaxLength="500" />
           <Property Name="LatterData" Type="nvarchar(max)" />
           <Property Name="StatusId" Type="int" />
+          <Property Name="IsSpv" Type="bit" />
+          <Property Name="SPVID" Type="int" />
+          <Property Name="ISACTIVE" Type="bit" />
+          <Property Name="CREATEBY" Type="int" />
+          <Property Name="CRAETEDATE" Type="datetime" />
+        </EntityType>
+        <EntityType Name="LatterSPVRequest">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="USERID" Type="int" />
+          <Property Name="LATTERNO" Type="nvarchar" MaxLength="300" />
+          <Property Name="LetterType" Type="int" />
+          <Property Name="REMARK" Type="nvarchar" MaxLength="500" />
+          <Property Name="LatterData" Type="nvarchar(max)" />
+          <Property Name="StatusId" Type="int" />
+          <Property Name="IsSpv" Type="bit" />
+          <Property Name="SPVID" Type="int" />
           <Property Name="ISACTIVE" Type="bit" />
           <Property Name="CREATEBY" Type="int" />
           <Property Name="CRAETEDATE" Type="datetime" />
         </EntityType>
         <EntityType Name="Letter_Log_Process">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LID" Type="int" />
+          <Property Name="STATUSID" Type="int" />
+          <Property Name="REMARK" Type="nvarchar(max)" />
+          <Property Name="CREATEDATE" Type="datetime" />
+          <Property Name="CREATEBY" Type="int" />
+          <Property Name="ISACTIVE" Type="bit" />
+        </EntityType>
+        <EntityType Name="Letter_Log_SPV_Process">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
@@ -59,7 +110,7 @@
           <Property Name="TITLE" Type="nvarchar" MaxLength="50" />
           <Property Name="CODE" Type="nvarchar" MaxLength="100" />
           <Property Name="SITENO" Type="int" />
-          <Property Name="SITENONAME" Type="nvarchar" MaxLength="10" />
+          <Property Name="SITENONAME" Type="nvarchar" MaxLength="200" />
           <Property Name="ISACTIVE" Type="bit" />
           <Property Name="CREATEBY" Type="int" />
           <Property Name="CRAETEDATE" Type="datetime" />
@@ -114,6 +165,17 @@
           <Property Name="FONTNAME" Type="nvarchar" MaxLength="100" />
           <Property Name="FONTSIZE" Type="nvarchar" MaxLength="100" />
         </EntityType>
+        <EntityType Name="spvmaster">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TITLE" Type="nvarchar" MaxLength="500" />
+          <Property Name="StartName" Type="nvarchar" MaxLength="500" />
+          <Property Name="CREATEBY" Type="int" />
+          <Property Name="CREATEDATE" Type="datetime" />
+          <Property Name="IsActive" Type="bit" />
+        </EntityType>
         <EntityType Name="usermanual">
           <Key>
             <PropertyRef Name="ID" />
@@ -141,9 +203,19 @@
           <Parameter Name="stsusid" Type="int" Mode="In" />
           <Parameter Name="createby" Type="int" Mode="In" />
         </Function>
+        <Function Name="loginsertSPV" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="lid" Type="int" Mode="In" />
+          <Parameter Name="remark" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="stsusid" Type="int" Mode="In" />
+          <Parameter Name="createby" Type="int" Mode="In" />
+        </Function>
         <EntityContainer Name="letterheadModelStoreContainer">
+          <EntitySet Name="AssignSPV" EntityType="Self.AssignSPV" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="errorlog" EntityType="Self.errorlog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LatterRequest" EntityType="Self.LatterRequest" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LatterSPVRequest" EntityType="Self.LatterSPVRequest" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Letter_Log_Process" EntityType="Self.Letter_Log_Process" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Letter_Log_SPV_Process" EntityType="Self.Letter_Log_SPV_Process" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LetterCrateType" EntityType="Self.LetterCrateType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Mst_Role" EntityType="Self.Mst_Role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Mst_SITE" EntityType="Self.Mst_SITE" Schema="dbo" store:Type="Tables" />
@@ -151,6 +223,7 @@
           <EntitySet Name="Mst_USER" EntityType="Self.Mst_USER" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Mst104_DEPARTMENT" EntityType="Self.Mst104_DEPARTMENT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="setting" EntityType="Self.setting" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="spvmaster" EntityType="Self.spvmaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="usermanual" EntityType="Self.usermanual" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="USERSIGN" EntityType="Self.USERSIGN" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
@@ -162,11 +235,9 @@
           <EntitySet Name="Mst_Role" EntityType="letterheadModel.Mst_Role" />
           <EntitySet Name="Mst104_DEPARTMENT" EntityType="letterheadModel.Mst104_DEPARTMENT" />
           <EntitySet Name="settings" EntityType="letterheadModel.setting" />
-          <EntitySet Name="Mst_SITE" EntityType="letterheadModel.Mst_SITE" />
           <EntitySet Name="LetterCrateTypes" EntityType="letterheadModel.LetterCrateType" />
           <EntitySet Name="USERSIGNs" EntityType="letterheadModel.USERSIGN" />
           <EntitySet Name="usermanuals" EntityType="letterheadModel.usermanual" />
-          <EntitySet Name="LatterRequests" EntityType="letterheadModel.LatterRequest" />
           <EntitySet Name="mst_status" EntityType="letterheadModel.mst_status" />
           <EntitySet Name="Mst_USER" EntityType="letterheadModel.Mst_USER" />
           <EntitySet Name="Letter_Log_Process" EntityType="letterheadModel.Letter_Log_Process" />
@@ -176,6 +247,19 @@
             <Parameter Name="stsusid" Mode="In" Type="Int32" />
             <Parameter Name="createby" Mode="In" Type="Int32" />
           </FunctionImport>
+          <EntitySet Name="AssignSPVs" EntityType="letterheadModel.AssignSPV" />
+          <EntitySet Name="errorlogs" EntityType="letterheadModel.errorlog" />
+          <EntitySet Name="LatterRequests" EntityType="letterheadModel.LatterRequest" />
+          <EntitySet Name="spvmasters" EntityType="letterheadModel.spvmaster" />
+          <EntitySet Name="LatterSPVRequests" EntityType="letterheadModel.LatterSPVRequest" />
+          <EntitySet Name="Letter_Log_SPV_Process" EntityType="letterheadModel.Letter_Log_SPV_Process" />
+          <FunctionImport Name="loginsertSPV" ReturnType="Collection(Int32)">
+            <Parameter Name="lid" Mode="In" Type="Int32" />
+            <Parameter Name="remark" Mode="In" Type="String" />
+            <Parameter Name="stsusid" Mode="In" Type="Int32" />
+            <Parameter Name="createby" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <EntitySet Name="Mst_SITE" EntityType="letterheadModel.Mst_SITE" />
         </EntityContainer>
         <EntityType Name="Mst_Role">
           <Key>
@@ -207,19 +291,6 @@
           <Property Name="FONTNAME" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="FONTSIZE" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="Mst_SITE">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TITLE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CODE" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="SITENO" Type="Int32" />
-          <Property Name="SITENONAME" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="ISACTIVE" Type="Boolean" />
-          <Property Name="CREATEBY" Type="Int32" />
-          <Property Name="CRAETEDATE" Type="DateTime" Precision="3" />
-        </EntityType>
         <EntityType Name="LetterCrateType">
           <Key>
             <PropertyRef Name="ID" />
@@ -249,21 +320,6 @@
           <Property Name="ManualTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ManualLink" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IsActive" Type="Boolean" />
-        </EntityType>
-        <EntityType Name="LatterRequest">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="USERID" Type="Int32" />
-          <Property Name="LATTERNO" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="LetterType" Type="Int32" />
-          <Property Name="REMARK" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="LatterData" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="StatusId" Type="Int32" />
-          <Property Name="ISACTIVE" Type="Boolean" />
-          <Property Name="CREATEBY" Type="Int32" />
-          <Property Name="CRAETEDATE" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="mst_status">
           <Key>
@@ -307,6 +363,96 @@
           <Property Name="CREATEBY" Type="Int32" />
           <Property Name="ISACTIVE" Type="Boolean" />
         </EntityType>
+        <EntityType Name="AssignSPV">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="SpvID" Type="Int32" />
+          <Property Name="CREATEBY" Type="Int32" />
+          <Property Name="CREATEDATE" Type="DateTime" Precision="3" />
+          <Property Name="IsActive" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="errorlog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="actionname" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="errormessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="createdate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="LatterRequest">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="USERID" Type="Int32" />
+          <Property Name="LATTERNO" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="LetterType" Type="Int32" />
+          <Property Name="REMARK" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="LatterData" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="StatusId" Type="Int32" />
+          <Property Name="IsSpv" Type="Boolean" />
+          <Property Name="SPVID" Type="Int32" />
+          <Property Name="ISACTIVE" Type="Boolean" />
+          <Property Name="CREATEBY" Type="Int32" />
+          <Property Name="CRAETEDATE" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="spvmaster">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TITLE" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="StartName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CREATEBY" Type="Int32" />
+          <Property Name="CREATEDATE" Type="DateTime" Precision="3" />
+          <Property Name="IsActive" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="LatterSPVRequest">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="USERID" Type="Int32" />
+          <Property Name="LATTERNO" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="LetterType" Type="Int32" />
+          <Property Name="REMARK" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="LatterData" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="StatusId" Type="Int32" />
+          <Property Name="IsSpv" Type="Boolean" />
+          <Property Name="SPVID" Type="Int32" />
+          <Property Name="ISACTIVE" Type="Boolean" />
+          <Property Name="CREATEBY" Type="Int32" />
+          <Property Name="CRAETEDATE" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Letter_Log_SPV_Process">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LID" Type="Int32" />
+          <Property Name="STATUSID" Type="Int32" />
+          <Property Name="REMARK" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CREATEDATE" Type="DateTime" Precision="3" />
+          <Property Name="CREATEBY" Type="Int32" />
+          <Property Name="ISACTIVE" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Mst_SITE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TITLE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CODE" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="SITENO" Type="Int32" />
+          <Property Name="SITENONAME" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ISACTIVE" Type="Boolean" />
+          <Property Name="CREATEBY" Type="Int32" />
+          <Property Name="CRAETEDATE" Type="DateTime" Precision="3" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -346,20 +492,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Mst_SITE">
-            <EntityTypeMapping TypeName="letterheadModel.Mst_SITE">
-              <MappingFragment StoreEntitySet="Mst_SITE">
-                <ScalarProperty Name="CRAETEDATE" ColumnName="CRAETEDATE" />
-                <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
-                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-                <ScalarProperty Name="SITENONAME" ColumnName="SITENONAME" />
-                <ScalarProperty Name="SITENO" ColumnName="SITENO" />
-                <ScalarProperty Name="CODE" ColumnName="CODE" />
-                <ScalarProperty Name="TITLE" ColumnName="TITLE" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="LetterCrateTypes">
             <EntityTypeMapping TypeName="letterheadModel.LetterCrateType">
               <MappingFragment StoreEntitySet="LetterCrateType">
@@ -389,22 +521,6 @@
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="ManualLink" ColumnName="ManualLink" />
                 <ScalarProperty Name="ManualTitle" ColumnName="ManualTitle" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="LatterRequests">
-            <EntityTypeMapping TypeName="letterheadModel.LatterRequest">
-              <MappingFragment StoreEntitySet="LatterRequest">
-                <ScalarProperty Name="CRAETEDATE" ColumnName="CRAETEDATE" />
-                <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
-                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
-                <ScalarProperty Name="LatterData" ColumnName="LatterData" />
-                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
-                <ScalarProperty Name="LetterType" ColumnName="LetterType" />
-                <ScalarProperty Name="LATTERNO" ColumnName="LATTERNO" />
-                <ScalarProperty Name="USERID" ColumnName="USERID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -455,6 +571,104 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="loginsert" FunctionName="letterheadModel.Store.loginsert" />
+          <EntitySetMapping Name="AssignSPVs">
+            <EntityTypeMapping TypeName="letterheadModel.AssignSPV">
+              <MappingFragment StoreEntitySet="AssignSPV">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CREATEDATE" ColumnName="CREATEDATE" />
+                <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+                <ScalarProperty Name="SpvID" ColumnName="SpvID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="errorlogs">
+            <EntityTypeMapping TypeName="letterheadModel.errorlog">
+              <MappingFragment StoreEntitySet="errorlog">
+                <ScalarProperty Name="createdate" ColumnName="createdate" />
+                <ScalarProperty Name="errormessage" ColumnName="errormessage" />
+                <ScalarProperty Name="actionname" ColumnName="actionname" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LatterRequests">
+            <EntityTypeMapping TypeName="letterheadModel.LatterRequest">
+              <MappingFragment StoreEntitySet="LatterRequest">
+                <ScalarProperty Name="CRAETEDATE" ColumnName="CRAETEDATE" />
+                <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+                <ScalarProperty Name="SPVID" ColumnName="SPVID" />
+                <ScalarProperty Name="IsSpv" ColumnName="IsSpv" />
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="LatterData" ColumnName="LatterData" />
+                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+                <ScalarProperty Name="LetterType" ColumnName="LetterType" />
+                <ScalarProperty Name="LATTERNO" ColumnName="LATTERNO" />
+                <ScalarProperty Name="USERID" ColumnName="USERID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="spvmasters">
+            <EntityTypeMapping TypeName="letterheadModel.spvmaster">
+              <MappingFragment StoreEntitySet="spvmaster">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CREATEDATE" ColumnName="CREATEDATE" />
+                <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+                <ScalarProperty Name="StartName" ColumnName="StartName" />
+                <ScalarProperty Name="TITLE" ColumnName="TITLE" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LatterSPVRequests">
+            <EntityTypeMapping TypeName="letterheadModel.LatterSPVRequest">
+              <MappingFragment StoreEntitySet="LatterSPVRequest">
+                <ScalarProperty Name="CRAETEDATE" ColumnName="CRAETEDATE" />
+                <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+                <ScalarProperty Name="SPVID" ColumnName="SPVID" />
+                <ScalarProperty Name="IsSpv" ColumnName="IsSpv" />
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="LatterData" ColumnName="LatterData" />
+                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+                <ScalarProperty Name="LetterType" ColumnName="LetterType" />
+                <ScalarProperty Name="LATTERNO" ColumnName="LATTERNO" />
+                <ScalarProperty Name="USERID" ColumnName="USERID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Letter_Log_SPV_Process">
+            <EntityTypeMapping TypeName="letterheadModel.Letter_Log_SPV_Process">
+              <MappingFragment StoreEntitySet="Letter_Log_SPV_Process">
+                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+                <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+                <ScalarProperty Name="CREATEDATE" ColumnName="CREATEDATE" />
+                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+                <ScalarProperty Name="STATUSID" ColumnName="STATUSID" />
+                <ScalarProperty Name="LID" ColumnName="LID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="loginsertSPV" FunctionName="letterheadModel.Store.loginsertSPV" />
+          <EntitySetMapping Name="Mst_SITE">
+            <EntityTypeMapping TypeName="letterheadModel.Mst_SITE">
+              <MappingFragment StoreEntitySet="Mst_SITE">
+                <ScalarProperty Name="CRAETEDATE" ColumnName="CRAETEDATE" />
+                <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+                <ScalarProperty Name="SITENONAME" ColumnName="SITENONAME" />
+                <ScalarProperty Name="SITENO" ColumnName="SITENO" />
+                <ScalarProperty Name="CODE" ColumnName="CODE" />
+                <ScalarProperty Name="TITLE" ColumnName="TITLE" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

@@ -31,6 +31,17 @@ namespace letterhead.Models
         public string REMARK { get; set; }
     }
 
+    public class SPVvm
+    {
+        public int ID { get; set; }
+        public string empcode { get; set; }
+        public string username { get; set; }
+        public string spvtitle { get; set; }
+        public Nullable<bool> ISACTIVE { get; set; }
+        public Nullable<int> CREATEBY { get; set; }
+        public Nullable<System.DateTime> CRAETEDATE { get; set; }
+
+    }
     public class latterrvm
     {
         public int ID { get; set; }
@@ -52,7 +63,10 @@ namespace letterhead.Models
         public Nullable<int> CREATEBY { get; set; }
         public Nullable<System.DateTime> CRAETEDATE { get; set; }
         public Nullable<int> StatusID { get; set; }
-
+        public string StatusData { get; set; }
+        public Nullable<bool> isapv { get; set; }
+        public Nullable<int> spvid { get; set; }
+        public string svptitle { get; set; }
     }
 
     public class LogRequestVM
@@ -61,7 +75,9 @@ namespace letterhead.Models
         public string Remark { get; set; }
         public string Status { get; set; }
         public int StatusID { get; set; }
-        public string createbyname { get; set; }       
+        public string createbyname { get; set; }
+        public string createdates { get; set; }
+
         public Nullable<System.DateTime> CRAETEDATE { get; set; }
 
     }

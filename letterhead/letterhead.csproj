@@ -261,14 +261,27 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AssignSPV.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\CustomModels.cs" />
+    <Compile Include="Models\EmailTemplate.cs" />
+    <Compile Include="Models\errorlog.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\LatterRequest.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\LatterSPVRequest.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\LetterCrateType.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Letter_Log_Process.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Letter_Log_SPV_Process.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Model1.Context.cs">
@@ -302,6 +315,9 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\setting.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\spvmaster.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\usermanual.cs">
@@ -1286,6 +1302,19 @@
     <Content Include="Views\Home\EditApprover.cshtml" />
     <Content Include="Views\Home\RequestReceived.cshtml" />
     <Content Include="Views\Home\SendBack.cshtml" />
+    <Content Include="Views\Home\SPVMaster.cshtml" />
+    <Content Include="Views\Home\AddSPV.cshtml" />
+    <Content Include="Views\Home\EditSPV.cshtml" />
+    <Content Include="Views\Home\AssignSPVList.cshtml" />
+    <Content Include="Views\Home\AssignSPVAdd.cshtml" />
+    <Content Include="Views\Home\AssignSPVEdit.cshtml" />
+    <Content Include="Views\Home\LetterSpvRequest.cshtml" />
+    <Content Include="Views\Home\AddSpvLetterRequest.cshtml" />
+    <Content Include="Views\Home\performaSPVview.cshtml" />
+    <Content Include="Views\Home\RequestReceivedSPV.cshtml" />
+    <Content Include="Views\Home\performaviewREQUEST.cshtml" />
+    <Content Include="Views\Home\PerformaSPV.cshtml" />
+    <Content Include="Views\Home\printviewSPV.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

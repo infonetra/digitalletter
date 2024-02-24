@@ -4,6 +4,31 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     int i = 0;
 }
+<div class="modal fade" id="searchModal" tabindex="-1">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content" style="background: rgba(9, 30, 62, .7);">
+            <div class="modal-header border-0">
+                <button type="button" class="btn bg-white btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex align-items-center justify-content-center">
+                <div class="input-group" style="max-width: 600px;">
+                    <table id="myTable" class="table table-bordered" style="font-size:14px;color:wheat;">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>                               
+                                <th>Remark</th>
+                                <th>Action By</th>
+                                <th>Action Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="LogBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="pagetitle">
     <nav>
@@ -30,7 +55,7 @@
                             <tr>
                                 <th scope="col">S.No</th>
                                 <th scope="col">Site Name</th>
-                                <th scope="col">Remark</th>                               
+                                <th scope="col">Remark</th>
                                 <th scope="col">Letterhead No</th>
                                 <th scope="col">Action</th>
                             </tr>
@@ -50,23 +75,32 @@
                                         {
                                             <a href="@Url.Action("Printwithdate", "Home", new {@id=item.ID})">specific date</a>
                                             <span>|</span>
-                                            @*<a title="View" href="@Url.Action("printview", "Home", new {id=item.ID})"><i class="bi bi-eye-fill"></i></a>
-                                            <span>|</span>*@
+                                            <a title="View" href="@Url.Action("printview", "Home", new {id=item.ID})"><i class="bi bi-eye-fill"></i></a>
+                                            <span>|</span>
                                             <a title="Edit" href="@Url.Action("Performa", "Home", new {id=@item.ID})"><i class="bi bi-pencil"></i></a>
                                             <span>| </span>
                                             <a title="Print & Download" href="@Url.Action("performaview", "Home", new {id=@item.ID})"> <i class="bi bi-printer"></i></a>
+                                            <span>|</span>
+                                            <a title="Log" onclick="getempattendance(this)" item-id="@item.ID" data-bs-toggle="modal" data-bs-target="#searchModal"> <i class="bi bi-ticket-detailed"></i></a>
                                         }
-                                        else
+                                        else if (item.StatusID == 4)
                                         {
                                             <a href="@Url.Action("Printwithdate", "Home", new {@id=item.ID})">specific date</a>
                                             <span>|</span>
-                                            @*<a title="View" href="@Url.Action("printview", "Home", new {id=item.ID})"><i class="bi bi-eye-fill"></i></a>                                           
-                                            <span>| </span>*@
+                                            <a title="View" href="@Url.Action("printview", "Home", new {id=item.ID})"><i class="bi bi-eye-fill"></i></a>
+                                            <span>|</span>
                                             <a title="Print & Download" href="@Url.Action("performaview", "Home", new {id=@item.ID})"> <i class="bi bi-printer"></i></a>
+                                            <span>|</span>
+                                            <a title="Log" onclick="getempattendance(this)" item-id="@item.ID" data-bs-toggle="modal" data-bs-target="#searchModal"> <i class="bi bi-ticket-detailed"></i></a>
                                         }
-                                    </td>
+                                        else
+                                        {
+                                            <a title="View" href="@Url.Action("printview", "Home", new {id=item.ID})"><i class="bi bi-eye-fill"></i></a>
+                                            <span>|</span>
+                                            <a title="Log" onclick="getempattendance(this)" item-id="@item.ID" data-bs-toggle="modal" data-bs-target="#searchModal"> <i class="bi bi-ticket-detailed"></i></a>
+                                        }
 
-                                    </tr>
+</tr>
                             }
 
                         </tbody>
@@ -84,6 +118,44 @@
 </div>
 
 @Html.Partial("_Alerts")
+
+<script>
+
+    function getempattendance(item) {
+        debugger;
+        var tid = $(item).attr('item-id')
+        var formdata = new FormData();
+        formdata.append("id", tid);
+        $.ajax({
+            async: true,
+            type: "Post",
+            contentType: false,
+            data: formdata,
+            url: '/Home/GetEmployeeLog/',
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                debugger;
+                if (data.success) {
+                    var logs = data.adata;
+                    console.log(logs)
+                    $('#LogBody').html('');
+                    $(logs).each(function (i, item) {
+                        $('#LogBody').append(`<tr>
+                                <td>${i + 1}</td>                              
+                                <td>${item.Remark}</td>
+                                <td>${item.createbyname}</td>
+                                <td>${item.createdates}</td>
+                            </tr>`)
+                    })
+                }
+            }
+        })
+    }
+
+
+</script>
+
 
 
 

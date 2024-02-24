@@ -67,10 +67,10 @@
         @*<a class="btn btn-primary" onclick="printDiv('Printed')">Save & Continue</a>*@
         @*<a class="btn btn-primary" href="@Url.Action("LetterRequest","Home")">Back</a>*@
         @*@if (Model.StatusID == 1)
-        {
-            <a class="btn btn-primary" href="@Url.Action("Performa", "Home", new {id=Model.ID})">Edit</a>
-        }
-        <a class="btn btn-primary" href="@Url.Action("performaview", "Home", new {id=Model.ID})">Print & Download</a>*@
+            {
+                <a class="btn btn-primary" href="@Url.Action("Performa", "Home", new {id=Model.ID})">Edit</a>
+            }
+            <a class="btn btn-primary" href="@Url.Action("performaview", "Home", new {id=Model.ID})">Print & Download</a>*@
 
     </div>
 </div>
@@ -84,7 +84,7 @@
                 </div>
             </div>
         </div>*@
-    <header><img src="~/Content/assets/img/topnew.jpg" style="width:100%;" /><br><br></header>
+    <h4 style="text-align:center;"><b><u>@Model.svptitle</u></b></h4>
 
     <div class="content pt-3 pb-2">
         <div class="row">
@@ -95,8 +95,11 @@
         @Html.Raw(Model.LatterData)
     </div>
     <footer>
-        <div style="padding: 0cm 0cm 0cm 6.5cm;"><img src="~/Content/assets/img/line.png" style="width:100%;" /></div>
-        <div style="width: 100%;"> <img src="~/Content/assets/img/footer.png" style="width:100%;" /></div>
+        <div style="text-align:center;">
+            <hr style="text-align:center; width:80%">
+            <p><b>Registered Office</b>- 14, Panchwati Colony, Ratanada, Jodhpur RJ 342001 IN</p>
+            <p><b>CIN:</b>U45209RJ2021PTC076546, <b>Email Id</b>- cs@hginfra.com <b>Tel</b>-0291-2515327</p>
+        </div>
     </footer>
     @*<div class="row footernew">
             <div class="col-md-12" style="padding: 0cm 0cm 0cm 11.5cm;"><img src="~/Content/assets/img/line.png" style="width:98%;" /></div>

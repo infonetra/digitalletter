@@ -1,9 +1,10 @@
 ﻿@model IEnumerable<letterhead.Models.latterrvm>
 @{
-    ViewBag.Title = "RequestReceived";
+    ViewBag.Title = "RequestReceivedSPV";
     Layout = "~/Views/Shared/_Layout.cshtml";
     int i = 0;
 }
+
 <div class="modal fade" id="searchModal" tabindex="-1">
     <div class="modal-dialog modal-fullscreen">
         <div class="modal-content" style="background: rgba(9, 30, 62, .7);">
@@ -15,7 +16,7 @@
                     <table id="myTable" class="table table-bordered" style="font-size:14px;color:wheat;">
                         <thead>
                             <tr>
-                                <th>S.No</th>                               
+                                <th>S.No</th>
                                 <th>Remark</th>
                                 <th>Action By</th>
                                 <th>Action Date</th>
@@ -39,20 +40,20 @@
             <div class="modal-body d-flex align-items-center justify-content-center">
                 <div class="input-group">
                     <div class="card">
-                        @using (Html.BeginForm("SendBack", "Home", FormMethod.Post, new { @class = "row g-3 needs-validation", @novalidate = "novalidate" }))
+                        @using (Html.BeginForm("SendBackSPV", "Home", FormMethod.Post, new { @class = "row g-3 needs-validation", @novalidate = "novalidate" }))
                         {
-                            <input type="hidden" id="sbid" name="sbid" value=""/>
+                            <input type="hidden" id="sbid" name="sbid" value="" />
                             <div class="col-md-12">
                                 <label for="validationCustom01" class="form-label">Comment <span style="color:red;">*</span></label>
                                 <input class="form-control" type="text" name="sendback" id="sendback" placeholder="enter remark" required />
                             </div>
                             <div class="col-12">
-                                <button class="btn btn-primary" type="submit">Submit</button>                               
+                                <button class="btn btn-primary" type="submit">Submit</button>
                             </div>
                         }
                     </div>
-                   
-                    </div>
+
+                </div>
             </div>
         </div>
     </div>
@@ -61,7 +62,7 @@
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">Home</li>
-            <li class="breadcrumb-item active">Request Received List</li>
+            <li class="breadcrumb-item active">Request SPV List</li>
         </ol>
     </nav>
 </div>
@@ -69,7 +70,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card recent-sales overflow-auto">
-                <div class="filter" style="right:23px;">                                 
+                <div class="filter" style="right:23px;">
                     <a class="btn btn-danger" href="@Url.Action("Dashboard","Home")">Cancel</a>
                 </div>
                 <div class="card-body">
@@ -79,7 +80,7 @@
                         <thead>
                             <tr>
                                 <th scope="col">S.No</th>
-                                <th scope="col">Site Name</th>                              
+                                <th scope="col">Site Name</th>
                                 <th scope="col">Letterhead No</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Action</th>
@@ -91,25 +92,25 @@
                                 i = i + 1;
                                 <tr>
                                     <th scope="row"><a href="#">@i</a></th>
-                                    <td>@item.TITLE</td>                                   
+                                    <td>@item.TITLE</td>
                                     <td>@item.LATTERNOSerice</td>
                                     <td>@item.StatusData</td>
                                     <td>
                                         @if (item.StatusID == 1)
                                         {
-                                            <a class="btn btn-outline-success" href="@Url.Action("ApproveData", "Home", new {@id=item.ID})">Approve</a>
+                                            <a class="btn btn-outline-success" href="@Url.Action("ApproveDataSPV", "Home", new {@id=item.ID})">Approve</a>
                                             <span>|</span>
                                             <a class="btn btn-outline-warning" title="View" onclick="SendToBackfModal(this)" item-id="@item.ID" data-bs-toggle="modal" data-bs-target="#SendToBackModal">Send Back</a>
                                             <span>| </span>
-                                            <a class="btn btn-outline-danger" href="@Url.Action("RejectRequest", "Home", new {@id=item.ID})">Reject</a>
-                                            <span>|</span>                                           
-                                            <a title="Print & Download" href="@Url.Action("performaviewREQUEST", "Home", new {id=@item.ID})"> <i class="bi bi-printer"></i></a>
+                                            <a class="btn btn-outline-danger" href="@Url.Action("RejectRequestSPV", "Home", new {@id=item.ID})">Reject</a>
+                                            <span>| </span>
+                                            <a title="Print & Download" href="@Url.Action("performaSPVview", "Home", new {id=@item.ID})"> <i class="bi bi-printer"></i></a>
                                             <span>| </span>
                                             <a title="Log" onclick="getempattendance(this)" item-id="@item.ID" data-bs-toggle="modal" data-bs-target="#searchModal"> <i class="bi bi-ticket-detailed"></i></a>
                                         }
                                         else
                                         {
-                                            <a title="Print & Download" href="@Url.Action("performaviewREQUEST", "Home", new {id=@item.ID})"> <i class="bi bi-printer"></i></a>
+                                            <a title="Print & Download" href="@Url.Action("performaSPVview", "Home", new {id=@item.ID})"> <i class="bi bi-printer"></i></a>
                                             <span>| </span>
                                             <a title="Log" onclick="getempattendance(this)" item-id="@item.ID" data-bs-toggle="modal" data-bs-target="#searchModal"> <i class="bi bi-ticket-detailed"></i></a>
                                         }
@@ -135,11 +136,12 @@
 
 @Html.Partial("_Alerts")
 
-<script>     
+<script>
+
 
     function SendToBackfModal(item) {
         debugger;
-        var tid = $(item).attr('item-id')      
+        var tid = $(item).attr('item-id')
         document.getElementById("sbid").value = tid;
     }
     function getempattendance(item) {
@@ -152,7 +154,7 @@
             type: "Post",
             contentType: false,
             data: formdata,
-            url: '/Home/GetEmployeeLog/',
+            url: '/Home/GetEmployeeLogSPV/',
             processData: false,
             contentType: false,
             success: function (data) {
@@ -163,7 +165,7 @@
                     $('#LogBody').html('');
                     $(logs).each(function (i, item) {
                         $('#LogBody').append(`<tr>
-                                <td>${i + 1}</td>                              
+                                <td>${i + 1}</td>
                                 <td>${item.Remark}</td>
                                 <td>${item.createbyname}</td>
                                 <td>${item.createdates}</td>
@@ -176,4 +178,6 @@
 
 
 </script>
+
+
 

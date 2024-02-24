@@ -1,6 +1,6 @@
 ﻿@model letterhead.Models.LatterRequest
 @{
-    ViewBag.Title = "AddLetterRequest";
+    ViewBag.Title = "AddSpvLetterRequest";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -14,7 +14,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Letter Generate </h5>
                     <!-- Custom Styled Validation -->
-                    @using (Html.BeginForm("AddLetterRequest", "Home", FormMethod.Post, new { @class = "row g-3 needs-validation", @novalidate = "novalidate" }))
+                    @using (Html.BeginForm("AddSpvLetterRequest", "Home", FormMethod.Post, new { @class = "row g-3 needs-validation", @novalidate = "novalidate" }))
                     {
                         <div class="col-md-4">
                             <label for="validationCustom01" class="form-label">Letter No.<span style="color:red;">*</span></label>
@@ -24,10 +24,14 @@
                             <label class="form-label">Letter Used For<span style="color:red;">*</span></label>
                             @Html.DropDownListFor(x => x.LetterType, ViewBag.ltype as List<SelectListItem>, "Select Type", new { @class = "form-control select2 UserType", @required = "required" })
                         </div>
+                        <div class="col-md-4">
+                            <label class="form-label">SPV TYPE<span style="color:red;">*</span></label>
+                            @Html.DropDownListFor(x => x.SPVID, ViewBag.spvtype as List<SelectListItem>, "Select Type", new { @class = "form-control select2 UserType", @required = "required" })
+                        </div>
                         @*<div class="col-md-4">
-                            <label for="validationCustom01" class="form-label">Remark<span style="color:red;">*</span></label>
-                            @Html.TextBoxFor(x => x.REMARK, new { @class = "form-control", placeholder = "Remark", @required = "required" })
-                        </div>*@
+                <label for="validationCustom01" class="form-label">Remark<span style="color:red;">*</span></label>
+                @Html.TextBoxFor(x => x.REMARK, new { @class = "form-control", placeholder = "Remark", @required = "required" })
+            </div>*@
                         <div class="col-12">
                             <button class="btn btn-primary" type="submit">Submit</button>
                             <a class="btn btn-danger" href="@Url.Action("Dashboard","Home")">Cancel</a>
