@@ -12,29 +12,26 @@
 
 <body>
     <style>
+        .textupercase {
+            text-transform: uppercase;
+        }
+
         body {
-          /*  font-family: Verdana, sans-serif;
-            font-size: 12px;*/
-          font-family:@Session["fname"].ToString();
-          font-size:@Session["fsize"].ToString();
+            font-family: Verdana, sans-serif;
+            font-size: 12px;
+          @*font-family:@Session["fname"].ToString();
+          font-size:@Session["fsize"].ToString();*@
         }
     </style>
     <div class="maindiv">
         <div class="page-header" style="text-align: center">
-            <img src="~/Content/assets/img/topnew.jpg" style="margin-top:-16px;" />
-            @*<p style=" display: flex; font-weight: bold; justify-content: space-between; padding: 0 58px; "><b>@Model.LATTERNOSerice</b><span>@datet</span></p>*@
-            @*<br />*@
-            @*<button type="button" onClick="window.print()" style="background: pink; position: absolute; bottom: 0;">
-                    PRINT ME!
-                </button>*@
+            <img src="~/Content/assets/img/topnew.jpg" style="margin-top:-16px;" />         
         </div>
         <div class="page-headernew">
-            <p style=" display: flex; font-weight: bold; justify-content: space-between; padding: 0 48px; "><b>@Model.LATTERNOSerice</b><span>@(Session["datawise"]!=null? Session["datawise"].ToString():datet)</span></p>
-            @*<p style=" display: flex; font-weight: bold; justify-content: space-between; padding: 0 48px; "><b>@Model.LATTERNOSerice</b><span>@datet</span></p>*@
+            <p style="display: flex; font-weight: bold; justify-content: space-between; padding: 0 48px; "><b class="textupercase">@Model.LATTERNOSerice</b><span>@datet</span></p>            
         </div>
         <div class="tspace">
             <table>
-
                 <thead>
                     <tr>
                         <td>
@@ -77,7 +74,7 @@
 
         window.print();
         window.onafterprint = function (event) {
-            var url = '@Url.Action("RequestReceived", "Home", new { id = Model.ID })';
+            var url = '@Url.Action("Login", "Account", new { id = Model.ID })';
            window.location.href = url;
         };
     </script>

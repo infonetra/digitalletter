@@ -16,6 +16,8 @@ namespace letterhead.Models
     {
         public int ID { get; set; }
         public Nullable<int> USERID { get; set; }
+        public Nullable<int> DeptID { get; set; }
+        public Nullable<int> LocID { get; set; }
         public string LATTERNO { get; set; }
         public Nullable<int> LetterType { get; set; }
         public string REMARK { get; set; }

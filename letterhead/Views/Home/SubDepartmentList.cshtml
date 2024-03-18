@@ -1,0 +1,87 @@
+﻿@model IEnumerable<letterhead.Models.SubDeptVM>
+@{
+    ViewBag.Title = "SubDepartmentList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int i = 0;
+}
+
+<div class="pagetitle" style="position:fixed">
+    <div style="display:flex">
+        <h1>Sub Department Master</h1>
+    </div>
+
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">Masters</li>
+            <li class="breadcrumb-item">SubDepartment</li>
+        </ol>
+    </nav>
+</div>
+<section class="section" style="margin-top:65px;">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <a href="@Url.Action("AddSubDepartment","Home")" class="btn btn-primary" style="float:right;"><i class="bi bi-plus-circle-dotted"></i> Add New</a>
+                    <a onclick="ExportToExcel('xlsx')" class="btn btn-primary" style="background-color: #177324;"><i class="bi bi-file-excel-fill"></i>Export table to excel</a>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="card">
+                <div style="overflow-x:auto" class="card-body">
+                    @*   <h5 class="card-title">Datatables</h5>*@
+
+
+                    <table class="table table-bordered table-striped datatable" id="example">
+                        <thead>
+                            <tr>
+                                <th scope="col">S.No</th>
+                                <th scope="col">Department</th>
+                                <th scope="col">Sub Department</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                i = i + 1;
+                                <tr>
+                                    <th scope="row"><a href="#">@i</a></th>
+                                    <td>@item.DEPARTMENT</td>
+                                    <td>@item.SubDEPARTMENT</td>
+                                    <td><span class="badge bg-@(item.ISACTIVE==true?"success":"danger")">@(item.ISACTIVE==true? "Active" : "De-Active")</span></td>
+                                    <td><a href="@Url.Action("EditSubDepartment", "Home", new {id=@item.ID})"><i class="bi bi-pencil"></i></a></td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@Html.Partial("_Alerts")
+<script>
+    function ExportToExcel(type, fn, dl) {
+        var table = $("#example");
+        if (table && table.length) {
+            $(table).table2excel({
+                exclude: ".noExl",
+                name: "Excel Document Name",
+                filename: "Department" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
+                fileext: ".xls",
+                exclude_img: true,
+                exclude_links: true,
+                exclude_inputs: true,
+                preserveColors: false
+            });
+        }
+    }
+</script>

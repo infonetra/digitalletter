@@ -38,11 +38,14 @@ namespace letterhead.Models
         public virtual DbSet<Letter_Log_Process> Letter_Log_Process { get; set; }
         public virtual DbSet<AssignSPV> AssignSPVs { get; set; }
         public virtual DbSet<errorlog> errorlogs { get; set; }
-        public virtual DbSet<LatterRequest> LatterRequests { get; set; }
         public virtual DbSet<spvmaster> spvmasters { get; set; }
-        public virtual DbSet<LatterSPVRequest> LatterSPVRequests { get; set; }
         public virtual DbSet<Letter_Log_SPV_Process> Letter_Log_SPV_Process { get; set; }
         public virtual DbSet<Mst_SITE> Mst_SITE { get; set; }
+        public virtual DbSet<DeptAssignUser> DeptAssignUsers { get; set; }
+        public virtual DbSet<LatterRequest> LatterRequests { get; set; }
+        public virtual DbSet<LatterSPVRequest> LatterSPVRequests { get; set; }
+        public virtual DbSet<LocationAssignUser> LocationAssignUsers { get; set; }
+        public virtual DbSet<Mst_SUBDEPARTMENT> Mst_SUBDEPARTMENT { get; set; }
     
         public virtual ObjectResult<Nullable<int>> loginsert(Nullable<int> lid, string remark, Nullable<int> stsusid, Nullable<int> createby)
         {

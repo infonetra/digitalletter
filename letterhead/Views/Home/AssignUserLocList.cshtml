@@ -1,17 +1,16 @@
-﻿@model IEnumerable<letterhead.Models.uservm>
+﻿@model IEnumerable<letterhead.Models.Locvm>
 @{
-    ViewBag.Title = "UserMaster";
+    ViewBag.Title = "AssignUserLocList";
     Layout = "~/Views/Shared/_Layout.cshtml";
     int i = 0;
 }
 
 
-
 <div class="pagetitle">
     <nav>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">Masters</a></li>
-            <li class="breadcrumb-item active">User</li>
+            <li class="breadcrumb-item">Masters</li>
+            <li class="breadcrumb-item active">Assign Project</li>
         </ol>
     </nav>
 </div>
@@ -21,24 +20,19 @@
             <div class="card recent-sales overflow-auto">
                 <div class="filter" style="right:23px;">
                     @*<button type="button" class="btn btn-primary"><i class="bi bi-star me-1"></i> With Text</button>*@
-                    <a class="btn btn-primary" href="@Url.Action("AddUser", "Home")"><i class="bi bi-person-plus"></i>Add User</a>
+                    <a class="btn btn-primary" href="@Url.Action("AssignUserLocAdd", "Home")"><i class="bi bi-person-plus"></i>Assign Project</a>
                     <a class="btn btn-danger" href="@Url.Action("Dashboard","Home")">Cancel</a>
                 </div>
                 <div class="card-body">
-                    <h5 class="card-title">User Master</h5>
+                    <h5 class="card-title">Project Assign</h5>
 
                     <table class="table table-borderless datatable">
                         <thead>
                             <tr>
                                 <th scope="col">S.No</th>
-                                <th scope="col">EMP-CODE</th>
-                                <th scope="col">Full Name</th>
-                                <th scope="col">Mobile</th>
-                                @*<th scope="col">User Name</th>*@
-                                <th scope="col">Password</th>
-                                <th scope="col">Can Login</th>
-                                @*<th scope="col">Site Detail</th>*@
-                                @*<th scope="col">Dept. Name</th>*@
+                                <th scope="col">Project Name</th>
+                                <th scope="col">User Name</th>
+                                <th scope="col">EmpCode</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Action</th>
                             </tr>
@@ -49,15 +43,11 @@
                                 i = i + 1;
                                 <tr>
                                     <th scope="row"><a href="#">@i</a></th>
-                                    <td>@item.EMPCODE</td>
-                                    <td>@item.FULLNAME</td>
-                                    <td>@item.MOBILENO</td>                                                                 
-                                    <td>@item.USERPWD</td>
-                                    <td><span class="badge bg-@(item.CANLOGIN==true?"success":"danger")">@(item.CANLOGIN==true? "Active" : "De-Active")</span></td>
-                                    @*<td>@(item.TITLE+"/"+item.SITENO + "/" + item.SITENONAME)</td>*@
-                                    @*<td>@item.Department</td>*@
+                                    <td>@item.Location</td>
+                                    <td>@item.username</td>
+                                    <td>@item.empcode</td>
                                     <td><span class="badge bg-@(item.ISACTIVE==true?"success":"danger")">@(item.ISACTIVE==true? "Active" : "De-Active")</span></td>
-                                    <td><a href="@Url.Action("EditUser", "Home", new {id=@item.ID})"><i class="bi bi-pencil"></i></a></td>
+                                    <td><a href="@Url.Action("AssignUserLocEdit", "Home", new {id=@item.ID})"><i class="bi bi-pencil"></i></a></td>
                                 </tr>
                             }
 
@@ -72,3 +62,4 @@
 </section>
 
 @Html.Partial("_Alerts")
+

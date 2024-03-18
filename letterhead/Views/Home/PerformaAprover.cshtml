@@ -28,15 +28,10 @@
                     @Html.HiddenFor(a => a.ISACTIVE)
                     @Html.HiddenFor(a => a.CREATEBY)
                     @Html.HiddenFor(a => a.CRAETEDATE)
-                <div class="col-12">
-                    @if (Model.StatusId != 4)
-                    {
-                        <a class="btn btn-primary btnSubmit" onclick="datapreview()">Save Draft</a>
-                    }
-
-                    <a class="btn btn-success btnSubmit" onclick="datasave()">Submit</a>
-                    <a class="btn btn-danger" href="@Url.Action("Dashboard","Home")">Cancel</a>
-                </div>
+                    <div class="col-12">
+                        <a class="btn btn-primary btnSubmit" onclick="datasave()">Submit</a>
+                        <a class="btn btn-danger" href="@Url.Action("Dashboard","Home")">Cancel</a>
+                    </div>
                     @*}*@
                     <!-- End Custom Styled Validation -->
 
@@ -63,41 +58,12 @@
             type: "Post",
             contentType: false,
             data: formdata,
-            url: '/Home/Performadata/',
+            url: '/Home/PerformadataEdit/',
             processData: false,
             contentType: false,
             success: function (data) {
                 if (data.success == true) {
-                    window.location.href = "/Home/LetterRequest";
-                }
-                else if (data.success == false) {
-                    alert("Error occured..!!")
-                }
-            },
-            error: function () {
-                alert("Error occured..!!");
-            },
-        })
-    }
-
-    function datapreview() {
-        debugger;
-          var Content = CKEDITOR.instances['idRichTextEditor'].getData();
-        var formdata = new FormData();
-        formdata.append("latterdata",Content);
-        formdata.append("id", @Model.ID);
-        debugger;
-        $.ajax({
-            async: true,
-            type: "Post",
-            contentType: false,
-            data: formdata,
-            url: '/Home/SaveDraft/',
-            processData: false,
-            contentType: false,
-            success: function (data) {
-                if (data.success == true) {
-                    window.location.href = "/Home/LetterRequest";
+                    window.location.href = "/Home/RequestReceived";
                 }
                 else if (data.success == false) {
                     alert("Error occured..!!")
@@ -141,4 +107,5 @@
         })
     }
 </script>
+
 

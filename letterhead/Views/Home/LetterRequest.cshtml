@@ -71,7 +71,7 @@
                                     <td>@item.LATTERNOSerice</td>
 
                                     <td>
-                                        @if (item.StatusID == 5 || item.StatusID == 3)
+                                        @if (item.StatusID == 5 || item.StatusID == 6 || item.StatusID == 3)
                                         {
                                             <a href="@Url.Action("Printwithdate", "Home", new {@id=item.ID})">specific date</a>
                                             <span>|</span>

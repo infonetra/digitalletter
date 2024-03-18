@@ -23,14 +23,14 @@
                             <label for="validationCustom01" class="form-label">Full Name <span style="color:red;">*</span></label>
                             @Html.TextBoxFor(x => x.FULLNAME, new { @class = "form-control", placeholder = "Enter Name", @required = "required" })
                         </div>
-                        <div class="col-md-4">
+                        @*<div class="col-md-4">
                             <label class="form-label">Project-Authorized<span style="color:red;">*</span></label>
                             @Html.DropDownListFor(x => x.SITEID, ViewBag.SITE as List<SelectListItem>, "Select Site", new { @class = "form-control select2 UserType" })
-                        </div>
-                        <div class="col-md-4">
+                        </div>*@
+                        @*<div class="col-md-4">
                             <label class="form-label">Department<span style="color:red;">*</span></label>
                             @Html.DropDownListFor(x => x.DEPTID, ViewBag.dept as List<SelectListItem>, "Select Department", new { @class = "form-control select2 UserType" })
-                        </div>
+                        </div>*@
                         <div class="col-md-4">
                             <label class="form-label">Approver<span style="color:red;">*</span></label>
                             @Html.DropDownListFor(x => x.Approver, ViewBag.user as List<SelectListItem>, "Select Approver", new { @class = "form-control select2 UserType" })

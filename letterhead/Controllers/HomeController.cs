@@ -52,8 +52,9 @@ namespace letterhead.Controllers
             {
                  data = (from later in db.LatterRequests
                             join user in db.Mst_USER on later.USERID equals user.ID
-                            join site in db.Mst_SITE on user.SITEID equals site.ID
-                            join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID
+                            join site in db.Mst_SITE on later.LocID equals site.ID
+                            join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
+                            join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID
                             where later.USERID == userid
                             select new latterrvm
                             {
@@ -63,7 +64,7 @@ namespace letterhead.Controllers
                                 LatterData = later.LatterData,
                                 Department = dept.DEPARTMENT,
                                 DeptID = dept.ID,
-                                LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
                                 REMARK = later.REMARK,
                                 TITLE = site.TITLE,
                                 SITEID = site.ID,
@@ -80,8 +81,9 @@ namespace letterhead.Controllers
             {
                  data = (from later in db.LatterRequests
                             join user in db.Mst_USER on later.USERID equals user.ID
-                            join site in db.Mst_SITE on user.SITEID equals site.ID
-                            join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID                            
+                            join site in db.Mst_SITE on later.LocID equals site.ID
+                            join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
+                            join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID                           
                             select new latterrvm
                             {
                                 ID = later.ID,
@@ -90,7 +92,7 @@ namespace letterhead.Controllers
                                 LatterData = later.LatterData,
                                 Department = dept.DEPARTMENT,
                                 DeptID = dept.ID,
-                                LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
                                 REMARK = later.REMARK,
                                 TITLE = site.TITLE,
                                 SITEID = site.ID,
@@ -753,21 +755,20 @@ namespace letterhead.Controllers
                 if (Session["userid"] != null && Session["userrole"].ToString() == "1")
                 {
                     var data = (from user in db.Mst_USER
-                                join site in db.Mst_SITE on user.SITEID equals site.ID  
-                                join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID
-                                where user.ISACTIVE==true 
+                                //join site in db.Mst_SITE on user.SITEID equals site.ID  
+                                //join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID                               
                                 select new uservm
                                 {
                                     ID = user.ID,
                                     FULLNAME = user.FULLNAME,
                                     MOBILENO = user.MOBILENO,
                                     EMAILID = user.EMAILID,
-                                    TITLE = site.TITLE,
-                                    SITENO = site.SITENO,
-                                    SITENONAME = site.SITENONAME,
-                                    Department=dept.DEPARTMENT,
+                                    //TITLE = site.TITLE,
+                                    //SITENO = site.SITENO,
+                                    //SITENONAME = site.SITENONAME,
+                                   // Department=dept.DEPARTMENT,
                                     EMPCODE=user.EMPCODE,
-                                    DeptID=dept.ID,
+                                   // DeptID=dept.ID,
                                     USERNAME=user.USERNAME,
                                     USERPWD=user.USERPWD,
                                     CANLOGIN=user.CANLOGIN,
@@ -796,8 +797,8 @@ namespace letterhead.Controllers
                 if (Session["userid"] != null && Session["userrole"].ToString() == "1")
                 {
                     int UserID = Convert.ToInt32(Session["userid"].ToString());
-                    ViewBag.SITE = db.Mst_SITE.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE +"/"+x.SITENONAME, Value = x.ID.ToString() }).ToList();
-                    ViewBag.dept = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT, Value = x.ID.ToString() }).ToList(); ;
+                    //ViewBag.SITE = db.Mst_SITE.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE +"/"+x.SITENONAME, Value = x.ID.ToString() }).ToList();
+                    //ViewBag.dept = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT, Value = x.ID.ToString() }).ToList(); ;
                     ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.IsApprover==1).Select(x => new SelectListItem { Text = x.FULLNAME + "/ " + x.EMPCODE, Value = x.ID.ToString() }).ToList();
                     return View();
                 }
@@ -835,6 +836,14 @@ namespace letterhead.Controllers
                     model.CRAETEDATE = DateTime.Now;
                     db.Mst_USER.Add(model);
                     db.SaveChanges();
+
+                    //DeptAssignUser duser =new DeptAssignUser();
+                    //duser.USERID = model.ID;
+                    //duser.DEPTID = model.DEPTID;
+                    //duser.CREATEBY = 1;
+                    //duser.CREATEDATE = DateTime.Now;
+                    //db.DeptAssignUsers.Add(duser);
+                    //db.SaveChanges();
                     TempData["success"] = "User Added successfully.";
                     return RedirectToAction("UserMaster");
                 }
@@ -858,8 +867,8 @@ namespace letterhead.Controllers
                 if (Session["userid"] != null && Session["userrole"].ToString() == "1")
                 {
                     int UserID = Convert.ToInt32(Session["userid"].ToString());
-                    ViewBag.SITE = db.Mst_SITE.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE + "/" + x.SITENONAME, Value = x.ID.ToString() }).ToList();
-                    ViewBag.dept = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT, Value = x.ID.ToString() }).ToList(); ;
+                    //ViewBag.SITE = db.Mst_SITE.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE + "/" + x.SITENONAME, Value = x.ID.ToString() }).ToList();
+                   // ViewBag.dept = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT, Value = x.ID.ToString() }).ToList(); ;
                     ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.IsApprover== 1).Select(x => new SelectListItem { Text = x.FULLNAME + "/ " + x.EMPCODE, Value = x.ID.ToString() }).ToList();
                     var prd = db.Mst_USER.Where(x => x.ID == id).FirstOrDefault();
                     return View(prd);
@@ -924,22 +933,17 @@ namespace letterhead.Controllers
             {
                 if (Session["userid"] != null && Session["userrole"].ToString() == "1")
                 {
-                    var data = (from user in db.Mst_USER
-                                join site in db.Mst_SITE on user.SITEID equals site.ID
-                                join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID
-                                where user.ISACTIVE == true && user.IsApprover == 1
+                    var data = (from user in db.Mst_USER                              
+                                where user.IsApprover == 1
                                 select new uservm
                                 {
                                     ID = user.ID,
                                     FULLNAME = user.FULLNAME,
                                     MOBILENO = user.MOBILENO,
                                     EMAILID = user.EMAILID,
-                                    TITLE = site.TITLE,
-                                    SITENO = site.SITENO,
-                                    SITENONAME = site.SITENONAME,
-                                    Department = dept.DEPARTMENT,
+                                  
                                     EMPCODE = user.EMPCODE,
-                                    DeptID = dept.ID,
+                                  
                                     USERNAME = user.USERNAME,
                                     USERPWD = user.USERPWD,
                                     CANLOGIN = user.CANLOGIN,
@@ -968,8 +972,8 @@ namespace letterhead.Controllers
                 if (Session["userid"] != null && Session["userrole"].ToString() == "1")
                 {
                     int UserID = Convert.ToInt32(Session["userid"].ToString());
-                    ViewBag.SITE = db.Mst_SITE.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE + "/" + x.SITENONAME, Value = x.ID.ToString() }).ToList();
-                    ViewBag.dept = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT, Value = x.ID.ToString() }).ToList(); ;
+                    //ViewBag.SITE = db.Mst_SITE.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE + "/" + x.SITENONAME, Value = x.ID.ToString() }).ToList();
+                    //ViewBag.dept = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT, Value = x.ID.ToString() }).ToList(); ;
                     
                     // ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.IsApprover == 1).Select(x => new SelectListItem { Text = x.FULLNAME, Value = x.ID.ToString() }).ToList();
                     return View();
@@ -1031,8 +1035,8 @@ namespace letterhead.Controllers
                 if (Session["userid"] != null && Session["userrole"].ToString() == "1")
                 {
                     int UserID = Convert.ToInt32(Session["userid"].ToString());
-                    ViewBag.SITE = db.Mst_SITE.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE + "/" + x.SITENONAME, Value = x.ID.ToString() }).ToList();
-                    ViewBag.dept = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT, Value = x.ID.ToString() }).ToList(); ;                   
+                    //ViewBag.SITE = db.Mst_SITE.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE + "/" + x.SITENONAME, Value = x.ID.ToString() }).ToList();
+                    //ViewBag.dept = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT, Value = x.ID.ToString() }).ToList(); ;                   
                     //ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.IsApprover == 1).Select(x => new SelectListItem { Text = x.FULLNAME, Value = x.ID.ToString() }).ToList();
                     var prd = db.Mst_USER.Where(x => x.ID == id).FirstOrDefault();
                     return View(prd);
@@ -1227,6 +1231,150 @@ namespace letterhead.Controllers
         }
         #endregion
 
+
+
+
+        #region SubDepartment
+        public ActionResult SubDepartmentList()
+        {
+
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    var data = (from subdep in db.Mst_SUBDEPARTMENT
+                                join dep in db.Mst104_DEPARTMENT on subdep.DeptID equals dep.ID
+                                where subdep.ISACTIVE == true
+                                select new SubDeptVM
+                                {
+                                    ID = subdep.ID,
+                                    DEPTID= subdep.DeptID,
+                                    DEPARTMENT=dep.DEPARTMENT,
+                                    SubDEPARTMENT=subdep.SubDEPARTMENT,                                
+                                    CREATEBY = subdep.CREATEBY,
+                                    CRAETEDATE = subdep.CREATEDATE,
+                                    ISACTIVE = subdep.ISACTIVE
+                                }).ToList();
+                    return View(data);
+
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        public ActionResult AddSubDepartment()
+        {
+
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    ViewBag.Department = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT , Value = x.ID.ToString() }).ToList();
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult AddSubDepartment(Mst_SUBDEPARTMENT model)
+        {
+
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    ViewBag.Department = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT, Value = x.ID.ToString() }).ToList();
+                    var codeexistcheck = db.Mst_SUBDEPARTMENT.Where(a => a.SubDEPARTMENT == model.SubDEPARTMENT).Count();
+                    if (codeexistcheck > 0)
+                    {
+                        TempData["error"] = "Data Allready Exist!";
+                        return RedirectToAction("SubDepartmentList");
+                    }
+                    model.CREATEBY = 1;
+                    model.CREATEDATE = DateTime.Now;
+                    db.Mst_SUBDEPARTMENT.Add(model);
+                    db.SaveChanges();
+                    TempData["success"] = "Sub Department added successfully.";
+                    return RedirectToAction("SubDepartmentList");
+
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+
+        }
+
+        public ActionResult EditSubDepartment(int id = 0)
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    ViewBag.Department = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT, Value = x.ID.ToString() }).ToList();
+                    var data = db.Mst_SUBDEPARTMENT.Where(x => x.ID == id).FirstOrDefault();
+                    return View(data);
+
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult EditSubDepartment(Mst_SUBDEPARTMENT model)
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    ViewBag.Department = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT, Value = x.ID.ToString() }).ToList();
+                    var data = db.Mst_SUBDEPARTMENT.Where(a => a.ID == model.ID).FirstOrDefault();                    
+                    data.ISACTIVE = model.ISACTIVE;
+                    data.SubDEPARTMENT = model.SubDEPARTMENT;                   
+                    db.SaveChanges();
+                    TempData["success"] = "Sub Department Upadted.";
+                    return RedirectToAction("SubDepartmentList");
+
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+        #endregion
+
         #region reports
         public ActionResult Reports()
         {
@@ -1283,8 +1431,9 @@ namespace letterhead.Controllers
             {
                 data = (from later in db.LatterRequests
                         join user in db.Mst_USER on later.USERID equals user.ID
-                        join site in db.Mst_SITE on user.SITEID equals site.ID
-                        join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID
+                        join site in db.Mst_SITE on later.LocID equals site.ID
+                        join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
+                        join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID
                         where later.ISACTIVE == true && (LocID != 0 ? site.ID == LocID : later.ID != 0) && (DeptID != 0 ? dept.ID == DeptID : later.ID != 0) && (sDate != "" && eDate != "" ? later.CRAETEDATE >= startDate || later.CRAETEDATE <= endDate : later.ISACTIVE == true)
                         select new latterrvm
                         {
@@ -1294,7 +1443,7 @@ namespace letterhead.Controllers
                             LatterData = later.LatterData,
                             Department = dept.DEPARTMENT,
                             DeptID = dept.ID,
-                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
                             REMARK = later.REMARK,
                             TITLE = site.TITLE,
                             SITEID = site.ID,
@@ -1312,8 +1461,9 @@ namespace letterhead.Controllers
             {
                 data = (from later in db.LatterRequests
                         join user in db.Mst_USER on later.USERID equals user.ID
-                        join site in db.Mst_SITE on user.SITEID equals site.ID
-                        join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID
+                        join site in db.Mst_SITE on later.LocID equals site.ID
+                        join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
+                        join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID
                         //where later.USERID == userid && later.ISACTIVE==true && (LocID != 0 ? site.ID == LocID : later.ID != 0) && (DeptID != 0 ? dept.ID == DeptID : later.ID != 0) && (sDate != "" && eDate != "" ? later.CRAETEDATE >= startDate || later.CRAETEDATE <= endDate : later.ISACTIVE == true)
                         where later.USERID == userid && later.ISACTIVE == true 
                         select new latterrvm
@@ -1324,7 +1474,7 @@ namespace letterhead.Controllers
                             LatterData = later.LatterData,
                             Department = dept.DEPARTMENT,
                             DeptID = dept.ID,
-                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
                             REMARK = later.REMARK,
                             TITLE = site.TITLE,
                             SITEID = site.ID,
@@ -1365,8 +1515,9 @@ namespace letterhead.Controllers
                     var data = (from later in db.LatterRequests
                                 join ltype in db.LetterCrateTypes on later.LetterType equals ltype.ID
                                 join user in db.Mst_USER on later.USERID equals user.ID
-                                join site in db.Mst_SITE on user.SITEID equals site.ID
-                                join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID
+                                join site in db.Mst_SITE on later.LocID equals site.ID
+                                join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
+                                join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID
                                 where later.USERID == userid
                                 select new latterrvm
                                 {
@@ -1379,7 +1530,7 @@ namespace letterhead.Controllers
                                     StatusID=later.StatusId,
                                     Department=dept.DEPARTMENT,
                                     DeptID=dept.ID,
-                                    LATTERNOSerice= ("HGIEL/" + site.TITLE+"/"+site.SITENONAME+"/"+dept.DEPARTMENT+ "/2023-24/" + later.LATTERNO.ToString()),
+                                    LATTERNOSerice= ("HGIEL/" + site.TITLE+ "/" +dept.DEPARTMENT+ "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
                                     REMARK= ltype.TITLE,
                                     TITLE = site.TITLE,
                                     SITEID=site.ID,
@@ -1419,8 +1570,9 @@ namespace letterhead.Controllers
                     var data = (from later in db.LatterSPVRequests
                                 join ltype in db.LetterCrateTypes on later.LetterType equals ltype.ID
                                 join user in db.Mst_USER on later.USERID equals user.ID
-                                join site in db.Mst_SITE on user.SITEID equals site.ID
-                                join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID
+                                join site in db.Mst_SITE on later.LocID equals site.ID
+                                join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
+                                join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID
                                 join spvm in db.spvmasters on later.SPVID equals spvm.ID
                                 where later.USERID == userid 
                                 select new latterrvm
@@ -1434,7 +1586,7 @@ namespace letterhead.Controllers
                                     StatusID = later.StatusId,
                                     Department = dept.DEPARTMENT,
                                     DeptID = dept.ID,
-                                    LATTERNOSerice = (spvm.StartName+ "/" + site.TITLE + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                    LATTERNOSerice = (spvm.StartName+ "/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
                                     REMARK = ltype.TITLE,
                                     TITLE = site.TITLE,
                                     SITEID = site.ID,
@@ -1479,7 +1631,7 @@ namespace letterhead.Controllers
             {
                 if (Session["userid"] != null && Session["userrole"].ToString() == "2")
                 {
-                    int userid = Convert.ToInt32(Session["userid"]);
+                    int userid = Convert.ToInt32(Session["userid"]);                   
                     var approverin = db.Mst_USER.Where(a => a.ID == userid && a.Approver != null).Count();
                     if (approverin ==0)
                     {
@@ -1487,11 +1639,28 @@ namespace letterhead.Controllers
                     }
 
                     ViewBag.ltype = db.LetterCrateTypes.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE, Value = x.ID.ToString() }).ToList(); ;
-                    
+                    ViewBag.dept = (from d in db.Mst_SUBDEPARTMENT
+                                            join da in db.DeptAssignUsers
+                                            on d.ID equals da.DEPTID
+                                            where d.ISACTIVE == true && da.USERID == userid
+                                            select new SelectListItem
+                                            {
+                                                Value = d.ID.ToString(),
+                                                Text = d.SubDEPARTMENT.ToString()
+                                            }).ToList();
+                    ViewBag.site = (from l in db.Mst_SITE
+                                    join la in db.LocationAssignUsers
+                                    on l.ID equals la.LocID
+                                    where l.ISACTIVE == true && la.USERID == userid
+                                    select new SelectListItem
+                                    {
+                                        Value = l.ID.ToString(),
+                                        Text = l.TITLE.ToString()
+                                    }).ToList();
                     var date = new DateTime(DateTime.Now.Year, 4, 6);
-                    int lastinsert = db.LatterRequests.Where(a => a.USERID == userid && a.IsSpv==false).Count();
+                    //int lastinsert = db.LatterRequests.Where(a => a.USERID == userid && a.IsSpv==false).Count();
                     LatterRequest latter = new LatterRequest();
-                    latter.LATTERNO = Convert.ToString(lastinsert + 1);
+                    latter.LATTERNO = Convert.ToString(0);
                     return View(latter);
                 }
                 else
@@ -1572,6 +1741,24 @@ namespace letterhead.Controllers
                                             Text = l.TITLE,
                                             Value = l.ID.ToString()
                                         }).ToList();
+                    ViewBag.dept = (from d in db.Mst_SUBDEPARTMENT
+                                    join da in db.DeptAssignUsers
+                                    on d.ID equals da.DEPTID
+                                    where d.ISACTIVE == true && da.USERID == userid
+                                    select new SelectListItem
+                                    {
+                                        Value = d.ID.ToString(),
+                                        Text = d.SubDEPARTMENT.ToString()
+                                    }).ToList();
+                    ViewBag.site = (from l in db.Mst_SITE
+                                    join la in db.LocationAssignUsers
+                                    on l.ID equals la.LocID
+                                    where l.ISACTIVE == true && la.USERID == userid
+                                    select new SelectListItem
+                                    {
+                                        Value = l.ID.ToString(),
+                                        Text = l.TITLE.ToString()
+                                    }).ToList();
                     var date = new DateTime(DateTime.Now.Year, 4, 6);
                     int lastinsert = db.LatterSPVRequests.Where(a => a.USERID == userid).Count();
                     LatterRequest latter = new LatterRequest();
@@ -1666,6 +1853,30 @@ namespace letterhead.Controllers
             }
         }
 
+        public ActionResult PerformaAprover(int id = 0, int userid=0)
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "2")
+                {
+                    int uid = userid;
+                    ViewBag.ltype = db.USERSIGNs.Where(x => x.IsActive == true && x.USERID == uid).Select(x => new SelectListItem { Text = x.SIGNTITLE, Value = x.ID.ToString() }).ToList(); ;
+                    var data = db.LatterRequests.Where(x => x.ID == id).FirstOrDefault();
+                    return View(data);
+
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+
         public ActionResult PerformaSPV(int id = 0)
         {
             try
@@ -1703,13 +1914,79 @@ namespace letterhead.Controllers
                 
                 var userdata = db.Mst_USER.Where(a => a.ID == cid).FirstOrDefault();
                 var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
-                var msgtemp = etemp.RequestSend(userdata.FULLNAME,userdata.EMPCODE,approver.FULLNAME);
+                var msgtemp = etemp.RequestSend(userdata.FULLNAME,userdata.EMPCODE,approver.FULLNAME, data.ID);
                 mailsend(approver.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
 
                 TempData["success"] = "Thanks.";
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
             catch(Exception ex)
+            {
+                errorlog err = new errorlog();
+                err.actionname = "Performadata";
+                err.errormessage = ex.Message;
+                err.createdate = DateTime.Now;
+                db.errorlogs.Add(err);
+                db.SaveChanges();
+                return Json(new { success = false }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost, ValidateInput(false)]
+        public ActionResult SaveDraft(string latterdata = null, int id = 0)
+        {
+            try
+            {
+                var data = db.LatterRequests.Where(a => a.ID == id).FirstOrDefault();
+                data.LatterData = latterdata;
+                data.StatusId = 6;
+                db.SaveChanges();
+                int cid = Convert.ToInt32(Session["userid"].ToString());
+                db.loginsert(data.ID, "Save As Draft",6,cid);
+
+                //var userdata = db.Mst_USER.Where(a => a.ID == cid).FirstOrDefault();
+                //var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
+                //var msgtemp = etemp.RequestSend(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
+                //mailsend(approver.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
+
+                TempData["success"] = "Thanks.";
+                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                errorlog err = new errorlog();
+                err.actionname = "SaveDraft";
+                err.errormessage = ex.Message;
+                err.createdate = DateTime.Now;
+                db.errorlogs.Add(err);
+                db.SaveChanges();
+                return Json(new { success = false }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        [HttpPost, ValidateInput(false)]
+        public ActionResult PerformadataEdit(string latterdata = null, int id = 0)
+        {
+            try
+            {
+                var data = db.LatterRequests.Where(a => a.ID == id).FirstOrDefault();
+                data.LatterData = latterdata;
+                data.StatusId = 4;
+                db.SaveChanges();
+                int? cid = data.USERID;
+              
+
+                var userdata = db.Mst_USER.Where(a => a.ID == cid).FirstOrDefault();
+                var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
+                db.loginsert(data.ID, "Edited and Approved ", 1, approver.ID);
+                var msgtemp = etemp.RequestSend(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME,data.ID);
+                mailsend(approver.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
+
+                TempData["success"] = "Thanks.";
+                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
             {
                 errorlog err = new errorlog();
                 err.actionname = "Performadata";
@@ -1735,7 +2012,7 @@ namespace letterhead.Controllers
 
                 var userdata = db.Mst_USER.Where(a => a.ID == cid).FirstOrDefault();
                 var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
-                var msgtemp = etemp.RequestSend(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
+                var msgtemp = etemp.RequestSendSPV(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
                 mailsend(approver.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
 
                 TempData["success"] = "Thanks.";
@@ -1767,6 +2044,50 @@ namespace letterhead.Controllers
             }
         }
 
+        public ActionResult printviewDash(int id = 0)
+        {
+            try
+            {
+                if (Session["userid"] != null)
+                {
+                    var data = (from later in db.LatterRequests
+                                join user in db.Mst_USER on later.USERID equals user.ID
+                                join site in db.Mst_SITE on later.LocID equals site.ID
+                                join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
+                                join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID
+                                where later.ID == id
+                                select new latterrvm
+                                {
+                                    ID = later.ID,
+                                    FULLNAME = user.FULLNAME,
+                                    LATTERNO = later.LATTERNO,
+                                    LatterData = later.LatterData,
+                                    Department = dept.DEPARTMENT,
+                                    StatusID = later.StatusId,
+                                    DeptID = dept.ID,
+                                    LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                    REMARK = later.REMARK,
+                                    TITLE = site.TITLE,
+                                    SITEID = site.ID,
+                                    CODE = site.CODE,
+                                    SITENO = site.SITENO,
+                                    SITENONAME = site.SITENONAME,
+                                    CREATEBY = later.CREATEBY,
+                                    CRAETEDATE = later.CRAETEDATE,
+                                    ISACTIVE = later.ISACTIVE
+                                }).FirstOrDefault();
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
 
         public ActionResult printview(int id=0)
         {
@@ -1776,8 +2097,9 @@ namespace letterhead.Controllers
                 {
                     var data = (from later in db.LatterRequests
                                 join user in db.Mst_USER on later.USERID equals user.ID
-                                join site in db.Mst_SITE on user.SITEID equals site.ID
-                                join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID
+                                join site in db.Mst_SITE on later.LocID equals site.ID
+                                join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
+                                join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID
                                 where later.ID == id
                                 select new latterrvm
                                 {
@@ -1788,7 +2110,7 @@ namespace letterhead.Controllers
                                     Department = dept.DEPARTMENT,
                                     StatusID=later.StatusId,
                                     DeptID = dept.ID,
-                                    LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                    LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
                                     REMARK = later.REMARK,
                                     TITLE = site.TITLE,
                                     SITEID = site.ID,
@@ -1820,8 +2142,9 @@ namespace letterhead.Controllers
                 {
                     var data = (from later in db.LatterSPVRequests
                                 join user in db.Mst_USER on later.USERID equals user.ID
-                                join site in db.Mst_SITE on user.SITEID equals site.ID
-                                join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID
+                                join site in db.Mst_SITE on later.LocID equals site.ID
+                                join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
+                                join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID
                                 join SPVM in db.spvmasters on later.SPVID equals SPVM.ID
                                 where later.ID == id
                                 select new latterrvm
@@ -1834,7 +2157,7 @@ namespace letterhead.Controllers
                                     StatusID = later.StatusId,
                                     svptitle=SPVM.TITLE,
                                     DeptID = dept.ID,
-                                    LATTERNOSerice = (SPVM.StartName+"/" + site.TITLE + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                    LATTERNOSerice = (SPVM.StartName+"/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
                                     REMARK = later.REMARK,
                                     TITLE = site.TITLE,
                                     SITEID = site.ID,
@@ -1870,8 +2193,9 @@ namespace letterhead.Controllers
             }
             var data = (from later in db.LatterRequests
                         join user in db.Mst_USER on later.USERID equals user.ID
-                        join site in db.Mst_SITE on user.SITEID equals site.ID
-                        join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID
+                        join site in db.Mst_SITE on later.LocID equals site.ID
+                        join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
+                        join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID
                         where later.ID == id
                         select new latterrvm
                         {
@@ -1881,7 +2205,38 @@ namespace letterhead.Controllers
                             LatterData = later.LatterData,
                             Department = dept.DEPARTMENT,
                             DeptID = dept.ID,
-                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                            REMARK = later.REMARK,
+                            TITLE = site.TITLE,
+                            SITEID = site.ID,
+                            CODE = site.CODE,
+                            SITENO = site.SITENO,
+                            SITENONAME = site.SITENONAME,
+                            CREATEBY = later.CREATEBY,
+                            CRAETEDATE = later.CRAETEDATE,
+                            ISACTIVE = later.ISACTIVE
+                        }).FirstOrDefault();
+            return View(data);
+        }
+
+
+        public ActionResult performaMail(int id = 0)
+        {            
+            var data = (from later in db.LatterRequests
+                        join user in db.Mst_USER on later.USERID equals user.ID
+                        join site in db.Mst_SITE on later.LocID equals site.ID
+                        join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
+                        join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID
+                        where later.ID == id
+                        select new latterrvm
+                        {
+                            ID = later.ID,
+                            FULLNAME = user.FULLNAME,
+                            LATTERNO = later.LATTERNO,
+                            LatterData = later.LatterData,
+                            Department = dept.DEPARTMENT,
+                            DeptID = dept.ID,
+                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
                             REMARK = later.REMARK,
                             TITLE = site.TITLE,
                             SITEID = site.ID,
@@ -1905,8 +2260,9 @@ namespace letterhead.Controllers
             }
             var data = (from later in db.LatterRequests
                         join user in db.Mst_USER on later.USERID equals user.ID
-                        join site in db.Mst_SITE on user.SITEID equals site.ID
-                        join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID
+                        join site in db.Mst_SITE on later.LocID equals site.ID
+                        join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
+                        join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID
                         where later.ID == id
                         select new latterrvm
                         {
@@ -1916,7 +2272,7 @@ namespace letterhead.Controllers
                             LatterData = later.LatterData,
                             Department = dept.DEPARTMENT,
                             DeptID = dept.ID,
-                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
                             REMARK = later.REMARK,
                             TITLE = site.TITLE,
                             SITEID = site.ID,
@@ -1940,8 +2296,9 @@ namespace letterhead.Controllers
             }
             var data = (from later in db.LatterSPVRequests
                         join user in db.Mst_USER on later.USERID equals user.ID
-                        join site in db.Mst_SITE on user.SITEID equals site.ID
-                        join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID
+                        join site in db.Mst_SITE on later.LocID equals site.ID
+                        join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
+                        join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID
                         join spvm in db.spvmasters on later.SPVID equals spvm.ID
                         where later.ID == id
                         select new latterrvm
@@ -1953,7 +2310,7 @@ namespace letterhead.Controllers
                             Department = dept.DEPARTMENT,
                             svptitle=spvm.TITLE,
                             DeptID = dept.ID,
-                            LATTERNOSerice = (spvm.StartName +"/" + site.TITLE + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                            LATTERNOSerice = (spvm.StartName +"/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
                             REMARK = later.REMARK,
                             TITLE = site.TITLE,
                             SITEID = site.ID,
@@ -2274,13 +2631,15 @@ namespace letterhead.Controllers
                     int userid = Convert.ToInt32(Session["userid"].ToString());
                     var data = (from later in db.LatterRequests
                                 join user in db.Mst_USER on later.USERID equals user.ID
-                                join site in db.Mst_SITE on user.SITEID equals site.ID
-                                join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID
+                                join site in db.Mst_SITE on later.LocID equals site.ID
+                                join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
+                                join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID
                                 join status in db.mst_status on later.StatusId equals status.ID
                                 where user.Approver == userid && later.StatusId != 5 
                                 select new latterrvm
                                 {
                                     ID = later.ID,
+                                    UserId = user.ID,
                                     FULLNAME = user.FULLNAME,
                                     LATTERNO = later.LATTERNO,
                                     LatterData = later.LatterData,
@@ -2288,7 +2647,7 @@ namespace letterhead.Controllers
                                     StatusID=later.StatusId,
                                     Department = dept.DEPARTMENT,
                                     DeptID = dept.ID,
-                                    LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                    LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
                                     REMARK = later.REMARK,
                                     TITLE = site.TITLE,
                                     SITEID = site.ID,
@@ -2322,8 +2681,9 @@ namespace letterhead.Controllers
                     int userid = Convert.ToInt32(Session["userid"].ToString());
                     var data = (from later in db.LatterSPVRequests
                                 join user in db.Mst_USER on later.USERID equals user.ID
-                                join site in db.Mst_SITE on user.SITEID equals site.ID
-                                join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID
+                                join site in db.Mst_SITE on later.LocID equals site.ID
+                                join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
+                                join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID
                                 join status in db.mst_status on later.StatusId equals status.ID
                                 join spvm in db.spvmasters on later.SPVID equals spvm.ID
                                 where user.Approver == userid && later.StatusId != 5
@@ -2337,7 +2697,7 @@ namespace letterhead.Controllers
                                     StatusID = later.StatusId,
                                     Department = dept.DEPARTMENT,
                                     DeptID = dept.ID,
-                                    LATTERNOSerice = (spvm.StartName+"/" + site.TITLE + "/" + dept.DEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                    LATTERNOSerice = (spvm.StartName+"/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
                                     REMARK = later.REMARK,
                                     TITLE = site.TITLE,
                                     SITEID = site.ID,
@@ -2392,6 +2752,38 @@ namespace letterhead.Controllers
             }
             
         }
+
+
+        public ActionResult ApproveRequest(int id)
+        {
+            try
+            {
+                var data = db.LatterRequests.Where(a => a.ID == id).FirstOrDefault();
+                data.StatusId = 4;
+                db.SaveChanges();
+                //int cid = Convert.ToInt32(Session["userid"].ToString());                
+                var userdata = db.Mst_USER.Where(a => a.ID == data.USERID).FirstOrDefault();
+                var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
+                db.loginsert(data.ID, "Approve By Mail", 4, userdata.Approver);
+                var msgtemp = etemp.RequestApprove(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
+                mailsend(userdata.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
+                return View();
+            }
+            catch (Exception ex)
+            {
+                errorlog err = new errorlog();
+                err.actionname = "Performadata";
+                err.errormessage = ex.Message;
+                err.createdate = DateTime.Now;
+                db.errorlogs.Add(err);
+                db.SaveChanges();
+                return View();
+
+            }
+
+        }
+
+
 
         public ActionResult RejectRequest(int id)
         {
@@ -2620,7 +3012,319 @@ namespace letterhead.Controllers
 
         }
 
+        #region AssignDeptUserWise
 
+        public ActionResult AssignUserDeptList()
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    var data = (from assign in db.DeptAssignUsers
+                                join user in db.Mst_USER on assign.USERID equals user.ID
+                                join sdept in db.Mst_SUBDEPARTMENT on assign.DEPTID equals sdept.ID
+                                join dept in db.Mst104_DEPARTMENT on sdept.DeptID equals dept.ID
+                                select new DEPTvm
+                                {
+                                    ID = assign.ID,
+                                    username = user.FULLNAME,
+                                    empcode = user.EMPCODE,
+                                    department = sdept.SubDEPARTMENT,
+                                    DeptName=dept.DEPARTMENT,
+                                    CREATEBY = assign.CREATEBY,
+                                    CRAETEDATE = assign.CREATEDATE,
+                                    ISACTIVE = assign.IsActive
+                                }).ToList().OrderBy(a => a.username);                  
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+
+        [HttpPost]
+        public ActionResult GetDeptBySubDept(int bid = 0)
+        {
+            try
+            {
+                //var locations = db.Mst108_COSTCENTER.Where(x => x.ISACTIVE == true && x.BusinessID == bid).Select(x => new SelectListItem { Text = x.COSTCENTER, Value = x.LocationID.ToString() }).ToList();
+
+                var subdept = db.Mst_SUBDEPARTMENT.Where(x => x.ISACTIVE == true && x.DeptID==bid).Select(x => new SelectListItem { Text = x.SubDEPARTMENT, Value = x.ID.ToString() }).ToList();
+
+
+                return Json(data: new { success = true, subdept = subdept }, JsonRequestBehavior.AllowGet);
+
+            }
+            catch (Exception ex)
+            {
+                return Json(data: new { success = false }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        [HttpPost]
+        public ActionResult getLno(int did = 0)
+        {
+            try
+            {
+                //var locations = db.Mst108_COSTCENTER.Where(x => x.ISACTIVE == true && x.BusinessID == bid).Select(x => new SelectListItem { Text = x.COSTCENTER, Value = x.LocationID.ToString() }).ToList();
+
+                var subdept = db.LatterRequests.Where(a=>a.DeptID==did).Count();
+                int lno = Convert.ToInt32(subdept + 1);
+
+                return Json(data: new { success = true, lno = lno }, JsonRequestBehavior.AllowGet);
+
+            }
+            catch (Exception ex)
+            {
+                return Json(data: new { success = false }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        public ActionResult AssignUserDeptAdd()
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    ViewBag.dept = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT, Value = x.ID.ToString() }).ToList();
+                    ViewBag.subdept = db.Mst_SUBDEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.SubDEPARTMENT, Value = x.ID.ToString() }).ToList();
+                    ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.ROLEID == 2).Select(x => new SelectListItem { Text = x.FULLNAME + "/ " + x.EMPCODE, Value = x.ID.ToString() }).ToList();
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult AssignUserDeptAdd(DeptAssignUser model)
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    ViewBag.dept = db.Mst_SUBDEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.SubDEPARTMENT, Value = x.ID.ToString() }).ToList();
+                    //ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.ROLEID == 2).Select(x => new SelectListItem { Text = x.FULLNAME + "/ " + x.EMPCODE, Value = x.ID.ToString() }).ToList();
+                    int userid = Convert.ToInt32(Session["userid"].ToString());
+                    model.CREATEBY = userid;
+                    model.CREATEDATE = DateTime.Now;
+                    db.DeptAssignUsers.Add(model);
+                    db.SaveChanges();
+                    TempData["success"] = "Assigned successfully.";
+                    return RedirectToAction("AssignUserDeptList");
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        public ActionResult AssignUserDeptEdit(int id)
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    ViewBag.dept = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT, Value = x.ID.ToString() }).ToList();
+                    ViewBag.subdept = db.Mst_SUBDEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.SubDEPARTMENT, Value = x.ID.ToString() }).ToList();
+                    ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.ROLEID == 2).Select(x => new SelectListItem { Text = x.FULLNAME + "/ " + x.EMPCODE, Value = x.ID.ToString() }).ToList();
+                    var data = db.DeptAssignUsers.Where(a => a.ID == id).FirstOrDefault();
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult AssignUserDeptEdit(DeptAssignUser model)
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    ViewBag.dept = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT, Value = x.ID.ToString() }).ToList();
+                    ViewBag.subdept = db.Mst_SUBDEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.SubDEPARTMENT, Value = x.ID.ToString() }).ToList();
+                    ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.ROLEID == 2).Select(x => new SelectListItem { Text = x.FULLNAME + "/ " + x.EMPCODE, Value = x.ID.ToString() }).ToList();
+                    var data = db.DeptAssignUsers.Where(a => a.ID == model.ID).FirstOrDefault();
+                    data.USERID = model.USERID;
+                    data.DEPTID = model.DEPTID;
+                    data.IsActive = model.IsActive;
+                    db.SaveChanges();
+                    TempData["success"] = "Data Updated Successfully";
+                    return RedirectToAction("AssignUserDeptList", "Home", new {id=1});
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        #endregion
+
+
+        #region AssignLocUserWise
+
+        public ActionResult AssignUserLocList()
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    var data = (from assign in db.LocationAssignUsers
+                                join user in db.Mst_USER on assign.USERID equals user.ID
+                                join site in db.Mst_SITE on assign.LocID equals site.ID
+                                select new Locvm
+                                {
+                                    ID = assign.ID,
+                                    username = user.FULLNAME,
+                                    empcode = user.EMPCODE,
+                                    Location = site.TITLE,
+                                    CREATEBY = assign.CREATEBY,
+                                    CRAETEDATE = assign.CREATEDATE,
+                                    ISACTIVE = assign.IsActive
+                                }).ToList().OrderBy(a => a.username);
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+        public ActionResult AssignUserLocAdd()
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    ViewBag.site = db.Mst_SITE.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE, Value = x.ID.ToString() }).ToList();
+                    ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.ROLEID == 2).Select(x => new SelectListItem { Text = x.FULLNAME + "/ " + x.EMPCODE, Value = x.ID.ToString() }).ToList();
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult AssignUserLocAdd(LocationAssignUser model)
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    ViewBag.site = db.Mst_SITE.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE, Value = x.ID.ToString() }).ToList();
+                    //ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.ROLEID == 2).Select(x => new SelectListItem { Text = x.FULLNAME + "/ " + x.EMPCODE, Value = x.ID.ToString() }).ToList();
+                    int userid = Convert.ToInt32(Session["userid"].ToString());
+                    model.CREATEBY = userid;
+                    model.CREATEDATE = DateTime.Now;
+                    db.LocationAssignUsers.Add(model);
+                    db.SaveChanges();
+                    TempData["success"] = "Assigned successfully.";
+                    return RedirectToAction("AssignUserLocList");
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        public ActionResult AssignUserLocEdit(int id)
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    ViewBag.site = db.Mst_SITE.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE, Value = x.ID.ToString() }).ToList();
+                    ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.ROLEID == 2).Select(x => new SelectListItem { Text = x.FULLNAME + "/ " + x.EMPCODE, Value = x.ID.ToString() }).ToList();
+                    var data = db.LocationAssignUsers.Where(a => a.ID == id).FirstOrDefault();
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult AssignUserLocEdit(LocationAssignUser model)
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    ViewBag.site = db.Mst_SITE.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE, Value = x.ID.ToString() }).ToList();
+                    ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.ROLEID == 2).Select(x => new SelectListItem { Text = x.FULLNAME + "/ " + x.EMPCODE, Value = x.ID.ToString() }).ToList();
+                    var data = db.LocationAssignUsers.Where(a => a.ID == model.ID).FirstOrDefault();
+                    data.USERID = model.USERID;
+                    data.LocID = model.LocID;
+                    data.IsActive = model.IsActive;
+                    db.SaveChanges();
+                    TempData["success"] = "Data Updated Successfully";
+                    return RedirectToAction("AssignUserLocList");
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        #endregion
 
     }
 }

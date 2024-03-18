@@ -172,6 +172,49 @@
                         <span>Role Master</span>
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("SiteMaster", "Home")">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Projects Master</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("DepartmentList", "Home")">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Department Master</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("SubDepartmentList", "Home")">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Sub Department Master</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("ApproverMaster", "Home")">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Approver</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("UserMaster", "Home")">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Users</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("AssignUserDeptList", "Home")">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Assign Department</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="@Url.Action("AssignUserLocList", "Home")">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Assign Location</span>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link collapsed" href="@Url.Action("SPVMaster", "Home")">
                         <i class="bi bi-person-fill"></i>
@@ -191,30 +234,6 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link collapsed" href="@Url.Action("DepartmentList", "Home")">
-                        <i class="bi bi-person-fill"></i>
-                        <span>Department Master</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="@Url.Action("SiteMaster", "Home")">
-                        <i class="bi bi-person-fill"></i>
-                        <span>Projects Master</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="@Url.Action("ApproverMaster", "Home")">
-                        <i class="bi bi-person-fill"></i>
-                        <span>Approver Master</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="@Url.Action("UserMaster", "Home")">
-                        <i class="bi bi-person-fill"></i>
-                        <span>User Master</span>
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link collapsed" href="@Url.Action("UploadManual", "Home")">
                         <i class="bi bi-upload"></i>
                         <span>User Manual</span>
@@ -226,7 +245,6 @@
                         <span>Reports</span>
                     </a>
                 </li>
-
                 <li class="nav-item">
                     <a class="nav-link collapsed" href="@Url.Action("Setting","Home")">
                         <i class="bi bi-gear"></i>
@@ -248,7 +266,7 @@
                 <li class="nav-item">
                     <a class="nav-link collapsed" href="@Url.Action("LetterRequest", "Home")">
                         <i class="bi bi-person-fill"></i>
-                        <span>Request Letterhead</span>
+                        <span>HG Letterhead</span>
                     </a>
                 </li>
                 if (Session["spvshow"].ToString() == "1")
@@ -256,7 +274,7 @@
                     <li class="nav-item">
                         <a class="nav-link collapsed" href="@Url.Action("LetterSpvRequest", "Home")">
                             <i class="bi bi-person-fill"></i>
-                            <span>SPV Request</span>
+                            <span>SPV Letterhead</span>
                         </a>
                     </li>
                 }
@@ -390,12 +408,18 @@
         }
     </script>
     <script>
-
-        
         CKEDITOR.plugins.addExternal('filebrowser', '/Content/filebrowser/', 'plugin.js');
         CKEDITOR.replace('idRichTextEditor', {
             extraPlugins: 'filebrowser'
         });
+        CKEDITOR.config.forcePasteAsPlainText = false;
+        CKEDITOR.config.pasteFromWordRemoveFontStyles = false;
+        CKEDITOR.config.pasteFromWordRemoveStyles = false;
+        CKEDITOR.config.allowedContent = true;
+        CKEDITOR.config.extraAllowedContent = 'p(mso*,Normal)';
+        CKEDITOR.config.pasteFilter = null;
+        CKEDITOR.addCss('.cke_editable p { margin: 0 !important; }');
+        CKEDITOR.replace('idRichTextEditor');
     </script>
 </body>
 

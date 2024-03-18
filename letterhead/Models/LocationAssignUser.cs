@@ -12,21 +12,13 @@ namespace letterhead.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class LatterRequest
+    public partial class LocationAssignUser
     {
         public int ID { get; set; }
-        public Nullable<int> USERID { get; set; }
-        public Nullable<int> DeptID { get; set; }
         public Nullable<int> LocID { get; set; }
-        public string LATTERNO { get; set; }
-        public Nullable<int> LetterType { get; set; }
-        public string REMARK { get; set; }
-        public string LatterData { get; set; }
-        public Nullable<int> StatusId { get; set; }
-        public Nullable<bool> IsSpv { get; set; }
-        public Nullable<int> SPVID { get; set; }
-        public Nullable<bool> ISACTIVE { get; set; }
+        public Nullable<int> USERID { get; set; }
         public Nullable<int> CREATEBY { get; set; }
-        public Nullable<System.DateTime> CRAETEDATE { get; set; }
+        public Nullable<System.DateTime> CREATEDATE { get; set; }
+        public Nullable<bool> IsActive { get; set; }
     }
 }

@@ -15,10 +15,10 @@
 .page-footer, .page-footer-space {
     height: 108px;
 }
-
+/*
 .page-headernew, p {
     text-transform: uppercase;
-}
+}*/
 
 .page-footer {
     position: fixed;

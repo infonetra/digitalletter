@@ -265,6 +265,9 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CustomModels.cs" />
+    <Compile Include="Models\DeptAssignUser.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\EmailTemplate.cs" />
     <Compile Include="Models\errorlog.cs">
       <DependentUpon>Model1.tt</DependentUpon>
@@ -282,6 +285,9 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Letter_Log_SPV_Process.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\LocationAssignUser.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Model1.Context.cs">
@@ -309,6 +315,9 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\mst_status.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Mst_SUBDEPARTMENT.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Mst_USER.cs">
@@ -1315,6 +1324,19 @@
     <Content Include="Views\Home\performaviewREQUEST.cshtml" />
     <Content Include="Views\Home\PerformaSPV.cshtml" />
     <Content Include="Views\Home\printviewSPV.cshtml" />
+    <Content Include="Views\Home\AssignUserDeptList.cshtml" />
+    <Content Include="Views\Home\AssignUserDeptAdd.cshtml" />
+    <Content Include="Views\Home\AssignUserDeptEdit.cshtml" />
+    <Content Include="Views\Home\AssignUserLocList.cshtml" />
+    <Content Include="Views\Home\AssignUserLocAdd.cshtml" />
+    <Content Include="Views\Home\AssignUserLocEdit.cshtml" />
+    <Content Include="Views\Home\PerformaAprover.cshtml" />
+    <Content Include="Views\Home\ApproveRequest.cshtml" />
+    <Content Include="Views\Home\SubDepartmentList.cshtml" />
+    <Content Include="Views\Home\AddSubDepartment.cshtml" />
+    <Content Include="Views\Home\EditSubDepartment.cshtml" />
+    <Content Include="Views\Home\printviewDash.cshtml" />
+    <Content Include="Views\Home\performaMail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

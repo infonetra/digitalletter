@@ -1,0 +1,51 @@
+﻿@model letterhead.Models.Mst_SUBDEPARTMENT
+@{
+    ViewBag.Title = "EditSubDepartment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="section">
+    <div class="row">
+
+        <div class="col-lg-12">
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Update Sub Department </h5>
+                    <!-- Custom Styled Validation -->
+                    @using (Html.BeginForm("EditSubDepartment", "Home", FormMethod.Post, new { @class = "row g-3 needs-validation", @novalidate = "novalidate" }))
+                    {
+                        <div class="col-md-4">
+                            <label for="validationCustom02" class="form-label">Department<span style="color:red;">*</span></label>
+                            @Html.DropDownListFor(x => x.DeptID, ViewBag.Department as List<SelectListItem>, "Select Department", new { @class = "form-control select2 UserType" })
+                        </div>
+                        <div class="col-md-4">
+                            <label for="validationCustom02" class="form-label">Sub Department <span style="color:red;">*</span></label>
+                            @Html.TextBoxFor(x => x.SubDEPARTMENT, new { @class = "form-control", placeholder = "Sub Department", @required = "required" })
+                        </div>
+                        <div class="col-md-4">
+                            <label for="validationDefault04" class="form-label">Status <span style="color:red;">*</span></label>
+                            @Html.DropDownListFor(x => x.ISACTIVE, new List<SelectListItem>
+                        {
+                           new SelectListItem{Text="Active",Value="true",Selected=true},
+                           new SelectListItem{Text="DeActive",Value="false"}
+                        }, new { @id = "IsActive", @class = "form-select", @required = "required" })
+                        </div>
+                        @Html.HiddenFor(a => a.ID)
+                        @Html.HiddenFor(a => a.CREATEDATE)
+                        @Html.HiddenFor(a => a.CREATEBY)
+                        <div class="col-12">
+                            <button class="btn btn-primary" type="submit">Submit</button>
+                            <a class="btn btn-danger" href="@Url.Action("Dashboard","Home")">Cancel</a>
+                        </div>
+                    }
+                    <!-- End Custom Styled Validation -->
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+

@@ -1,147 +1,178 @@
-﻿@model letterhead.Models.latterrvm
-@{
-    ViewBag.Title = "printview";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    var datet = DateTime.Now.ToString("dd-MM-yyyy");
-}
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/0.9.0rc1/jspdf.min.js"></script>
-
-<style>
-    .textupercase {
-        text-transform: uppercase;
+﻿@*@model letterhead.Models.latterrvm
+    @{
+        ViewBag.Title = "printview";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+        var datet = DateTime.Now.ToString("dd-MM-yyyy");
     }
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/0.9.0rc1/jspdf.min.js"></script>
 
-    @@media print {
+    <style>
+        .textupercase {
+            text-transform: uppercase;
+        }
+
+        @@media print {
+            body {
+                width: 21cm;
+                height: 29.7cm;
+                margin: 30mm 45mm 30mm 45mm;
+            }
+        }
+    </style>
+    <style>
+
         body {
-            width: 21cm;
-            height: 29.7cm;
-            margin: 30mm 45mm 30mm 45mm;
-            /* change the margins as you want them to be. */
+            padding: 30px
         }
-    }
-</style>
-<style>
-    /*  body {
-        font-family: Verdana, sans-serif;
-        font-size: 13px;
-    }*/
-    /*  .footernew {
-        position: fixed;
-        left: 0;
-        bottom: 0;
-        width: 100%;
-        color: white;
-    }*/
-
-
-    body {
-        padding: 30px
-    }
-
-    /*.print-area {
-        border: 1px solid red;
-        padding: 1em;
-        margin: 0 0 1em
-    }*/
-    #Printed {
-        width: 18.5cm;
-        min-height: 24.6cm;
-        /*max-height: 26.6cm;*/
-        margin: 0 auto 1cm;
-        border-radius: 5px;
-        background: white;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        border: none;
-    }
-
-    .head {
-        padding: 0px 0px 0px;
-    }
-
-    .strip_part {
-        border: 10px solid;
-    }
-</style>
-<div class="row pb-5">
-    <div class="col-md-12">
-        @*<a class="btn btn-primary" onclick="printDiv('Printed')">Save & Continue</a>*@
-        @*<a class="btn btn-primary" href="@Url.Action("LetterRequest","Home")">Back</a>*@
-        @*@if (Model.StatusID == 1)
-        {
-            <a class="btn btn-primary" href="@Url.Action("Performa", "Home", new {id=Model.ID})">Edit</a>
+        #Printed {
+            width: 18.5cm;
+            min-height: 24.6cm;
+            margin: 0 auto 1cm;
+            border-radius: 5px;
+            background: white;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            border: none;
         }
-        <a class="btn btn-primary" href="@Url.Action("performaview", "Home", new {id=Model.ID})">Print & Download</a>*@
 
-    </div>
-</div>
+        .head {
+            padding: 0px 0px 0px;
+        }
 
+        .strip_part {
+            border: 10px solid;
+        }
+    </style>
+    <div class="row pb-5">
+        <div class="col-md-12">
 
-<div class="page" id="Printed" title="Print" style=" font-family: Verdana, sans-serif; font-size: 12px;">
-    @*<div class="container head">
-            <div class="row">
-                <div class="col-md-12">
-
-                </div>
-            </div>
-        </div>*@
-    <header><img src="~/Content/assets/img/topnew.jpg" style="width:100%;" /><br><br></header>
-
-    <div class="content pt-3 pb-2">
-        <div class="row">
-            <div class="col-md-12" style="padding: 0px 0px 0px 67px; font-size: 11px;"><b class="textupercase">@Model.LATTERNOSerice</b><span style="padding-right: 110px; float: right;"><b>@datet</b></span></div>
         </div>
     </div>
-    <div class="content" style=" padding: 0cm 1cm 1cm 1.5cm;">
-        @Html.Raw(Model.LatterData)
-    </div>
-    <footer>
-        <div style="padding: 0cm 0cm 0cm 6.5cm;"><img src="~/Content/assets/img/line.png" style="width:100%;" /></div>
-        <div style="width: 100%;"> <img src="~/Content/assets/img/footer.png" style="width:100%;" /></div>
-    </footer>
-    @*<div class="row footernew">
-            <div class="col-md-12" style="padding: 0cm 0cm 0cm 11.5cm;"><img src="~/Content/assets/img/line.png" style="width:98%;" /></div>
-            <div class="col-md-12">
-                <img src="~/Content/assets/img/footer.png" style="width:100%;" />
+
+
+    <div class="page" id="Printed" title="Print" style=" font-family: Verdana, sans-serif; font-size: 12px;">
+        <header><img src="~/Content/assets/img/topnew.jpg" style="width:100%;" /><br><br></header>
+
+        <div class="content pt-3 pb-2">
+            <div class="row">
+                <div class="col-md-12" style="padding: 0px 0px 0px 67px; font-size: 11px;"><b class="textupercase">@Model.LATTERNOSerice</b><span style="padding-right: 110px; float: right;"><b>@datet</b></span></div>
             </div>
-        </div>*@
-</div>
-<script>
-    function handlePageBreaks() {
-        var contentElements = document.querySelectorAll('.content');
-        var currentPage = 0;
+        </div>
+        <div class="content" style=" padding: 0cm 1cm 1cm 1.5cm;">
+            @Html.Raw(Model.LatterData)
+        </div>
+        <footer>
+            <div style="padding: 0cm 0cm 0cm 6.5cm;"><img src="~/Content/assets/img/line.png" style="width:100%;" /></div>
+            <div style="width: 100%;"> <img src="~/Content/assets/img/footer.png" style="width:100%;" /></div>
+        </footer>
+    </div>
+    <script>
+        function handlePageBreaks() {
+            var contentElements = document.querySelectorAll('.content');
+            var currentPage = 0;
 
-        contentElements.forEach(function (content, index) {
-            var contentHeight = content.getBoundingClientRect().height;
+            contentElements.forEach(function (content, index) {
+                var contentHeight = content.getBoundingClientRect().height;
 
-            if (currentPage > 0) {
-                content.classList.add('hidden-header');
-            }
+                if (currentPage > 0) {
+                    content.classList.add('hidden-header');
+                }
 
-            if (currentPage < index && (index === contentElements.length - 1 || contentHeight > window.innerHeight)) {
-                content.classList.add('hidden-footer');
-                currentPage = index;
-            }
-        });
-    }
-
-    window.onload = handlePageBreaks;
-</script>
-@*<script type="text/javascript">
-
-        function printDiv(divId) {
-
-            //let mywindow = window.open('', 'PRINT');
-            //mywindow.document.write(document.getElementById(divId).innerHTML);
-
-            //mywindow.document.close(); // necessary for IE >= 10
-            //mywindow.focus(); // necessary for IE >= 10*/
-
-            //mywindow.print();
-            //mywindow.close();
-
-            //return true;
-            var doc = new jsPDF();
-            doc.fromHTML(`<html><head><title>${divId}</title></head><body>` + document.getElementById(divId).innerHTML + `</body></html>`);
-            doc.save('div.pdf');
+                if (currentPage < index && (index === contentElements.length - 1 || contentHeight > window.innerHeight)) {
+                    content.classList.add('hidden-footer');
+                    currentPage = index;
+                }
+            });
         }
+
+        window.onload = handlePageBreaks;
     </script>*@
+
+
+@model letterhead.Models.latterrvm
+@{
+    Layout = null;
+    var datet = DateTime.Now.ToString("dd-MM-yyyy");
+}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="~/Content/printpdf.css" rel="stylesheet" />
+</head>
+
+<body>
+    <style>
+        body {
+          /*  font-family: Verdana, sans-serif;
+            font-size: 12px;*/
+          font-family:@Session["fname"].ToString();
+          font-size:@Session["fsize"].ToString();
+        }
+    </style>
+    <div class="maindiv">
+        <div class="page-header" style="text-align: center">
+            <img src="~/Content/assets/img/topnew.jpg" style="margin-top:-16px;" />
+            @*<p style=" display: flex; font-weight: bold; justify-content: space-between; padding: 0 58px; "><b>@Model.LATTERNOSerice</b><span>@datet</span></p>*@
+            @*<br />*@
+            @*<button type="button" onClick="window.print()" style="background: pink; position: absolute; bottom: 0;">
+                    PRINT ME!
+                </button>*@
+        </div>
+        <div class="page-headernew">
+            <p style=" display: flex; font-weight: bold; justify-content: space-between; padding: 0 48px; "><b>xxxxxxxxxxxx</b><span>@(Session["datawise"]!=null? Session["datawise"].ToString():datet)</span></p>
+            @*<p style=" display: flex; font-weight: bold; justify-content: space-between; padding: 0 48px; "><b>@Model.LATTERNOSerice</b><span>@datet</span></p>*@
+        </div>
+        <div class="tspace">
+            <table>
+
+                <thead>
+                    <tr>
+                        <td>
+                            <!--place holder for the fixed-position header-->
+                            <div class="page-header-space"></div>
+                        </td>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>
+                            <!--*** CONTENT GOES HERE ***-->
+                            <div class="page">
+                                @Html.Raw(Model.LatterData)
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <td>
+                            <!--place holder for the fixed-position footer-->
+                            <div class="page-footer-space"></div>
+                        </td>
+                    </tr>
+                </tfoot>
+
+            </table>
+        </div>
+        <div class="page-footer">
+            <div>
+                <img src="~/Content/assets/img/d.jpg" style=" margin-bottom: -1px;" />
+                <img src="~/Content/assets/img/footer.png" style=" margin-top: 0px;" />
+            </div>
+        </div>
+    </div>
+    <script>
+
+        window.print();
+        window.onafterprint = function (event) {
+            var url = '@Url.Action("LetterRequest", "Home", new { id = Model.ID })';
+           window.location.href = url;
+        };
+    </script>
+</body>
+
+</html>
+
+

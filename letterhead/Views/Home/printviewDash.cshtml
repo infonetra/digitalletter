@@ -29,7 +29,7 @@
                 </button>*@
         </div>
         <div class="page-headernew">
-            <p style=" display: flex; font-weight: bold; justify-content: space-between; padding: 0 48px; "><b>@Model.LATTERNOSerice</b><span>@(Session["datawise"]!=null? Session["datawise"].ToString():datet)</span></p>
+            <p style=" display: flex; font-weight: bold; justify-content: space-between; padding: 0 48px; "><b>xxxxxxxxxxxx</b><span>@(Session["datawise"]!=null? Session["datawise"].ToString():datet)</span></p>
             @*<p style=" display: flex; font-weight: bold; justify-content: space-between; padding: 0 48px; "><b>@Model.LATTERNOSerice</b><span>@datet</span></p>*@
         </div>
         <div class="tspace">
@@ -77,11 +77,12 @@
 
         window.print();
         window.onafterprint = function (event) {
-            var url = '@Url.Action("RequestReceived", "Home", new { id = Model.ID })';
+            var url = '@Url.Action("Reports", "Home")';
            window.location.href = url;
         };
     </script>
 </body>
 
 </html>
+
 
