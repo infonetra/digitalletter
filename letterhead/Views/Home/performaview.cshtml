@@ -1,7 +1,9 @@
 ﻿@model letterhead.Models.latterrvm
 @{
     Layout = null;
-    var datet = DateTime.Now.ToString("dd-MM-yyyy");
+    //var datet = DateTime.Now.ToString("dd-MM-yyyy");
+    var datef = Model.ApproveDate.ToString();
+    var datet = DateTime.Parse(datef).ToString("dd-MM-yyyy");
 }
 <!DOCTYPE html>
 <html>
@@ -12,6 +14,9 @@
 
 <body>
     <style>
+        p {
+            margin: 0;
+        }
         .textupercase {
             text-transform: uppercase;
         }
@@ -25,7 +30,7 @@
     </style>
     <div class="maindiv">
         <div class="page-header" style="text-align: center">
-            <img src="~/Content/assets/img/topnew.jpg" style="margin-top:-16px;" />
+            <img src="~/Content/assets/img/topnew.jpg" style="margin-top:-28px;" />
             @*<p style=" display: flex; font-weight: bold; justify-content: space-between; padding: 0 58px; "><b>@Model.LATTERNOSerice</b><span>@datet</span></p>*@
             @*<br />*@
             @*<button type="button" onClick="window.print()" style="background: pink; position: absolute; bottom: 0;">

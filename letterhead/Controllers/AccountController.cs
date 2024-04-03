@@ -89,19 +89,19 @@ namespace letterhead.Controllers
         public ActionResult UpdatePwd(string username = null, string password = null)
         {
             int userid = Convert.ToInt32(Session["userid"]);
-            if (username != null && password != null)
+            if (password != null)
             {
                 var auth = db.Mst_USER.Where(x => x.ISACTIVE == true && x.ID== userid).FirstOrDefault();
                 if(auth != null)
                 {
-                    if (auth.EMPCODE == username && auth.USERPWD == password)
+                    if (auth.USERPWD == password)
                     {
                         TempData["error"] = "Please Set Another Password! Thanks";
                         return View();
                     }
                 }
                 
-                auth.EMPCODE = username;
+                //auth.EMPCODE = username;
                 auth.USERPWD=password;
                 auth.OneTimeUser = false;
                 db.SaveChanges();

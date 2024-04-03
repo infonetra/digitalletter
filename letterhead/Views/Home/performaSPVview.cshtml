@@ -1,7 +1,9 @@
 ﻿@model letterhead.Models.latterrvm
 @{
     Layout = null;
-    var datet = DateTime.Now.ToString("dd-MM-yyyy");
+    //var datet = DateTime.Now.ToString("dd-MM-yyyy");
+    var datef = Model.ApproveDate.ToString();
+    var datet = DateTime.Parse(datef).ToString("dd-MM-yyyy");
 }
 
 <!DOCTYPE html>

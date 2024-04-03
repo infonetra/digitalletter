@@ -78,8 +78,8 @@
                                             <a title="View" href="@Url.Action("printview", "Home", new {id=item.ID})"><i class="bi bi-eye-fill"></i></a>
                                             <span>|</span>
                                             <a title="Edit" href="@Url.Action("Performa", "Home", new {id=@item.ID})"><i class="bi bi-pencil"></i></a>
-                                            <span>| </span>
-                                            <a title="Print & Download" href="@Url.Action("performaview", "Home", new {id=@item.ID})"> <i class="bi bi-printer"></i></a>
+                                            @*<span>| </span>
+                                            <a title="Print & Download" href="@Url.Action("performaview", "Home", new {id=@item.ID})"> <i class="bi bi-printer"></i></a>*@
                                             <span>|</span>
                                             <a title="Log" onclick="getempattendance(this)" item-id="@item.ID" data-bs-toggle="modal" data-bs-target="#searchModal"> <i class="bi bi-ticket-detailed"></i></a>
                                         }

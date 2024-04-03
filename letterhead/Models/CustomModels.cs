@@ -85,6 +85,7 @@ namespace letterhead.Models
         public string EMPCODE { get; set; }
         public string LATTERNOSerice { get; set; }
         public string LatterData { get; set; }
+        public string FinanceYear { get; set; }
         public string REMARK { get; set; }
         public string FULLNAME { get; set; }     
         public Nullable<int> SITEID { get; set; }
@@ -98,6 +99,7 @@ namespace letterhead.Models
         public Nullable<bool> ISACTIVE { get; set; }
         public Nullable<int> CREATEBY { get; set; }
         public Nullable<System.DateTime> CRAETEDATE { get; set; }
+        public Nullable<System.DateTime> ApproveDate { get; set; }
         public Nullable<int> StatusID { get; set; }
         public string StatusData { get; set; }
         public Nullable<bool> isapv { get; set; }

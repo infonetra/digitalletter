@@ -25,6 +25,8 @@ namespace letterhead.Models
         public Nullable<int> StatusId { get; set; }
         public Nullable<bool> IsSpv { get; set; }
         public Nullable<int> SPVID { get; set; }
+        public string FinanceYear { get; set; }
+        public Nullable<System.DateTime> ApproveDate { get; set; }
         public Nullable<bool> ISACTIVE { get; set; }
         public Nullable<int> CREATEBY { get; set; }
         public Nullable<System.DateTime> CRAETEDATE { get; set; }

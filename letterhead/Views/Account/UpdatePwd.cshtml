@@ -64,18 +64,11 @@
                                 <div class="card-body">
 
                                     <div class="pt-4 pb-2">
-                                        <p class="card-title text-center pb-0 fs-4">One Time User and Password Update</p>
-                                        <p class="text-center small" style="color:darkred;">Please Set New username & password to login</p>
+                                        <p class="card-title text-center pb-0 fs-4">One Time Password Update</p>
+                                        <p class="text-center small" style="color:darkred;">Please Set New password to login</p>
                                     </div>
                                     @using (Html.BeginForm("UpdatePwd", "Account", FormMethod.Post, new { @class = "row g-3 needs-validation", @novalidate = "novalidate" }))
-                                    {
-                                        <div class="col-12">
-                                            <p class="small" style="margin-bottom:0;">Username(EMPCODE)</p>
-                                            <div class="input-group has-validation">
-                                                <input type="text" name="username" class="form-control" id="username" required placeholder="Username">
-                                                <div class="invalid-feedback">Please Set your username.</div>
-                                            </div>
-                                        </div>
+                                    {                                      
 
                                         <div class="col-12">
                                             <p class="small" style="margin-bottom:0;">Password</p>

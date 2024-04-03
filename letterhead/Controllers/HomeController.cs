@@ -62,9 +62,9 @@ namespace letterhead.Controllers
                                 FULLNAME = user.FULLNAME,
                                 LATTERNO = later.LATTERNO,
                                 LatterData = later.LatterData,
-                                Department = dept.DEPARTMENT,
+                                Department = dept.DEPARTMENT,                               
                                 DeptID = dept.ID,
-                                LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/"+later.FinanceYear+"/" + later.LATTERNO.ToString()),
                                 REMARK = later.REMARK,
                                 TITLE = site.TITLE,
                                 SITEID = site.ID,
@@ -92,7 +92,7 @@ namespace letterhead.Controllers
                                 LatterData = later.LatterData,
                                 Department = dept.DEPARTMENT,
                                 DeptID = dept.ID,
-                                LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/"+later.FinanceYear+"/" + later.LATTERNO.ToString()),
                                 REMARK = later.REMARK,
                                 TITLE = site.TITLE,
                                 SITEID = site.ID,
@@ -1443,7 +1443,7 @@ namespace letterhead.Controllers
                             LatterData = later.LatterData,
                             Department = dept.DEPARTMENT,
                             DeptID = dept.ID,
-                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/"+later.FinanceYear+"/" + later.LATTERNO.ToString()),
                             REMARK = later.REMARK,
                             TITLE = site.TITLE,
                             SITEID = site.ID,
@@ -1474,7 +1474,7 @@ namespace letterhead.Controllers
                             LatterData = later.LatterData,
                             Department = dept.DEPARTMENT,
                             DeptID = dept.ID,
-                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/"+later.FinanceYear+"/" + later.LATTERNO.ToString()),
                             REMARK = later.REMARK,
                             TITLE = site.TITLE,
                             SITEID = site.ID,
@@ -1530,7 +1530,7 @@ namespace letterhead.Controllers
                                     StatusID=later.StatusId,
                                     Department=dept.DEPARTMENT,
                                     DeptID=dept.ID,
-                                    LATTERNOSerice= ("HGIEL/" + site.TITLE+ "/" +dept.DEPARTMENT+ "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                    LATTERNOSerice= ("HGIEL/" + site.TITLE+ "/" +dept.DEPARTMENT+ "/" + subdept.SubDEPARTMENT + "/"+later.FinanceYear+"/" + later.LATTERNO.ToString()),
                                     REMARK= ltype.TITLE,
                                     TITLE = site.TITLE,
                                     SITEID=site.ID,
@@ -1586,7 +1586,7 @@ namespace letterhead.Controllers
                                     StatusID = later.StatusId,
                                     Department = dept.DEPARTMENT,
                                     DeptID = dept.ID,
-                                    LATTERNOSerice = (spvm.StartName+ "/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                    LATTERNOSerice = (spvm.StartName+ "/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/"+later.FinanceYear+"/" + later.LATTERNO.ToString()),
                                     REMARK = ltype.TITLE,
                                     TITLE = site.TITLE,
                                     SITEID = site.ID,
@@ -1658,10 +1658,8 @@ namespace letterhead.Controllers
                                         Text = l.TITLE.ToString()
                                     }).ToList();
                     var date = new DateTime(DateTime.Now.Year, 4, 6);
-                    //int lastinsert = db.LatterRequests.Where(a => a.USERID == userid && a.IsSpv==false).Count();
-                    LatterRequest latter = new LatterRequest();
-                    latter.LATTERNO = Convert.ToString(0);
-                    return View(latter);
+                    //int lastinsert = db.LatterRequests.Where(a => a.USERID == userid && a.IsSpv==false).Count();               
+                    return View();
                 }
                 else
                 {
@@ -1682,11 +1680,17 @@ namespace letterhead.Controllers
             {
                 if (Session["userid"] != null && Session["userrole"].ToString() == "2")
                 {
+                    if (Convert.ToInt32(model.LATTERNO) <= 0)
+                    {
+                        TempData["error"] = "Letter Issued Failed";
+                        return RedirectToAction("LetterRequest", "Home");
+                    }
                     ViewBag.ltype = db.LetterCrateTypes.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE, Value = x.ID.ToString() }).ToList(); ;
                     model.USERID = Convert.ToInt32(Session["userid"].ToString());
                     model.CREATEBY = 1;
                     model.ISACTIVE = true;
                     model.StatusId = 5;
+                    model.FinanceYear = "2024-25";
                     model.IsSpv = false;
                     model.CRAETEDATE = DateTime.Now;
                     db.LatterRequests.Add(model);
@@ -1760,10 +1764,10 @@ namespace letterhead.Controllers
                                         Text = l.TITLE.ToString()
                                     }).ToList();
                     var date = new DateTime(DateTime.Now.Year, 4, 6);
-                    int lastinsert = db.LatterSPVRequests.Where(a => a.USERID == userid).Count();
-                    LatterRequest latter = new LatterRequest();
-                    latter.LATTERNO = Convert.ToString(lastinsert + 1);
-                    return View(latter);
+                    //int lastinsert = db.LatterSPVRequests.Where(a => a.USERID == userid).Count();
+                    //LatterRequest latter = new LatterRequest();
+                    //latter.LATTERNO = Convert.ToString(lastinsert + 1);
+                    return View();
                 }
                 else
                 {
@@ -1784,6 +1788,11 @@ namespace letterhead.Controllers
             {
                 if (Session["userid"] != null && Session["userrole"].ToString() == "2")
                 {
+                    if (Convert.ToInt32(model.LATTERNO) <= 0)
+                    {
+                        TempData["error"] = "Letter Issued Failed";
+                        return RedirectToAction("LetterSpvRequest", "Home");
+                    }
                     int userid = Convert.ToInt32(Session["userid"]);
                     ViewBag.ltype = db.LetterCrateTypes.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE, Value = x.ID.ToString() }).ToList(); ;
                     ViewBag.spvtype = (from p in db.AssignSPVs
@@ -1796,6 +1805,7 @@ namespace letterhead.Controllers
                                        }).ToList();
                     model.USERID = Convert.ToInt32(Session["userid"].ToString());
                     model.CREATEBY = 1;
+                    model.FinanceYear = "2024-25";
                     model.ISACTIVE = true;
                     model.StatusId = 5;
                     model.IsSpv = true;
@@ -2062,10 +2072,11 @@ namespace letterhead.Controllers
                                     FULLNAME = user.FULLNAME,
                                     LATTERNO = later.LATTERNO,
                                     LatterData = later.LatterData,
+                                    ApproveDate=later.ApproveDate,
                                     Department = dept.DEPARTMENT,
                                     StatusID = later.StatusId,
                                     DeptID = dept.ID,
-                                    LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                    LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/"+later.FinanceYear+"/" + later.LATTERNO.ToString()),
                                     REMARK = later.REMARK,
                                     TITLE = site.TITLE,
                                     SITEID = site.ID,
@@ -2099,7 +2110,7 @@ namespace letterhead.Controllers
                                 join user in db.Mst_USER on later.USERID equals user.ID
                                 join site in db.Mst_SITE on later.LocID equals site.ID
                                 join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
-                                join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID
+                                join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID                               
                                 where later.ID == id
                                 select new latterrvm
                                 {
@@ -2109,8 +2120,9 @@ namespace letterhead.Controllers
                                     LatterData = later.LatterData,
                                     Department = dept.DEPARTMENT,
                                     StatusID=later.StatusId,
+                                    ApproveDate=later.ApproveDate,
                                     DeptID = dept.ID,
-                                    LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                    LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/"+later.FinanceYear+"/" + later.LATTERNO.ToString()),
                                     REMARK = later.REMARK,
                                     TITLE = site.TITLE,
                                     SITEID = site.ID,
@@ -2154,10 +2166,11 @@ namespace letterhead.Controllers
                                     LATTERNO = later.LATTERNO,
                                     LatterData = later.LatterData,
                                     Department = dept.DEPARTMENT,
+                                    ApproveDate=later.ApproveDate,
                                     StatusID = later.StatusId,
                                     svptitle=SPVM.TITLE,
                                     DeptID = dept.ID,
-                                    LATTERNOSerice = (SPVM.StartName+"/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                    LATTERNOSerice = (SPVM.StartName+"/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/"+later.FinanceYear+"/" + later.LATTERNO.ToString()),
                                     REMARK = later.REMARK,
                                     TITLE = site.TITLE,
                                     SITEID = site.ID,
@@ -2203,9 +2216,10 @@ namespace letterhead.Controllers
                             FULLNAME = user.FULLNAME,
                             LATTERNO = later.LATTERNO,
                             LatterData = later.LatterData,
+                            ApproveDate=later.ApproveDate,
                             Department = dept.DEPARTMENT,
                             DeptID = dept.ID,
-                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/"+later.FinanceYear+"/" + later.LATTERNO.ToString()),
                             REMARK = later.REMARK,
                             TITLE = site.TITLE,
                             SITEID = site.ID,
@@ -2236,7 +2250,7 @@ namespace letterhead.Controllers
                             LatterData = later.LatterData,
                             Department = dept.DEPARTMENT,
                             DeptID = dept.ID,
-                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/"+later.FinanceYear+"/" + later.LATTERNO.ToString()),
                             REMARK = later.REMARK,
                             TITLE = site.TITLE,
                             SITEID = site.ID,
@@ -2272,7 +2286,7 @@ namespace letterhead.Controllers
                             LatterData = later.LatterData,
                             Department = dept.DEPARTMENT,
                             DeptID = dept.ID,
-                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/"+later.FinanceYear+"/" + later.LATTERNO.ToString()),
                             REMARK = later.REMARK,
                             TITLE = site.TITLE,
                             SITEID = site.ID,
@@ -2308,9 +2322,10 @@ namespace letterhead.Controllers
                             LATTERNO = later.LATTERNO,
                             LatterData = later.LatterData,
                             Department = dept.DEPARTMENT,
+                            ApproveDate=later.ApproveDate,
                             svptitle=spvm.TITLE,
                             DeptID = dept.ID,
-                            LATTERNOSerice = (spvm.StartName +"/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                            LATTERNOSerice = (spvm.StartName +"/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/"+later.FinanceYear+"/" + later.LATTERNO.ToString()),
                             REMARK = later.REMARK,
                             TITLE = site.TITLE,
                             SITEID = site.ID,
@@ -2647,7 +2662,7 @@ namespace letterhead.Controllers
                                     StatusID=later.StatusId,
                                     Department = dept.DEPARTMENT,
                                     DeptID = dept.ID,
-                                    LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                    LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/"+later.FinanceYear+"/" + later.LATTERNO.ToString()),
                                     REMARK = later.REMARK,
                                     TITLE = site.TITLE,
                                     SITEID = site.ID,
@@ -2697,7 +2712,7 @@ namespace letterhead.Controllers
                                     StatusID = later.StatusId,
                                     Department = dept.DEPARTMENT,
                                     DeptID = dept.ID,
-                                    LATTERNOSerice = (spvm.StartName+"/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/2023-24/" + later.LATTERNO.ToString()),
+                                    LATTERNOSerice = (spvm.StartName+"/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/"+later.FinanceYear+"/" + later.LATTERNO.ToString()),
                                     REMARK = later.REMARK,
                                     TITLE = site.TITLE,
                                     SITEID = site.ID,
@@ -2759,6 +2774,7 @@ namespace letterhead.Controllers
             try
             {
                 var data = db.LatterRequests.Where(a => a.ID == id).FirstOrDefault();
+                data.ApproveDate = DateTime.Now;
                 data.StatusId = 4;
                 db.SaveChanges();
                 //int cid = Convert.ToInt32(Session["userid"].ToString());                
@@ -2821,6 +2837,7 @@ namespace letterhead.Controllers
             try
             {
                 var data = db.LatterSPVRequests.Where(a => a.ID == id).FirstOrDefault();
+                data.ApproveDate = DateTime.Now;
                 data.StatusId = 4;
                 db.SaveChanges();
                 int cid = Convert.ToInt32(Session["userid"].ToString());
@@ -3070,13 +3087,32 @@ namespace letterhead.Controllers
 
 
         [HttpPost]
-        public ActionResult getLno(int did = 0)
+        public ActionResult getLno(int did = 0,int lid=0)
         {
             try
             {
                 //var locations = db.Mst108_COSTCENTER.Where(x => x.ISACTIVE == true && x.BusinessID == bid).Select(x => new SelectListItem { Text = x.COSTCENTER, Value = x.LocationID.ToString() }).ToList();
 
-                var subdept = db.LatterRequests.Where(a=>a.DeptID==did).Count();
+                var subdept = db.LatterRequests.Where(a=>a.DeptID==did && a.LocID== lid && a.FinanceYear!="2023-24").Count();
+                int lno = Convert.ToInt32(subdept + 1);
+
+                return Json(data: new { success = true, lno = lno }, JsonRequestBehavior.AllowGet);
+
+            }
+            catch (Exception ex)
+            {
+                return Json(data: new { success = false }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult getsLno(int did = 0, int lid = 0)
+        {
+            try
+            {
+                //var locations = db.Mst108_COSTCENTER.Where(x => x.ISACTIVE == true && x.BusinessID == bid).Select(x => new SelectListItem { Text = x.COSTCENTER, Value = x.LocationID.ToString() }).ToList();
+
+                var subdept = db.LatterSPVRequests.Where(a => a.DeptID == did && a.LocID == lid && a.FinanceYear!="2023-24").Count();
                 int lno = Convert.ToInt32(subdept + 1);
 
                 return Json(data: new { success = true, lno = lno }, JsonRequestBehavior.AllowGet);

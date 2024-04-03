@@ -5,6 +5,7 @@
     top: 26mm;
     width: 100%;
     bottom:20mm;
+
     /*border-bottom: 1px solid black;*/ /* for demo */
     /*background: yellow;*/ /* for demo */
 }
@@ -24,6 +25,7 @@
     position: fixed;
     bottom: 0mm;
     width: 100%;
+    margin-left:-8px;
     /*border-top: 1px solid black;*/ /* for demo */
      /*background: yellow;*/  /*for demo */
 }
@@ -34,15 +36,16 @@ img {
     position: fixed;
     top: 0mm;
     width: 100%;
+    margin-left: -8px;
     /*border-bottom: 1px solid black;*/ /* for demo */
-    /*background: yellow;*/ /* for demo */  
+    /*background: yellow;*/ /* for demo */
 }
 .tspace {
   /* margin-top:120px;*/
 }
 .page {
     /*page-break-after: always;*/
-    line-height: 2;
+   /* line-height: 2;*/
     padding: 0cm 1cm 1cm 1.5cm;
 }
 

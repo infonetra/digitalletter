@@ -51,6 +51,8 @@
           <Property Name="StatusId" Type="int" />
           <Property Name="IsSpv" Type="bit" />
           <Property Name="SPVID" Type="int" />
+          <Property Name="FinanceYear" Type="nvarchar" MaxLength="100" />
+          <Property Name="ApproveDate" Type="datetime" />
           <Property Name="ISACTIVE" Type="bit" />
           <Property Name="CREATEBY" Type="int" />
           <Property Name="CRAETEDATE" Type="datetime" />
@@ -70,6 +72,8 @@
           <Property Name="StatusId" Type="int" />
           <Property Name="IsSpv" Type="bit" />
           <Property Name="SPVID" Type="int" />
+          <Property Name="FinanceYear" Type="nvarchar" MaxLength="100" />
+          <Property Name="ApproveDate" Type="datetime" />
           <Property Name="ISACTIVE" Type="bit" />
           <Property Name="CREATEBY" Type="int" />
           <Property Name="CRAETEDATE" Type="datetime" />
@@ -300,10 +304,10 @@
           </FunctionImport>
           <EntitySet Name="Mst_SITE" EntityType="letterheadModel.Mst_SITE" />
           <EntitySet Name="DeptAssignUsers" EntityType="letterheadModel.DeptAssignUser" />
-          <EntitySet Name="LatterRequests" EntityType="letterheadModel.LatterRequest" />
-          <EntitySet Name="LatterSPVRequests" EntityType="letterheadModel.LatterSPVRequest" />
           <EntitySet Name="LocationAssignUsers" EntityType="letterheadModel.LocationAssignUser" />
           <EntitySet Name="Mst_SUBDEPARTMENT" EntityType="letterheadModel.Mst_SUBDEPARTMENT" />
+          <EntitySet Name="LatterRequests" EntityType="letterheadModel.LatterRequest" />
+          <EntitySet Name="LatterSPVRequests" EntityType="letterheadModel.LatterSPVRequest" />
         </EntityContainer>
         <EntityType Name="Mst_Role">
           <Key>
@@ -474,44 +478,6 @@
           <Property Name="CREATEDATE" Type="DateTime" Precision="3" />
           <Property Name="IsActive" Type="Boolean" />
         </EntityType>
-        <EntityType Name="LatterRequest">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="USERID" Type="Int32" />
-          <Property Name="DeptID" Type="Int32" />
-          <Property Name="LocID" Type="Int32" />
-          <Property Name="LATTERNO" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="LetterType" Type="Int32" />
-          <Property Name="REMARK" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="LatterData" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="StatusId" Type="Int32" />
-          <Property Name="IsSpv" Type="Boolean" />
-          <Property Name="SPVID" Type="Int32" />
-          <Property Name="ISACTIVE" Type="Boolean" />
-          <Property Name="CREATEBY" Type="Int32" />
-          <Property Name="CRAETEDATE" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="LatterSPVRequest">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="USERID" Type="Int32" />
-          <Property Name="DeptID" Type="Int32" />
-          <Property Name="LocID" Type="Int32" />
-          <Property Name="LATTERNO" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="LetterType" Type="Int32" />
-          <Property Name="REMARK" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="LatterData" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="StatusId" Type="Int32" />
-          <Property Name="IsSpv" Type="Boolean" />
-          <Property Name="SPVID" Type="Int32" />
-          <Property Name="ISACTIVE" Type="Boolean" />
-          <Property Name="CREATEBY" Type="Int32" />
-          <Property Name="CRAETEDATE" Type="DateTime" Precision="3" />
-        </EntityType>
         <EntityType Name="LocationAssignUser">
           <Key>
             <PropertyRef Name="ID" />
@@ -534,6 +500,48 @@
           <Property Name="ISACTIVE" Type="Boolean" />
           <Property Name="CREATEBY" Type="Int32" />
           <Property Name="CREATEDATE" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="LatterRequest">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="USERID" Type="Int32" />
+          <Property Name="DeptID" Type="Int32" />
+          <Property Name="LocID" Type="Int32" />
+          <Property Name="LATTERNO" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="LetterType" Type="Int32" />
+          <Property Name="REMARK" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="LatterData" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="StatusId" Type="Int32" />
+          <Property Name="IsSpv" Type="Boolean" />
+          <Property Name="SPVID" Type="Int32" />
+          <Property Name="FinanceYear" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ApproveDate" Type="DateTime" Precision="3" />
+          <Property Name="ISACTIVE" Type="Boolean" />
+          <Property Name="CREATEBY" Type="Int32" />
+          <Property Name="CRAETEDATE" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="LatterSPVRequest">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="USERID" Type="Int32" />
+          <Property Name="DeptID" Type="Int32" />
+          <Property Name="LocID" Type="Int32" />
+          <Property Name="LATTERNO" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="LetterType" Type="Int32" />
+          <Property Name="REMARK" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="LatterData" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="StatusId" Type="Int32" />
+          <Property Name="IsSpv" Type="Boolean" />
+          <Property Name="SPVID" Type="Int32" />
+          <Property Name="FinanceYear" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ApproveDate" Type="DateTime" Precision="3" />
+          <Property Name="ISACTIVE" Type="Boolean" />
+          <Property Name="CREATEBY" Type="Int32" />
+          <Property Name="CRAETEDATE" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -727,46 +735,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="LatterRequests">
-            <EntityTypeMapping TypeName="letterheadModel.LatterRequest">
-              <MappingFragment StoreEntitySet="LatterRequest">
-                <ScalarProperty Name="CRAETEDATE" ColumnName="CRAETEDATE" />
-                <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
-                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-                <ScalarProperty Name="SPVID" ColumnName="SPVID" />
-                <ScalarProperty Name="IsSpv" ColumnName="IsSpv" />
-                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
-                <ScalarProperty Name="LatterData" ColumnName="LatterData" />
-                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
-                <ScalarProperty Name="LetterType" ColumnName="LetterType" />
-                <ScalarProperty Name="LATTERNO" ColumnName="LATTERNO" />
-                <ScalarProperty Name="LocID" ColumnName="LocID" />
-                <ScalarProperty Name="DeptID" ColumnName="DeptID" />
-                <ScalarProperty Name="USERID" ColumnName="USERID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="LatterSPVRequests">
-            <EntityTypeMapping TypeName="letterheadModel.LatterSPVRequest">
-              <MappingFragment StoreEntitySet="LatterSPVRequest">
-                <ScalarProperty Name="CRAETEDATE" ColumnName="CRAETEDATE" />
-                <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
-                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
-                <ScalarProperty Name="SPVID" ColumnName="SPVID" />
-                <ScalarProperty Name="IsSpv" ColumnName="IsSpv" />
-                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
-                <ScalarProperty Name="LatterData" ColumnName="LatterData" />
-                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
-                <ScalarProperty Name="LetterType" ColumnName="LetterType" />
-                <ScalarProperty Name="LATTERNO" ColumnName="LATTERNO" />
-                <ScalarProperty Name="LocID" ColumnName="LocID" />
-                <ScalarProperty Name="DeptID" ColumnName="DeptID" />
-                <ScalarProperty Name="USERID" ColumnName="USERID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="LocationAssignUsers">
             <EntityTypeMapping TypeName="letterheadModel.LocationAssignUser">
               <MappingFragment StoreEntitySet="LocationAssignUser">
@@ -788,6 +756,50 @@
                 <ScalarProperty Name="SubDEPARTMENT" ColumnName="SubDEPARTMENT" />
                 <ScalarProperty Name="CODE" ColumnName="CODE" />
                 <ScalarProperty Name="DeptID" ColumnName="DeptID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LatterRequests">
+            <EntityTypeMapping TypeName="letterheadModel.LatterRequest">
+              <MappingFragment StoreEntitySet="LatterRequest">
+                <ScalarProperty Name="CRAETEDATE" ColumnName="CRAETEDATE" />
+                <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+                <ScalarProperty Name="ApproveDate" ColumnName="ApproveDate" />
+                <ScalarProperty Name="FinanceYear" ColumnName="FinanceYear" />
+                <ScalarProperty Name="SPVID" ColumnName="SPVID" />
+                <ScalarProperty Name="IsSpv" ColumnName="IsSpv" />
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="LatterData" ColumnName="LatterData" />
+                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+                <ScalarProperty Name="LetterType" ColumnName="LetterType" />
+                <ScalarProperty Name="LATTERNO" ColumnName="LATTERNO" />
+                <ScalarProperty Name="LocID" ColumnName="LocID" />
+                <ScalarProperty Name="DeptID" ColumnName="DeptID" />
+                <ScalarProperty Name="USERID" ColumnName="USERID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LatterSPVRequests">
+            <EntityTypeMapping TypeName="letterheadModel.LatterSPVRequest">
+              <MappingFragment StoreEntitySet="LatterSPVRequest">
+                <ScalarProperty Name="CRAETEDATE" ColumnName="CRAETEDATE" />
+                <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+                <ScalarProperty Name="ApproveDate" ColumnName="ApproveDate" />
+                <ScalarProperty Name="FinanceYear" ColumnName="FinanceYear" />
+                <ScalarProperty Name="SPVID" ColumnName="SPVID" />
+                <ScalarProperty Name="IsSpv" ColumnName="IsSpv" />
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="LatterData" ColumnName="LatterData" />
+                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+                <ScalarProperty Name="LetterType" ColumnName="LetterType" />
+                <ScalarProperty Name="LATTERNO" ColumnName="LATTERNO" />
+                <ScalarProperty Name="LocID" ColumnName="LocID" />
+                <ScalarProperty Name="DeptID" ColumnName="DeptID" />
+                <ScalarProperty Name="USERID" ColumnName="USERID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
