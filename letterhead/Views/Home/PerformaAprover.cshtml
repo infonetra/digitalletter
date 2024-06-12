@@ -28,6 +28,7 @@
                     @Html.HiddenFor(a => a.ISACTIVE)
                     @Html.HiddenFor(a => a.CREATEBY)
                     @Html.HiddenFor(a => a.CRAETEDATE)
+                     @Html.HiddenFor(a => a.ApproveDate)
                     <div class="col-12">
                         <a class="btn btn-primary btnSubmit" onclick="datasave()">Submit</a>
                         <a class="btn btn-danger" href="@Url.Action("Dashboard","Home")">Cancel</a>

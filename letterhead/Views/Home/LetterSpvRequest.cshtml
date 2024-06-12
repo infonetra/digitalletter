@@ -72,7 +72,7 @@
                                     <td>@item.LATTERNOSerice</td>
 
                                     <td>
-                                        @if (item.StatusID == 5 || item.StatusID == 3)
+                                        @if (item.StatusID == 5 || item.StatusID == 6 || item.StatusID == 3)
                                         {                                         
                                             <a title="View" href="@Url.Action("printviewSPV", "Home", new {id=item.ID})"><i class="bi bi-eye-fill"></i></a>
                                             <span>|</span>

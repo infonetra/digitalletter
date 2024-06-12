@@ -345,6 +345,8 @@
     <Content Include="Content\assets\img\favicon.png" />
     <Content Include="Content\assets\img\footer.png" />
     <Content Include="Content\assets\img\HGI-EL Pad.jpg" />
+    <Content Include="Content\assets\img\LeaterHeader.png" />
+    <Content Include="Content\assets\img\LetterFooter.png" />
     <Content Include="Content\assets\img\line.png" />
     <Content Include="Content\assets\img\logo.png" />
     <Content Include="Content\assets\img\not-found.svg" />

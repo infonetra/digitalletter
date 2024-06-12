@@ -39,9 +39,7 @@ namespace letterhead.Controllers
             {
                 Session["spvshow"] = "0";
             }
-            ViewBag.totalsite = db.Mst_SITE.Where(a => a.ISACTIVE == true).Count();
-            ViewBag.totaluser=db.Mst_USER.Where(a=>a.ISACTIVE == true).Count();
-            ViewBag.totalatter=db.LatterRequests.Where(a => a.ISACTIVE == true).Count();
+           
             //ViewBag.SITE = db.Mst_SITE.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE + "/" + x.SITENO + "/" + x.SITENONAME, Value = x.ID.ToString() }).ToList();
             var data = new List<latterrvm>();
             var settingdata = db.settings.FirstOrDefault();
@@ -50,7 +48,10 @@ namespace letterhead.Controllers
             Session["fsize"] = settingdata.FONTSIZE;
             if (role==2)
             {
-                 data = (from later in db.LatterRequests
+                ViewBag.totalsite = db.LocationAssignUsers.Where(a => a.IsActive == true && a.USERID== userid).Count();
+                ViewBag.totaluser = db.Mst_USER.Where(a => a.ISACTIVE == true).Count();
+                ViewBag.totalatter = db.LatterRequests.Where(a => a.ISACTIVE == true && a.USERID==userid).Count();
+                data = (from later in db.LatterRequests
                             join user in db.Mst_USER on later.USERID equals user.ID
                             join site in db.Mst_SITE on later.LocID equals site.ID
                             join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
@@ -79,7 +80,10 @@ namespace letterhead.Controllers
             }
             else
             {
-                 data = (from later in db.LatterRequests
+                ViewBag.totalsite = db.Mst_SITE.Where(a => a.ISACTIVE == true).Count();
+                ViewBag.totaluser = db.Mst_USER.Where(a => a.ISACTIVE == true).Count();
+                ViewBag.totalatter = db.LatterRequests.Where(a => a.ISACTIVE == true).Count();
+                data = (from later in db.LatterRequests
                             join user in db.Mst_USER on later.USERID equals user.ID
                             join site in db.Mst_SITE on later.LocID equals site.ID
                             join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
@@ -893,6 +897,7 @@ namespace letterhead.Controllers
                 {
                     var site = db.Mst_USER.Where(x => x.ID == model.ID).FirstOrDefault();
                     site.ID = model.ID;
+                    site.EMPCODE = model.EMPCODE;                  
                     site.FULLNAME = model.FULLNAME;
                     site.USERPWD = model.USERPWD;
                     site.USERNAME = model.USERNAME;
@@ -1299,7 +1304,7 @@ namespace letterhead.Controllers
                 if (Session["userid"] != null && Session["userrole"].ToString() == "1")
                 {
                     ViewBag.Department = db.Mst104_DEPARTMENT.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.DEPARTMENT, Value = x.ID.ToString() }).ToList();
-                    var codeexistcheck = db.Mst_SUBDEPARTMENT.Where(a => a.SubDEPARTMENT == model.SubDEPARTMENT).Count();
+                    var codeexistcheck = db.Mst_SUBDEPARTMENT.Where(a => a.SubDEPARTMENT == model.SubDEPARTMENT&& a.ISACTIVE==true).Count();
                     if (codeexistcheck > 0)
                     {
                         TempData["error"] = "Data Allready Exist!";
@@ -1434,7 +1439,7 @@ namespace letterhead.Controllers
                         join site in db.Mst_SITE on later.LocID equals site.ID
                         join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
                         join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID
-                        where later.ISACTIVE == true && (LocID != 0 ? site.ID == LocID : later.ID != 0) && (DeptID != 0 ? dept.ID == DeptID : later.ID != 0) && (sDate != "" && eDate != "" ? later.CRAETEDATE >= startDate || later.CRAETEDATE <= endDate : later.ISACTIVE == true)
+                        where later.ISACTIVE == true && (LocID != 0 ? site.ID == LocID : later.ID != 0) && (DeptID != 0 ? dept.ID == DeptID : later.ID != 0) && (sDate != "" && eDate != "" ? later.CRAETEDATE >= startDate && later.CRAETEDATE <= endDate : later.ISACTIVE == true)
                         select new latterrvm
                         {
                             ID = later.ID,
@@ -1455,6 +1460,11 @@ namespace letterhead.Controllers
                             CRAETEDATE = later.CRAETEDATE,
                             ISACTIVE = later.ISACTIVE
                         }).OrderByDescending(a => a.CRAETEDATE).ToList();
+
+                //if (sDate != "" && eDate != "")
+                //{
+                //    data = data.Where(x => x.CRAETEDATE >= startDate && x.CRAETEDATE <= endDate).ToList();
+                //}
                 return PartialView("_reportsdata", data);
             }
             if (role == 2)
@@ -1541,7 +1551,7 @@ namespace letterhead.Controllers
                                     CREATEBY = later.CREATEBY,
                                     CRAETEDATE = later.CRAETEDATE,
                                     ISACTIVE = later.ISACTIVE
-                                }).ToList();
+                                }).ToList().OrderByDescending(a=>a.CRAETEDATE);
                     return View(data);
                 }
                 else
@@ -1597,7 +1607,7 @@ namespace letterhead.Controllers
                                     CREATEBY = later.CREATEBY,
                                     CRAETEDATE = later.CRAETEDATE,
                                     ISACTIVE = later.ISACTIVE
-                                }).ToList();
+                                }).ToList().OrderByDescending(a=>a.CRAETEDATE);
                     return View(data);
                 }
                 else
@@ -1642,12 +1652,13 @@ namespace letterhead.Controllers
                     ViewBag.dept = (from d in db.Mst_SUBDEPARTMENT
                                             join da in db.DeptAssignUsers
                                             on d.ID equals da.DEPTID
-                                            where d.ISACTIVE == true && da.USERID == userid
+                                            where d.ISACTIVE == true && da.USERID == userid && da.IsActive==true
                                             select new SelectListItem
                                             {
                                                 Value = d.ID.ToString(),
                                                 Text = d.SubDEPARTMENT.ToString()
                                             }).ToList();
+
                     ViewBag.site = (from l in db.Mst_SITE
                                     join la in db.LocationAssignUsers
                                     on l.ID equals la.LocID
@@ -1748,7 +1759,7 @@ namespace letterhead.Controllers
                     ViewBag.dept = (from d in db.Mst_SUBDEPARTMENT
                                     join da in db.DeptAssignUsers
                                     on d.ID equals da.DEPTID
-                                    where d.ISACTIVE == true && da.USERID == userid
+                                    where d.ISACTIVE == true && da.USERID == userid && da.IsActive==true
                                     select new SelectListItem
                                     {
                                         Value = d.ID.ToString(),
@@ -1764,6 +1775,7 @@ namespace letterhead.Controllers
                                         Text = l.TITLE.ToString()
                                     }).ToList();
                     var date = new DateTime(DateTime.Now.Year, 4, 6);
+                    
                     //int lastinsert = db.LatterSPVRequests.Where(a => a.USERID == userid).Count();
                     //LatterRequest latter = new LatterRequest();
                     //latter.LATTERNO = Convert.ToString(lastinsert + 1);
@@ -1974,6 +1986,38 @@ namespace letterhead.Controllers
             }
         }
 
+        [HttpPost, ValidateInput(false)]
+        public ActionResult PerformaSaveDraft(string latterdata = null, int id = 0)
+        {
+            try
+            {
+                var data = db.LatterSPVRequests.Where(a => a.ID == id).FirstOrDefault();
+                data.LatterData = latterdata;
+                data.StatusId = 6;
+                db.SaveChanges();
+                int cid = Convert.ToInt32(Session["userid"].ToString());
+                db.loginsert(data.ID, "Save As Draft", 6, cid);
+
+                //var userdata = db.Mst_USER.Where(a => a.ID == cid).FirstOrDefault();
+                //var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
+                //var msgtemp = etemp.RequestSend(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
+                //mailsend(approver.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
+
+                TempData["success"] = "Thanks.";
+                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                errorlog err = new errorlog();
+                err.actionname = "PerformaSaveDraft";
+                err.errormessage = ex.Message;
+                err.createdate = DateTime.Now;
+                db.errorlogs.Add(err);
+                db.SaveChanges();
+                return Json(new { success = false }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
 
         [HttpPost, ValidateInput(false)]
         public ActionResult PerformadataEdit(string latterdata = null, int id = 0)
@@ -1982,6 +2026,7 @@ namespace letterhead.Controllers
             {
                 var data = db.LatterRequests.Where(a => a.ID == id).FirstOrDefault();
                 data.LatterData = latterdata;
+                data.ApproveDate = DateTime.Now;
                 data.StatusId = 4;
                 db.SaveChanges();
                 int? cid = data.USERID;
@@ -2673,7 +2718,7 @@ namespace letterhead.Controllers
                                     CREATEBY = later.CREATEBY,
                                     CRAETEDATE = later.CRAETEDATE,
                                     ISACTIVE = later.ISACTIVE
-                                }).OrderByDescending(a => a.CRAETEDATE).Take(5).ToList();
+                                }).OrderByDescending(a => a.CRAETEDATE).ToList();
                     return View(data);
                 }
                 else
@@ -2723,7 +2768,7 @@ namespace letterhead.Controllers
                                     CREATEBY = later.CREATEBY,
                                     CRAETEDATE = later.CRAETEDATE,
                                     ISACTIVE = later.ISACTIVE
-                                }).OrderByDescending(a => a.CRAETEDATE).Take(5).ToList();
+                                }).OrderByDescending(a => a.CRAETEDATE).ToList();
                     return View(data);
                 }
                 else
@@ -2743,6 +2788,7 @@ namespace letterhead.Controllers
             {
                 var data = db.LatterRequests.Where(a => a.ID == id).FirstOrDefault();
                 data.StatusId = 4;
+                data.ApproveDate = DateTime.Now;
                 db.SaveChanges();
                 int cid = Convert.ToInt32(Session["userid"].ToString());
                 db.loginsert(data.ID, "Approve", 4, cid);
