@@ -272,6 +272,12 @@
     <Compile Include="Models\errorlog.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\hgfoundation.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\LatterFoundationRequest.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\LatterRequest.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -344,6 +350,7 @@
     <Content Include="Content\assets\img\d.jpg" />
     <Content Include="Content\assets\img\favicon.png" />
     <Content Include="Content\assets\img\footer.png" />
+    <Content Include="Content\assets\img\hgfoundation.png" />
     <Content Include="Content\assets\img\HGI-EL Pad.jpg" />
     <Content Include="Content\assets\img\LeaterHeader.png" />
     <Content Include="Content\assets\img\LetterFooter.png" />
@@ -1339,6 +1346,15 @@
     <Content Include="Views\Home\EditSubDepartment.cshtml" />
     <Content Include="Views\Home\printviewDash.cshtml" />
     <Content Include="Views\Home\performaMail.cshtml" />
+    <Content Include="Views\Home\LetterFoundationRequest.cshtml" />
+    <Content Include="Views\Home\AddFoundationLetterRequest.cshtml" />
+    <Content Include="Views\Home\AssignHGFList.cshtml" />
+    <Content Include="Views\Home\AssignHGFAdd.cshtml" />
+    <Content Include="Views\Home\AssignHGFEdit.cshtml" />
+    <Content Include="Views\Home\printviewHGF.cshtml" />
+    <Content Include="Views\Home\RequestReceivedHGF.cshtml" />
+    <Content Include="Views\Home\PerformaHGF.cshtml" />
+    <Content Include="Views\Home\performaHGFview.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

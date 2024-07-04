@@ -1,8 +1,9 @@
-﻿
-@model letterhead.Models.latterrvm
+﻿@model letterhead.Models.latterrvm
 @{
     Layout = null;
-    var datet = DateTime.Now.ToString("dd-MM-yyyy");
+    //var datet = DateTime.Now.ToString("dd-MM-yyyy");
+    var datef = Model.ApproveDate.ToString();
+    var datet = DateTime.Parse(datef).ToString("dd-MM-yyyy");
 }
 
 <!DOCTYPE html>
@@ -23,10 +24,15 @@
     </style>
     <div class="maindiv">
         <div class="page-header" style="text-align: center">
-            <h2><b><u>@Model.svptitle</u></b></h2>
+            <img height="100" src="~/Content/assets/img/hgfoundation.png" /><br />
+            <b style="color:darkblue">Section 8 Company under the Companies Act, 2013</b><br />
+            <b>CIN</b>: U88900RJ2023NPL090763, <b>License No</b>: 150281<br />
+            <b>Tel- +91 0291-2515327, +91 6367212378</b><br />
+            <b>Email Id</b>- csr@hginfra.com
+            <hr style="text-align:center; width:80%">
         </div>
         <div class="page-headernew">
-            <p style=" display: flex; font-weight: bold; justify-content: space-between; padding: 0 48px; "><b>xxxxxxxxxxx</b><span>@(Session["datawise"]!=null? Session["datawise"].ToString():datet)</span></p>
+            <p style=" display: flex; font-weight: bold; justify-content: space-between; padding: 0 48px; "><b>@Model.LATTERNOSerice</b><span>@(Session["datawise"]!=null? Session["datawise"].ToString():datet)</span></p>
             @*<p style=" display: flex; font-weight: bold; justify-content: space-between; padding: 0 48px; "><b>@Model.LATTERNOSerice</b><span>@datet</span></p>*@
         </div>
         <div class="tspace">
@@ -66,8 +72,12 @@
         <div class="page-footer">
             <div style="text-align:center;">
                 <hr style="text-align:center; width:80%">
-                <p><b>Registered Office</b>- 14, Panchwati Colony, Ratanada, Jodhpur RJ 342001 IN</p>
-                <p><b>CIN:</b>U45209RJ2021PTC076546, <b>Email Id</b>- cs@hginfra.com <b>Tel</b>-0291-2515327</p>
+                <b>Registered Office</b>- 14, Panchwati Colony, Ratanada, Jodhpur RJ 342001 IN<br />
+                <b>PAN:</b>AAHCH0406M<br />
+                <b>80G Registration No.</b>: AAHCH0406MF2023101 (Provisional)<br />
+                <b>12A Registration No.</b>: AAHCH0406ME20231 (Provisional)<br />
+                <b>CSR Registration No.</b>: CSR00062051<br />
+
             </div>
         </div>
     </div>
@@ -75,7 +85,7 @@
 
         window.print();
         window.onafterprint = function (event) {
-            var url = '@Url.Action("RequestReceivedSPV", "Home")';
+            var url = '@Url.Action("LetterFoundationRequest", "Home")';
            window.location.href = url;
         };
     </script>

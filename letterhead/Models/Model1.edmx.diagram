@@ -24,6 +24,8 @@
         <EntityTypeShape EntityType="letterheadModel.Mst_SUBDEPARTMENT" Width="1.5" PointX="0.75" PointY="13.75" />
         <EntityTypeShape EntityType="letterheadModel.LatterRequest" Width="1.5" PointX="11.375" PointY="9.75" />
         <EntityTypeShape EntityType="letterheadModel.LatterSPVRequest" Width="1.5" PointX="13.375" PointY="3.75" />
+        <EntityTypeShape EntityType="letterheadModel.hgfoundation" Width="1.5" PointX="3.375" PointY="13.75" />
+        <EntityTypeShape EntityType="letterheadModel.LatterFoundationRequest" Width="1.5" PointX="5.375" PointY="13.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

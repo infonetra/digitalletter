@@ -9,6 +9,14 @@
     /*border-bottom: 1px solid black;*/ /* for demo */
     /*background: yellow;*/ /* for demo */
 }
+.page-headernewHGF {
+    position: fixed;
+    top: 45mm;
+    width: 100%;
+    bottom: 20mm;
+    /*border-bottom: 1px solid black;*/ /* for demo */
+    /*background: yellow;*/ /* for demo */
+}
 .page-header, .page-header-space {
     height: 130px;
 }
@@ -16,6 +24,7 @@
 .page-footer, .page-footer-space {
     height: 108px;
 }
+
 /*
 .page-headernew, p {
     text-transform: uppercase;
@@ -29,6 +38,7 @@
     /*border-top: 1px solid black;*/ /* for demo */
      /*background: yellow;*/  /*for demo */
 }
+
 img {
     max-width:100%;
 }
@@ -42,6 +52,9 @@ img {
 }
 .tspace {
   /* margin-top:120px;*/
+}
+.tspaceHGF {
+     margin-top:70px;
 }
 .page {
     /*page-break-after: always;*/

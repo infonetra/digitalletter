@@ -39,7 +39,17 @@ namespace letterhead.Controllers
             {
                 Session["spvshow"] = "0";
             }
-           
+
+            int foundationletter = db.hgfoundations.Where(a => a.UserID == userid).Count();
+            if (foundationletter >= 1)
+            {
+                Session["Foundationshow"] = "1";
+            }
+            else
+            {
+                Session["Foundationshow"] = "0";
+            }
+
             //ViewBag.SITE = db.Mst_SITE.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE + "/" + x.SITENO + "/" + x.SITENONAME, Value = x.ID.ToString() }).ToList();
             var data = new List<latterrvm>();
             var settingdata = db.settings.FirstOrDefault();
@@ -360,6 +370,131 @@ namespace letterhead.Controllers
                     var data = db.AssignSPVs.Where(a => a.ID == model.ID).FirstOrDefault();  
                     data.UserID=model.UserID;
                     data.SpvID = model.SpvID;
+                    db.SaveChanges();
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        #endregion
+
+
+
+
+        #region AssignFoundation
+
+        public ActionResult AssignHGFList()
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {
+                    var data = (from assign in db.hgfoundations
+                                join user in db.Mst_USER on assign.UserID equals user.ID                                
+                                select new SPVvm
+                                {
+                                    ID = assign.ID,
+                                    username = user.FULLNAME,
+                                    empcode = user.EMPCODE,                                                                 
+                                    CRAETEDATE = assign.CREATEDATE,
+                                    ISACTIVE = assign.IsActive
+                                }).ToList().OrderBy(a => a.username);
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+        public ActionResult AssignHGFAdd()
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {                  
+                    ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.ROLEID == 2).Select(x => new SelectListItem { Text = x.FULLNAME + "/ " + x.EMPCODE, Value = x.ID.ToString() }).ToList();
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult AssignHGFAdd(hgfoundation model)
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {                   
+                    int userid = Convert.ToInt32(Session["userid"].ToString());                   
+                    model.CREATEDATE = DateTime.Now;
+                    db.hgfoundations.Add(model);
+                    db.SaveChanges();
+                    TempData["success"] = "Assigned successfully.";
+                    return RedirectToAction("AssignHGFList");
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        public ActionResult AssignHGFEdit(int id)
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {                 
+                    ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.ROLEID == 2).Select(x => new SelectListItem { Text = x.FULLNAME + "/ " + x.EMPCODE, Value = x.ID.ToString() }).ToList();
+                    var data = db.hgfoundations.Where(a => a.ID == id).FirstOrDefault();
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult AssignHGFEdit(hgfoundation model)
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "1")
+                {                   
+                    ViewBag.user = db.Mst_USER.Where(x => x.ISACTIVE == true && x.ROLEID == 2).Select(x => new SelectListItem { Text = x.FULLNAME + "/ " + x.EMPCODE, Value = x.ID.ToString() }).ToList();
+                    var data = db.hgfoundations.Where(a => a.ID == model.ID).FirstOrDefault();
+                    data.UserID = model.UserID;                 
                     db.SaveChanges();
                     return View(data);
                 }
@@ -1623,6 +1758,59 @@ namespace letterhead.Controllers
         }
 
 
+        public ActionResult LetterFoundationRequest(int? aid)
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "2")
+                {
+                    if (aid == 1)
+                    {
+                        TempData["error"] = "You are not map with approver! please contact with admin and try again.";
+                    }
+                    int userid = Convert.ToInt32(Session["userid"]);
+                    var data = (from later in db.LatterFoundationRequests
+                                join ltype in db.LetterCrateTypes on later.LetterType equals ltype.ID
+                                join user in db.Mst_USER on later.USERID equals user.ID
+                                join site in db.Mst_SITE on later.LocID equals site.ID
+                                join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
+                                join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID                               
+                                where later.USERID == userid
+                                select new latterrvm
+                                {
+                                    ID = later.ID,
+                                    FULLNAME = user.FULLNAME,
+                                    LATTERNO = later.LATTERNO,
+                                    isapv = later.IsFoundation,                                  
+                                    LatterData = later.LatterData,
+                                    StatusID = later.StatusId,
+                                    Department = dept.DEPARTMENT,
+                                    DeptID = dept.ID,
+                                    LATTERNOSerice = (site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/" + later.FinanceYear + "/" + later.LATTERNO.ToString()),
+                                    REMARK = ltype.TITLE,
+                                    TITLE = site.TITLE,
+                                    SITEID = site.ID,
+                                    CODE = site.CODE,
+                                    EMPCODE = user.EMPCODE,
+                                    SITENO = site.SITENO,
+                                    SITENONAME = site.SITENONAME,
+                                    CREATEBY = later.CREATEBY,
+                                    CRAETEDATE = later.CRAETEDATE,
+                                    ISACTIVE = later.ISACTIVE
+                                }).ToList().OrderByDescending(a => a.CRAETEDATE);
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+
+        }
         public ActionResult Printwithdate(int id)
         {
             ViewBag.pid = id;
@@ -1852,6 +2040,109 @@ namespace letterhead.Controllers
         }
 
 
+        //AddFoundationLetterRequest
+
+        public ActionResult AddFoundationLetterRequest()
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "2")
+                {
+                    int userid = Convert.ToInt32(Session["userid"]);
+                    var approverin = db.Mst_USER.Where(a => a.ID == userid && a.Approver != null).Count();
+                    if (approverin == 0)
+                    {
+                        return RedirectToAction("LetterFoundationRequest", "Home", new { aid = 1 });
+                    }
+
+                    ViewBag.ltype = db.LetterCrateTypes.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE, Value = x.ID.ToString() }).ToList(); ;                  
+                    ViewBag.dept = (from d in db.Mst_SUBDEPARTMENT
+                                    join da in db.DeptAssignUsers
+                                    on d.ID equals da.DEPTID
+                                    where d.ISACTIVE == true && da.USERID == userid && da.IsActive == true
+                                    select new SelectListItem
+                                    {
+                                        Value = d.ID.ToString(),
+                                        Text = d.SubDEPARTMENT.ToString()
+                                    }).ToList();
+                    ViewBag.site = (from l in db.Mst_SITE
+                                    join la in db.LocationAssignUsers
+                                    on l.ID equals la.LocID
+                                    where l.ISACTIVE == true && la.USERID == userid
+                                    select new SelectListItem
+                                    {
+                                        Value = l.ID.ToString(),
+                                        Text = l.TITLE.ToString()
+                                    }).ToList();
+                    var date = new DateTime(DateTime.Now.Year, 4, 6);
+
+                    //int lastinsert = db.LatterSPVRequests.Where(a => a.USERID == userid).Count();
+                    //LatterRequest latter = new LatterRequest();
+                    //latter.LATTERNO = Convert.ToString(lastinsert + 1);
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult AddFoundationLetterRequest(LatterFoundationRequest model)
+        {
+            //TempData["confirm"] = "true";
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "2")
+                {
+                    if (Convert.ToInt32(model.LATTERNO) <= 0)
+                    {
+                        TempData["error"] = "Letter Issued Failed";
+                        return RedirectToAction("LetterFoundationRequest", "Home");
+                    }
+                    int userid = Convert.ToInt32(Session["userid"]);
+                    ViewBag.ltype = db.LetterCrateTypes.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE, Value = x.ID.ToString() }).ToList(); ;                  
+                    model.USERID = Convert.ToInt32(Session["userid"].ToString());
+                    model.CREATEBY = 1;
+                    model.FinanceYear = "2024-25";
+                    model.ISACTIVE = true;
+                    model.StatusId = 5;
+                    model.IsFoundation = true;
+                    model.CRAETEDATE = DateTime.Now;
+                    db.LatterFoundationRequests.Add(model);
+                    db.SaveChanges();
+                    int cid = Convert.ToInt32(Session["userid"].ToString());
+                    db.loginsertSPV(model.ID, "Letter create", 5, cid);
+                    var userdata = db.Mst_USER.Where(a => a.ID == cid).FirstOrDefault();
+                    var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
+                    var msgtemp = etemp.RequestCreate(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
+                    mailsend(approver.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
+                    TempData["success"] = "Letter Issued Succesfully";
+                    return RedirectToAction("LetterFoundationRequest", "Home");
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                errorlog err = new errorlog();
+                err.actionname = "AddLetterRequest";
+                err.errormessage = ex.Message;
+                err.createdate = DateTime.Now;
+                db.errorlogs.Add(err);
+                db.SaveChanges();
+                return View();
+            }
+
+        }
+
         public ActionResult Performa(int id=0)
         {
             try
@@ -1908,6 +2199,29 @@ namespace letterhead.Controllers
                     int uid = Convert.ToInt32(Session["userid"].ToString());
                     ViewBag.ltype = db.USERSIGNs.Where(x => x.IsActive == true && x.USERID == uid).Select(x => new SelectListItem { Text = x.SIGNTITLE, Value = x.ID.ToString() }).ToList(); ;
                     var data = db.LatterSPVRequests.Where(x => x.ID == id).FirstOrDefault();
+                    return View(data);
+
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        public ActionResult PerformaHGF(int id = 0)
+        {
+            try
+            {
+                if (Session["userid"] != null && Session["userrole"].ToString() == "2")
+                {
+                    int uid = Convert.ToInt32(Session["userid"].ToString());
+                    ViewBag.ltype = db.USERSIGNs.Where(x => x.IsActive == true && x.USERID == uid).Select(x => new SelectListItem { Text = x.SIGNTITLE, Value = x.ID.ToString() }).ToList(); ;
+                    var data = db.LatterFoundationRequests.Where(x => x.ID == id).FirstOrDefault();
                     return View(data);
 
                 }
@@ -2020,6 +2334,39 @@ namespace letterhead.Controllers
 
 
         [HttpPost, ValidateInput(false)]
+        public ActionResult PerformaSaveDraftHGF(string latterdata = null, int id = 0)
+        {
+            try
+            {
+                var data = db.LatterFoundationRequests.Where(a => a.ID == id).FirstOrDefault();
+                data.LatterData = latterdata;
+                data.StatusId = 6;
+                db.SaveChanges();
+                int cid = Convert.ToInt32(Session["userid"].ToString());
+                db.loginsert(data.ID, "Save As Draft", 6, cid);
+
+                //var userdata = db.Mst_USER.Where(a => a.ID == cid).FirstOrDefault();
+                //var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
+                //var msgtemp = etemp.RequestSend(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
+                //mailsend(approver.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
+
+                TempData["success"] = "Thanks.";
+                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                errorlog err = new errorlog();
+                err.actionname = "PerformaSaveDraftHGF";
+                err.errormessage = ex.Message;
+                err.createdate = DateTime.Now;
+                db.errorlogs.Add(err);
+                db.SaveChanges();
+                return Json(new { success = false }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        [HttpPost, ValidateInput(false)]
         public ActionResult PerformadataEdit(string latterdata = null, int id = 0)
         {
             try
@@ -2059,6 +2406,38 @@ namespace letterhead.Controllers
             try
             {
                 var data = db.LatterSPVRequests.Where(a => a.ID == id).FirstOrDefault();
+                data.LatterData = latterdata;
+                data.StatusId = 1;
+                db.SaveChanges();
+                int cid = Convert.ToInt32(Session["userid"].ToString());
+                db.loginsertSPV(data.ID, "In Progress", 1, cid);
+
+                var userdata = db.Mst_USER.Where(a => a.ID == cid).FirstOrDefault();
+                var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
+                var msgtemp = etemp.RequestSendSPV(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
+                mailsend(approver.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
+
+                TempData["success"] = "Thanks.";
+                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                errorlog err = new errorlog();
+                err.actionname = "Performadata";
+                err.errormessage = ex.Message;
+                err.createdate = DateTime.Now;
+                db.errorlogs.Add(err);
+                db.SaveChanges();
+                return Json(new { success = false }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost, ValidateInput(false)]
+        public ActionResult PerformaHGFdata(string latterdata = null, int id = 0)
+        {
+            try
+            {
+                var data = db.LatterFoundationRequests.Where(a => a.ID == id).FirstOrDefault();
                 data.LatterData = latterdata;
                 data.StatusId = 1;
                 db.SaveChanges();
@@ -2238,6 +2617,52 @@ namespace letterhead.Controllers
                 return View();
             }
         }
+
+        public ActionResult printviewHGF(int id = 0)
+        {
+            try
+            {
+                if (Session["userid"] != null)
+                {
+                    var data = (from later in db.LatterFoundationRequests
+                                join user in db.Mst_USER on later.USERID equals user.ID
+                                join site in db.Mst_SITE on later.LocID equals site.ID
+                                join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
+                                join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID                              
+                                where later.ID == id
+                                select new latterrvm
+                                {
+                                    ID = later.ID,
+                                    FULLNAME = user.FULLNAME,
+                                    LATTERNO = later.LATTERNO,
+                                    LatterData = later.LatterData,
+                                    Department = dept.DEPARTMENT,
+                                    ApproveDate = later.ApproveDate,
+                                    StatusID = later.StatusId,                                   
+                                    DeptID = dept.ID,
+                                    LATTERNOSerice = (site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/" + later.FinanceYear + "/" + later.LATTERNO.ToString()),
+                                    REMARK = later.REMARK,
+                                    TITLE = site.TITLE,
+                                    SITEID = site.ID,
+                                    CODE = site.CODE,
+                                    SITENO = site.SITENO,
+                                    SITENONAME = site.SITENONAME,
+                                    CREATEBY = later.CREATEBY,
+                                    CRAETEDATE = later.CRAETEDATE,
+                                    ISACTIVE = later.ISACTIVE
+                                }).FirstOrDefault();
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
         #endregion
 
 
@@ -2371,6 +2796,43 @@ namespace letterhead.Controllers
                             svptitle=spvm.TITLE,
                             DeptID = dept.ID,
                             LATTERNOSerice = (spvm.StartName +"/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/"+later.FinanceYear+"/" + later.LATTERNO.ToString()),
+                            REMARK = later.REMARK,
+                            TITLE = site.TITLE,
+                            SITEID = site.ID,
+                            CODE = site.CODE,
+                            SITENO = site.SITENO,
+                            SITENONAME = site.SITENONAME,
+                            CREATEBY = later.CREATEBY,
+                            CRAETEDATE = later.CRAETEDATE,
+                            ISACTIVE = later.ISACTIVE
+                        }).FirstOrDefault();
+            return View(data);
+        }
+
+        public ActionResult performaHGFview(int id = 0, string date = null)
+        {
+            Session["datawise"] = null;
+            if (date != null)
+            {
+                DateTime dateTime = DateTime.Parse(date);
+                Session["datawise"] = dateTime.ToString("dd-MM-yyyy");
+            }
+            var data = (from later in db.LatterFoundationRequests
+                        join user in db.Mst_USER on later.USERID equals user.ID
+                        join site in db.Mst_SITE on later.LocID equals site.ID
+                        join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
+                        join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID                       
+                        where later.ID == id
+                        select new latterrvm
+                        {
+                            ID = later.ID,
+                            FULLNAME = user.FULLNAME,
+                            LATTERNO = later.LATTERNO,
+                            LatterData = later.LatterData,
+                            Department = dept.DEPARTMENT,
+                            ApproveDate = later.ApproveDate,                         
+                            DeptID = dept.ID,
+                            LATTERNOSerice = (site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/" + later.FinanceYear + "/" + later.LATTERNO.ToString()),
                             REMARK = later.REMARK,
                             TITLE = site.TITLE,
                             SITEID = site.ID,
@@ -2781,6 +3243,55 @@ namespace letterhead.Controllers
                 return View();
             }
         }
+
+        public ActionResult RequestReceivedHGF()
+        {
+            try
+            {
+                if (Session["userid"] != null)
+                {
+                    int userid = Convert.ToInt32(Session["userid"].ToString());
+                    var data = (from later in db.LatterFoundationRequests
+                                join user in db.Mst_USER on later.USERID equals user.ID
+                                join site in db.Mst_SITE on later.LocID equals site.ID
+                                join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
+                                join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID
+                                join status in db.mst_status on later.StatusId equals status.ID                             
+                                where user.Approver == userid && later.StatusId != 5
+                                select new latterrvm
+                                {
+                                    ID = later.ID,
+                                    FULLNAME = user.FULLNAME,
+                                    LATTERNO = later.LATTERNO,
+                                    LatterData = later.LatterData,
+                                    StatusData = status.TITLE,
+                                    StatusID = later.StatusId,
+                                    Department = dept.DEPARTMENT,
+                                    DeptID = dept.ID,
+                                    LATTERNOSerice = (site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/" + later.FinanceYear + "/" + later.LATTERNO.ToString()),
+                                    REMARK = later.REMARK,
+                                    TITLE = site.TITLE,
+                                    SITEID = site.ID,
+                                    EMPCODE = user.EMPCODE,
+                                    CODE = site.CODE,
+                                    SITENO = site.SITENO,
+                                    SITENONAME = site.SITENONAME,
+                                    CREATEBY = later.CREATEBY,
+                                    CRAETEDATE = later.CRAETEDATE,
+                                    ISACTIVE = later.ISACTIVE
+                                }).OrderByDescending(a => a.CRAETEDATE).ToList();
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
         //RejectRequest
         public ActionResult ApproveData(int id)
         {
@@ -2910,11 +3421,43 @@ namespace letterhead.Controllers
 
         }
 
+        public ActionResult ApproveDataHGF(int id)
+        {
+            try
+            {
+                var data = db.LatterFoundationRequests.Where(a => a.ID == id).FirstOrDefault();
+                data.ApproveDate = DateTime.Now;
+                data.StatusId = 4;
+                db.SaveChanges();
+                int cid = Convert.ToInt32(Session["userid"].ToString());
+                db.loginsertSPV(data.ID, "Approve", 4, cid);
+
+                var userdata = db.Mst_USER.Where(a => a.ID == data.USERID).FirstOrDefault();
+                var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
+                var msgtemp = etemp.RequestApprove(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
+                mailsend(userdata.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
+                TempData["success"] = "Request Approved.";
+                return RedirectToAction("RequestReceivedHGF", "Home");
+            }
+            catch (Exception ex)
+            {
+                errorlog err = new errorlog();
+                err.actionname = "Performadata";
+                err.errormessage = ex.Message;
+                err.createdate = DateTime.Now;
+                db.errorlogs.Add(err);
+                db.SaveChanges();
+                return RedirectToAction("RequestReceivedHGF", "Home");
+
+            }
+
+        }
+
         public ActionResult RejectRequestSPV(int id)
         {
             try
             {
-                var data = db.LatterRequests.Where(a => a.ID == id).FirstOrDefault();
+                var data = db.LatterSPVRequests.Where(a => a.ID == id).FirstOrDefault();
                 data.StatusId = 2;
                 db.SaveChanges();
                 int cid = Convert.ToInt32(Session["userid"].ToString());
@@ -2936,6 +3479,37 @@ namespace letterhead.Controllers
                 db.errorlogs.Add(err);
                 db.SaveChanges();
                 return RedirectToAction("RequestReceivedSPV", "Home");
+
+            }
+
+        }
+
+        public ActionResult RejectRequestHGF(int id)
+        {
+            try
+            {
+                var data = db.LatterFoundationRequests.Where(a => a.ID == id).FirstOrDefault();
+                data.StatusId = 2;
+                db.SaveChanges();
+                int cid = Convert.ToInt32(Session["userid"].ToString());
+                db.loginsertSPV(data.ID, "Reject", 2, cid);
+
+                var userdata = db.Mst_USER.Where(a => a.ID == data.USERID).FirstOrDefault();
+                var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
+                var msgtemp = etemp.RequestReject(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
+                mailsend(userdata.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
+                TempData["success"] = "Request Rejected.";
+                return RedirectToAction("RequestReceivedHGF", "Home");
+            }
+            catch (Exception ex)
+            {
+                errorlog err = new errorlog();
+                err.actionname = "Performadata";
+                err.errormessage = ex.Message;
+                err.createdate = DateTime.Now;
+                db.errorlogs.Add(err);
+                db.SaveChanges();
+                return RedirectToAction("RequestReceivedHGF", "Home");
 
             }
 
@@ -3004,6 +3578,37 @@ namespace letterhead.Controllers
 
         }
 
+        //SendBackHGF
+        [HttpPost]
+        public ActionResult SendBackHGF(string sendback, int sbid)
+        {
+            try
+            {
+                var data = db.LatterFoundationRequests.Where(a => a.ID == sbid).FirstOrDefault();
+                data.StatusId = 3;
+                db.SaveChanges();
+                var remark = "Send To Back Reason are " + sendback;
+                int cid = Convert.ToInt32(Session["userid"].ToString());
+                db.loginsertSPV(data.ID, remark, 3, cid);
+                var userdata = db.Mst_USER.Where(a => a.ID == data.USERID).FirstOrDefault();
+                var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
+                var msgtemp = etemp.RequestSendtoback(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
+                mailsend(userdata.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
+                TempData["success"] = "Request Send To Back.";
+                return RedirectToAction("RequestReceivedHGF", "Home");
+            }
+            catch (Exception ex)
+            {
+                errorlog err = new errorlog();
+                err.actionname = "Performadata";
+                err.errormessage = ex.Message;
+                err.createdate = DateTime.Now;
+                db.errorlogs.Add(err);
+                db.SaveChanges();
+                return RedirectToAction("RequestReceivedHGF", "Home");
+            }
+
+        }
         public ActionResult GetEmployeeLog(int id)
         {
             var data = (from log in db.Letter_Log_Process
@@ -3159,6 +3764,25 @@ namespace letterhead.Controllers
                 //var locations = db.Mst108_COSTCENTER.Where(x => x.ISACTIVE == true && x.BusinessID == bid).Select(x => new SelectListItem { Text = x.COSTCENTER, Value = x.LocationID.ToString() }).ToList();
 
                 var subdept = db.LatterSPVRequests.Where(a => a.DeptID == did && a.LocID == lid && a.FinanceYear!="2023-24").Count();
+                int lno = Convert.ToInt32(subdept + 1);
+
+                return Json(data: new { success = true, lno = lno }, JsonRequestBehavior.AllowGet);
+
+            }
+            catch (Exception ex)
+            {
+                return Json(data: new { success = false }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult getHGFLno(int did = 0, int lid = 0)
+        {
+            try
+            {
+                //var locations = db.Mst108_COSTCENTER.Where(x => x.ISACTIVE == true && x.BusinessID == bid).Select(x => new SelectListItem { Text = x.COSTCENTER, Value = x.LocationID.ToString() }).ToList();
+
+                var subdept = db.LatterFoundationRequests.Where(a => a.DeptID == did && a.LocID == lid && a.FinanceYear != "2023-24").Count();
                 int lno = Convert.ToInt32(subdept + 1);
 
                 return Json(data: new { success = true, lno = lno }, JsonRequestBehavior.AllowGet);

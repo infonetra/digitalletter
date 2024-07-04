@@ -46,6 +46,8 @@ namespace letterhead.Models
         public virtual DbSet<Mst_SUBDEPARTMENT> Mst_SUBDEPARTMENT { get; set; }
         public virtual DbSet<LatterRequest> LatterRequests { get; set; }
         public virtual DbSet<LatterSPVRequest> LatterSPVRequests { get; set; }
+        public virtual DbSet<hgfoundation> hgfoundations { get; set; }
+        public virtual DbSet<LatterFoundationRequest> LatterFoundationRequests { get; set; }
     
         public virtual ObjectResult<Nullable<int>> loginsert(Nullable<int> lid, string remark, Nullable<int> stsusid, Nullable<int> createby)
         {
