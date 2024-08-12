@@ -1820,7 +1820,9 @@ namespace letterhead.Controllers
         [HttpPost]
         public ActionResult Printwithdate(string pdate,int id)
         {
-            return RedirectToAction("performaview", "Home", new { id =id, date = pdate});
+            
+                return RedirectToAction("performaviewSpecific", "Home", new { id = id, date = pdate });
+            //return RedirectToAction("performaview", "Home", new { id =id, date = pdate});
         }
 
         public ActionResult AddLetterRequest()
@@ -2446,7 +2448,7 @@ namespace letterhead.Controllers
 
                 var userdata = db.Mst_USER.Where(a => a.ID == cid).FirstOrDefault();
                 var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
-                var msgtemp = etemp.RequestSendSPV(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
+                var msgtemp = etemp.RequestSendHGF(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
                 mailsend(approver.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
 
                 TempData["success"] = "Thanks.";
@@ -2690,6 +2692,44 @@ namespace letterhead.Controllers
                             Department = dept.DEPARTMENT,
                             DeptID = dept.ID,
                             LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/"+later.FinanceYear+"/" + later.LATTERNO.ToString()),
+                            REMARK = later.REMARK,
+                            TITLE = site.TITLE,
+                            SITEID = site.ID,
+                            CODE = site.CODE,
+                            SITENO = site.SITENO,
+                            SITENONAME = site.SITENONAME,
+                            CREATEBY = later.CREATEBY,
+                            CRAETEDATE = later.CRAETEDATE,
+                            ISACTIVE = later.ISACTIVE
+                        }).FirstOrDefault();
+            return View(data);
+        }
+
+
+        public ActionResult performaviewSpecific(int id = 0, string date = null)
+        {
+            Session["datawise"] = null;
+            if (date != null)
+            {
+                DateTime dateTime = DateTime.Parse(date);
+                Session["datawise"] = dateTime.ToString("dd-MM-yyyy");
+            }
+            var data = (from later in db.LatterRequests
+                        join user in db.Mst_USER on later.USERID equals user.ID
+                        join site in db.Mst_SITE on later.LocID equals site.ID
+                        join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
+                        join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID
+                        where later.ID == id
+                        select new latterrvm
+                        {
+                            ID = later.ID,
+                            FULLNAME = user.FULLNAME,
+                            LATTERNO = later.LATTERNO,
+                            LatterData = later.LatterData,
+                            ApproveDate = later.ApproveDate,
+                            Department = dept.DEPARTMENT,
+                            DeptID = dept.ID,
+                            LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/" + later.FinanceYear + "/" + later.LATTERNO.ToString()),
                             REMARK = later.REMARK,
                             TITLE = site.TITLE,
                             SITEID = site.ID,
@@ -3337,7 +3377,7 @@ namespace letterhead.Controllers
                 //int cid = Convert.ToInt32(Session["userid"].ToString());                
                 var userdata = db.Mst_USER.Where(a => a.ID == data.USERID).FirstOrDefault();
                 var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
-                db.loginsert(data.ID, "Approve By Mail", 4, userdata.Approver);
+                db.loginsert(data.ID, "Approved By Mail", 4, userdata.Approver);
                 var msgtemp = etemp.RequestApprove(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
                 mailsend(userdata.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
                 return View();
@@ -3357,6 +3397,35 @@ namespace letterhead.Controllers
         }
 
 
+        public ActionResult ApproveRequestHGF(int id)
+        {
+            try
+            {
+                var data = db.LatterFoundationRequests.Where(a => a.ID == id).FirstOrDefault();
+                data.ApproveDate = DateTime.Now;
+                data.StatusId = 4;
+                db.SaveChanges();
+                //int cid = Convert.ToInt32(Session["userid"].ToString());                
+                var userdata = db.Mst_USER.Where(a => a.ID == data.USERID).FirstOrDefault();
+                var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
+                db.loginsert(data.ID, "Approved By Mail", 4, userdata.Approver);
+                var msgtemp = etemp.RequestApprove(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
+                mailsend(userdata.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
+                return View();
+            }
+            catch (Exception ex)
+            {
+                errorlog err = new errorlog();
+                err.actionname = "Performadata";
+                err.errormessage = ex.Message;
+                err.createdate = DateTime.Now;
+                db.errorlogs.Add(err);
+                db.SaveChanges();
+                return View();
+
+            }
+
+        }
 
         public ActionResult RejectRequest(int id)
         {
@@ -3664,6 +3733,7 @@ namespace letterhead.Controllers
                 smtp.UseDefaultCredentials = false;
                 smtp.Credentials = nc;
                 smtp.Send(mc);
+                //return true;
             }
             catch (Exception ex)
             {

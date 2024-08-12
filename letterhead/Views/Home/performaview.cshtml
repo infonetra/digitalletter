@@ -2,7 +2,7 @@
 @{
     Layout = null;
     //var datet = DateTime.Now.ToString("dd-MM-yyyy");
-    var datef = Model.ApproveDate.ToString();
+    var datef = Model.ApproveDate.ToString();    
     var datet = DateTime.Parse(datef).ToString("dd-MM-yyyy");
 }
 <!DOCTYPE html>
@@ -29,13 +29,11 @@
         }
     </style>
     <div class="maindiv">
-        <div class="page-header">
-            @*<img src="~/Content/assets/img/topnew.jpg" style="margin-top:-28px;" />*@
+        <div class="page-header">           
             <img src="~/Content/assets/img/LeaterHeader.png" style="margin-left:7px; margin-top:6px;" />
         </div>
         <div class="page-headernew">
-            <p style="display: flex; font-weight: bold; justify-content: space-between; padding: 0 48px; "><b class="textupercase">@Model.LATTERNOSerice</b><span>@(Session["datawise"]!=null? Session["datawise"].ToString():datet)</span></p>
-            @*<p style=" display: flex; font-weight: bold; justify-content: space-between; padding: 0 48px; "><b>@Model.LATTERNOSerice</b><span>@datet</span></p>*@
+            <p style="display: flex; font-weight: bold; justify-content: space-between; padding: 0 48px; "><b class="textupercase">@Model.LATTERNOSerice</b><span>@(Session["datawise"]!=null? Session["datawise"].ToString():datet)</span></p>           
         </div>
         <div class="tspace">
             <table>
@@ -73,9 +71,7 @@
         </div>
         <div class="page-footer">
             <div>
-                <img src="~/Content/assets/img/LetterFooter.png" style="margin-left:7px;margin-top:5px;" />
-                @*<img src="~/Content/assets/img/d.jpg" style=" margin-bottom: -1px;" />
-        <img src="~/Content/assets/img/footer.png" style=" margin-top: 0px;" />*@
+                <img src="~/Content/assets/img/LetterFooter.png" style="margin-left:7px;margin-top:5px;" />         
             </div>
         </div>
     </div>   

@@ -85,8 +85,8 @@
                                         }
                                         else if (item.StatusID == 4)
                                         {
-                                            <a href="@Url.Action("Printwithdate", "Home", new {@id=item.ID})">specific date</a>
-                                            <span>|</span>
+                                            @*<a href="@Url.Action("Printwithdate", "Home", new {@id=item.ID})">specific date</a>
+                                            <span>|</span>*@
                                             <a title="View" href="@Url.Action("printview", "Home", new {id=item.ID})"><i class="bi bi-eye-fill"></i></a>
                                             <span>|</span>
                                             <a title="Print & Download" href="@Url.Action("performaview", "Home", new {id=@item.ID})"> <i class="bi bi-printer"></i></a>
