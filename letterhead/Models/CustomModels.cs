@@ -11,6 +11,7 @@ namespace letterhead.Models
         public string FULLNAME { get; set; }
         public string MOBILENO { get; set; }
         public string EMAILID { get; set; }
+        public string Approvarname { get; set; }
         public string EMPCODE { get; set; }
         public string USERNAME { get; set; }
         public int DeptID { get; set; }
@@ -25,6 +26,7 @@ namespace letterhead.Models
         public string SITENONAME { get; set; }
         public Nullable<bool> ISACTIVE { get; set; }
         public Nullable<int> CREATEBY { get; set; }
+        public Nullable<int> IsApprover { get; set; }
         public Nullable<System.DateTime> CRAETEDATE { get; set; }
         public string LATTERNO { get; set; }
         public string LATTERNOSerice { get; set; }
@@ -105,6 +107,8 @@ namespace letterhead.Models
         public Nullable<bool> isapv { get; set; }
         public Nullable<int> spvid { get; set; }
         public string svptitle { get; set; }
+
+        public int lettertyped { get; set; }
     }
 
     public class LogRequestVM

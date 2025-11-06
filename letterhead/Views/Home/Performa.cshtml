@@ -20,7 +20,9 @@
                         @Html.DropDownList("ddl_reportId", ViewBag.ltype as List<SelectListItem>, "Select Type", new { @class = "form-control mb-5 select2 UserType", @onchange = "getVal()" })
                     </div>
                     <div class="col-md-12">
-                        @Html.TextAreaFor(x => x.LatterData, new { @id = "idRichTextEditor", @class = "form-control", @required = "required", @rows = "10", @cols = "80" })
+                        @*@Html.TextAreaFor(x => x.LatterData, new { @id = "idRichTextEditor", @class = "form-control", @required = "required", @rows = "10", @cols = "80" })*@
+                       
+                        @Html.TextAreaFor(x => x.LatterData, new {@class = "tinymce-editor", @required = "required"})
                     </div>
                     @Html.HiddenFor(a => a.ID)
                     @Html.HiddenFor(a => a.LATTERNO)
@@ -53,7 +55,8 @@
 <script>
     function datasave() {
         debugger;
-          var Content = CKEDITOR.instances['idRichTextEditor'].getData();
+        /*   var Content = CKEDITOR.instances['idRichTextEditor'].getData();*/
+        var Content = tinymce.get('LatterData').getContent(); // HTML content
         var formdata = new FormData();
         formdata.append("latterdata",Content);
         formdata.append("id", @Model.ID);
@@ -82,7 +85,9 @@
 
     function datapreview() {
         debugger;
-          var Content = CKEDITOR.instances['idRichTextEditor'].getData();
+        /* var Content = CKEDITOR.instances['idRichTextEditor'].getData();*/
+        var Content = tinymce.get('LatterData').getContent(); // HTML content
+
         var formdata = new FormData();
         formdata.append("latterdata",Content);
         formdata.append("id", @Model.ID);

@@ -1,0 +1,98 @@
+﻿
+@{
+    ViewBag.Title = "LetterNo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="pagetitle">
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">Masters</li>
+            <li class="breadcrumb-item active">Letter No Change</li>
+        </ol>
+    </nav>
+</div>
+<section class="section dashboard">
+    <div class="row">
+        <div class="col-lg-12">
+
+            <div class="card">
+                <div class="card-body">
+                    <form class="row g-3 mt-2">
+                        <div class="col-md-3">
+                            <label for="validationDefault04" class="form-label">Letter Type</label>
+                            <select class="form-select" id="ltype">
+                                <option value="1">HG Letterhead</option>
+                                <option value="2">SPV Letterhead</option>
+                                <option value="3">HG Foundation</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="validationDefault04" class="form-label">EMPCODE</label>
+                            <input type="text" id="empcode" class="form-control" />
+                        </div>
+                        <div class="col-md-3">
+                            <label for="validationDefault04" class="form-label">Letter No</label>
+                            <input type="text" id="letterno" class="form-control" />
+                        </div>
+                        @*<div class="col-md-2">
+            <label for="validationDefault05" class="form-label">From Date</label>
+            <input type="date" id="sDate" max="9999-12-31" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label for="validationDefault06" class="form-label">To Date</label>
+            <input type="date" id="eDate" max="9999-12-31" class="form-control" />
+        </div>*@
+                        <div class="col-md-2">
+                            <label for="validationDefault07" class="form-label" style="color:#fff;">-</label>
+                            <input type="button" onclick="LetterNoData()" style="width:100%;" class="btn btn-success" value="Apply" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div id="ListContainer" class="fixTableHead">
+
+            </div>
+        </div>
+    </div>
+</section>
+
+@Html.Partial("_Alerts")
+
+<script>
+    function LetterNoData() {
+        debugger;
+        //$.loader.open('');     
+        var ltype = $('#ltype').val();
+        var empcode = $('#empcode').val();
+        var leterno = $('#letterno').val();
+
+        Swal.showLoading();
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: '/Home/GetLetternoData/',
+            data: "{lstype:'" + ltype + "',empcode:'" + empcode + "',letterno:'" + leterno + "'}",
+            dataType: "html",
+            async: true,
+            error: function (xhr) {
+                debugger;
+                alert("Invalid Data");
+                Swal.close();
+            },
+            success: function (data) {
+                debugger;
+                $('#ListContainer').html(data);
+                //$.loader.close(true);
+                Swal.close();
+            }
+        });
+    }
+</script>
+
+
+
+

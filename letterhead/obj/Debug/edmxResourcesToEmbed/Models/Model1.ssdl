@@ -1,0 +1,301 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="letterheadModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="AssignSPV">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserID" Type="int" />
+    <Property Name="SpvID" Type="int" />
+    <Property Name="CREATEBY" Type="int" />
+    <Property Name="CREATEDATE" Type="datetime" />
+    <Property Name="IsActive" Type="bit" />
+  </EntityType>
+  <EntityType Name="DeptAssignUser">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="DEPTID" Type="int" />
+    <Property Name="USERID" Type="int" />
+    <Property Name="CREATEBY" Type="int" />
+    <Property Name="CREATEDATE" Type="datetime" />
+    <Property Name="IsActive" Type="bit" />
+  </EntityType>
+  <EntityType Name="errorlog">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="actionname" Type="nvarchar" MaxLength="200" />
+    <Property Name="errormessage" Type="nvarchar(max)" />
+    <Property Name="createdate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="hgfoundation">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserID" Type="int" />
+    <Property Name="CREATEDATE" Type="datetime" />
+    <Property Name="IsActive" Type="bit" />
+  </EntityType>
+  <EntityType Name="LatterFoundationRequest">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="USERID" Type="int" />
+    <Property Name="DeptID" Type="int" />
+    <Property Name="LocID" Type="int" />
+    <Property Name="LATTERNO" Type="nvarchar" MaxLength="300" />
+    <Property Name="LetterType" Type="int" />
+    <Property Name="REMARK" Type="nvarchar" MaxLength="500" />
+    <Property Name="LatterData" Type="nvarchar(max)" />
+    <Property Name="StatusId" Type="int" />
+    <Property Name="IsFoundation" Type="bit" />
+    <Property Name="FinanceYear" Type="nvarchar" MaxLength="100" />
+    <Property Name="ApproveDate" Type="datetime" />
+    <Property Name="ISACTIVE" Type="bit" />
+    <Property Name="CREATEBY" Type="int" />
+    <Property Name="CRAETEDATE" Type="datetime" />
+  </EntityType>
+  <EntityType Name="LatterRequest">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="USERID" Type="int" />
+    <Property Name="DeptID" Type="int" />
+    <Property Name="LocID" Type="int" />
+    <Property Name="LATTERNO" Type="nvarchar" MaxLength="300" />
+    <Property Name="LetterType" Type="int" />
+    <Property Name="REMARK" Type="nvarchar" MaxLength="500" />
+    <Property Name="LatterData" Type="nvarchar(max)" />
+    <Property Name="StatusId" Type="int" />
+    <Property Name="IsSpv" Type="bit" />
+    <Property Name="SPVID" Type="int" />
+    <Property Name="FinanceYear" Type="nvarchar" MaxLength="100" />
+    <Property Name="ApproveDate" Type="datetime" />
+    <Property Name="ISACTIVE" Type="bit" />
+    <Property Name="CREATEBY" Type="int" />
+    <Property Name="CRAETEDATE" Type="datetime" />
+  </EntityType>
+  <EntityType Name="LatterSPVRequest">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="USERID" Type="int" />
+    <Property Name="DeptID" Type="int" />
+    <Property Name="LocID" Type="int" />
+    <Property Name="LATTERNO" Type="nvarchar" MaxLength="300" />
+    <Property Name="LetterType" Type="int" />
+    <Property Name="REMARK" Type="nvarchar" MaxLength="500" />
+    <Property Name="LatterData" Type="nvarchar(max)" />
+    <Property Name="StatusId" Type="int" />
+    <Property Name="IsSpv" Type="bit" />
+    <Property Name="SPVID" Type="int" />
+    <Property Name="FinanceYear" Type="nvarchar" MaxLength="100" />
+    <Property Name="ApproveDate" Type="datetime" />
+    <Property Name="ISACTIVE" Type="bit" />
+    <Property Name="CREATEBY" Type="int" />
+    <Property Name="CRAETEDATE" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Letter_Log_Process">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="LID" Type="int" />
+    <Property Name="STATUSID" Type="int" />
+    <Property Name="REMARK" Type="nvarchar(max)" />
+    <Property Name="CREATEDATE" Type="datetime" />
+    <Property Name="CREATEBY" Type="int" />
+    <Property Name="ISACTIVE" Type="bit" />
+  </EntityType>
+  <EntityType Name="Letter_Log_SPV_Process">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="LID" Type="int" />
+    <Property Name="STATUSID" Type="int" />
+    <Property Name="REMARK" Type="nvarchar(max)" />
+    <Property Name="CREATEDATE" Type="datetime" />
+    <Property Name="CREATEBY" Type="int" />
+    <Property Name="ISACTIVE" Type="bit" />
+  </EntityType>
+  <EntityType Name="LetterCrateType">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TITLE" Type="nvarchar" MaxLength="100" />
+    <Property Name="ISACTIVE" Type="bit" />
+    <Property Name="CREATEDATE" Type="datetime" />
+  </EntityType>
+  <EntityType Name="LocationAssignUser">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="LocID" Type="int" />
+    <Property Name="USERID" Type="int" />
+    <Property Name="CREATEBY" Type="int" />
+    <Property Name="CREATEDATE" Type="datetime" />
+    <Property Name="IsActive" Type="bit" />
+  </EntityType>
+  <EntityType Name="Mst_Role">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TITLE" Type="nvarchar" MaxLength="50" />
+    <Property Name="CREATEBY" Type="int" />
+    <Property Name="CRAETEDATE" Type="datetime" />
+    <Property Name="ISACTIVE" Type="bit" />
+  </EntityType>
+  <EntityType Name="Mst_SITE">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TITLE" Type="nvarchar" MaxLength="50" />
+    <Property Name="CODE" Type="nvarchar" MaxLength="100" />
+    <Property Name="SITENO" Type="int" />
+    <Property Name="SITENONAME" Type="nvarchar" MaxLength="200" />
+    <Property Name="ISACTIVE" Type="bit" />
+    <Property Name="CREATEBY" Type="int" />
+    <Property Name="CRAETEDATE" Type="datetime" />
+  </EntityType>
+  <EntityType Name="mst_status">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TITLE" Type="nvarchar" MaxLength="100" />
+    <Property Name="ISACTIVE" Type="bit" />
+  </EntityType>
+  <EntityType Name="Mst_SUBDEPARTMENT">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="DeptID" Type="int" />
+    <Property Name="CODE" Type="int" />
+    <Property Name="SubDEPARTMENT" Type="nvarchar" MaxLength="200" Nullable="false" />
+    <Property Name="ISACTIVE" Type="bit" />
+    <Property Name="CREATEBY" Type="int" />
+    <Property Name="CREATEDATE" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Mst_USER">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FULLNAME" Type="nvarchar" MaxLength="100" />
+    <Property Name="MOBILENO" Type="nvarchar" MaxLength="12" />
+    <Property Name="EMAILID" Type="nvarchar" MaxLength="300" />
+    <Property Name="EMPCODE" Type="nvarchar" MaxLength="100" />
+    <Property Name="USERNAME" Type="nvarchar" MaxLength="50" />
+    <Property Name="USERPWD" Type="nvarchar" MaxLength="100" />
+    <Property Name="DEPTID" Type="int" />
+    <Property Name="SITEID" Type="int" />
+    <Property Name="ROLEID" Type="int" />
+    <Property Name="Approver" Type="int" />
+    <Property Name="CANLOGIN" Type="bit" />
+    <Property Name="OneTimeUser" Type="bit" />
+    <Property Name="IsApprover" Type="int" />
+    <Property Name="ISACTIVE" Type="bit" />
+    <Property Name="CREATEBY" Type="int" />
+    <Property Name="CRAETEDATE" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Mst104_DEPARTMENT">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CODE" Type="int" />
+    <Property Name="DEPARTMENT" Type="nvarchar" MaxLength="200" Nullable="false" />
+    <Property Name="ISACTIVE" Type="bit" />
+    <Property Name="CREATEBY" Type="int" />
+    <Property Name="CREATEDATE" Type="datetime" />
+  </EntityType>
+  <EntityType Name="setting">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CNAME" Type="nvarchar" MaxLength="100" />
+    <Property Name="FONTNAME" Type="nvarchar" MaxLength="100" />
+    <Property Name="FONTSIZE" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="spvmaster">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TITLE" Type="nvarchar" MaxLength="500" />
+    <Property Name="StartName" Type="nvarchar" MaxLength="500" />
+    <Property Name="CREATEBY" Type="int" />
+    <Property Name="CREATEDATE" Type="datetime" />
+    <Property Name="IsActive" Type="bit" />
+  </EntityType>
+  <EntityType Name="usermanual">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ManualTitle" Type="nvarchar" MaxLength="100" />
+    <Property Name="ManualLink" Type="nvarchar(max)" />
+    <Property Name="IsActive" Type="bit" />
+  </EntityType>
+  <EntityType Name="USERSIGN">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="USERID" Type="int" />
+    <Property Name="SIGNTITLE" Type="nvarchar" MaxLength="100" />
+    <Property Name="SIGNIMAGE" Type="nvarchar(max)" />
+    <Property Name="IsActive" Type="bit" />
+    <Property Name="CRERATEBY" Type="int" />
+    <Property Name="CREATEDATE" Type="datetime" />
+  </EntityType>
+  <Function Name="loginsert" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="lid" Type="int" Mode="In" />
+    <Parameter Name="remark" Type="nvarchar(max)" Mode="In" />
+    <Parameter Name="stsusid" Type="int" Mode="In" />
+    <Parameter Name="createby" Type="int" Mode="In" />
+  </Function>
+  <Function Name="loginsertSPV" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="lid" Type="int" Mode="In" />
+    <Parameter Name="remark" Type="nvarchar(max)" Mode="In" />
+    <Parameter Name="stsusid" Type="int" Mode="In" />
+    <Parameter Name="createby" Type="int" Mode="In" />
+  </Function>
+  <EntityContainer Name="letterheadModelStoreContainer">
+    <EntitySet Name="AssignSPV" EntityType="Self.AssignSPV" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="DeptAssignUser" EntityType="Self.DeptAssignUser" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="errorlog" EntityType="Self.errorlog" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="hgfoundation" EntityType="Self.hgfoundation" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="LatterFoundationRequest" EntityType="Self.LatterFoundationRequest" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="LatterRequest" EntityType="Self.LatterRequest" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="LatterSPVRequest" EntityType="Self.LatterSPVRequest" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Letter_Log_Process" EntityType="Self.Letter_Log_Process" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Letter_Log_SPV_Process" EntityType="Self.Letter_Log_SPV_Process" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="LetterCrateType" EntityType="Self.LetterCrateType" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="LocationAssignUser" EntityType="Self.LocationAssignUser" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Mst_Role" EntityType="Self.Mst_Role" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Mst_SITE" EntityType="Self.Mst_SITE" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="mst_status" EntityType="Self.mst_status" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Mst_SUBDEPARTMENT" EntityType="Self.Mst_SUBDEPARTMENT" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Mst_USER" EntityType="Self.Mst_USER" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Mst104_DEPARTMENT" EntityType="Self.Mst104_DEPARTMENT" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="setting" EntityType="Self.setting" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="spvmaster" EntityType="Self.spvmaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="usermanual" EntityType="Self.usermanual" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="USERSIGN" EntityType="Self.USERSIGN" Schema="dbo" store:Type="Tables" />
+  </EntityContainer>
+</Schema>

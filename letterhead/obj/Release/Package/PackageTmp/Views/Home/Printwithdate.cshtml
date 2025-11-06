@@ -1,0 +1,36 @@
+﻿
+@{
+    ViewBag.Title = "Printwithdate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="section">
+    <div class="row">
+
+        <div class="col-lg-12">
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Specific Date With Print</h5>
+                    <!-- Custom Styled Validation -->
+                    @using (Html.BeginForm("Printwithdate", "Home", FormMethod.Post, new { @class = "row g-3 needs-validation", @novalidate = "novalidate" }))
+                    {
+                        <input type="hidden" id="id" value="@ViewBag.pid" />
+                        <div class="col-md-4">
+                            <label for="validationCustom01" class="form-label">Enter Date.<span style="color:red;">*</span></label>
+                            <input type="date" name="pdate" class="form-control" />
+                        </div>                       
+                        <div class="col-12">
+                            <button class="btn btn-primary" type="submit">Print</button>
+                            <a class="btn btn-danger" href="@Url.Action("Dashboard","Home")">Cancel</a>
+                        </div>
+                    }
+                    <!-- End Custom Styled Validation -->
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+

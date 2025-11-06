@@ -1,0 +1,47 @@
+﻿@model letterhead.Models.hgfoundation
+@{
+    ViewBag.Title = "AssignHGFAdd";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<section class="section">
+    <div class="row">
+
+        <div class="col-lg-12">
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Assign  Master </h5>
+                    <!-- Custom Styled Validation -->
+                    @using (Html.BeginForm("AssignHGFAdd", "Home", FormMethod.Post, new { @class = "row g-3 needs-validation", @novalidate = "novalidate" }))
+                    {
+                        <div class="col-md-4">
+                            <label class="form-label">User<span style="color:red;">*</span></label>
+                            @Html.DropDownListFor(x => x.UserID, ViewBag.user as List<SelectListItem>, "Select User", new { @class = "form-control select2 UserType" })
+                        </div>                     
+                        <div class="col-md-4">
+                            <label for="validationDefault04" class="form-label">Status <span style="color:red;">*</span></label>
+                            @Html.DropDownListFor(x => x.IsActive, new List<SelectListItem>
+                        {
+                           new SelectListItem{Text="Active",Value="true",Selected=true},
+                           new SelectListItem{Text="DeActive",Value="false"}
+                        }, new { @id = "IsActive", @class = "form-select", @required = "required" })
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-primary" type="submit">Submit</button>
+                            <a class="btn btn-danger" href="@Url.Action("Dashboard","Home")">Cancel</a>
+                        </div>
+                    }
+                    <!-- End Custom Styled Validation -->
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+
+

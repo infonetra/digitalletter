@@ -1525,6 +1525,7 @@
     <Content Include="Content\img\Banner4.JPG" />
     <Content Include="Content\img\Banner5.JPG" />
     <Content Include="Content\printpdf.css" />
+    <Content Include="Content\printpdfnew.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -1684,6 +1685,9 @@
     <Content Include="Views\Home\performaHGFview.cshtml" />
     <Content Include="Views\Home\performaviewSpecific.cshtml" />
     <Content Include="Views\Home\ApproveRequestHGF.cshtml" />
+    <Content Include="Views\Home\LetterNo.cshtml" />
+    <Content Include="Views\Home\_letternoreport.cshtml" />
+    <Content Include="Views\Home\printviewNew.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

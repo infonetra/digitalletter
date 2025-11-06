@@ -1,0 +1,95 @@
+﻿
+@model letterhead.Models.latterrvm
+@{
+    Layout = null;
+    var datet = DateTime.Now.ToString("dd-MM-yyyy");
+}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="~/Content/printpdf.css" rel="stylesheet" />
+</head>
+
+<body>
+    <style>
+        body {
+          /*  font-family: Verdana, sans-serif;
+            font-size: 12px;*/
+          font-family:@Session["fname"].ToString();
+          font-size:@Session["fsize"].ToString();
+        }
+    </style>
+    <div class="maindiv">
+        <div class="page-header" style="text-align: center">
+            <img height="100" src="~/Content/assets/img/hgfoundation.png" /><br />
+            <b style="color:darkblue">Section 8 Company under the Companies Act, 2013</b><br />
+            <b>CIN</b>: U88900RJ2023NPL090763, <b>License No</b>: 150281<br />           
+            <hr style="text-align:center; width:80%">
+        </div>
+      
+        <div class="page-headernewHGF">
+            <p style=" display: flex; font-weight: bold; justify-content: space-between; padding: 0 48px; "><b>xxxxxxxxxxx</b><span>@(Session["datawise"]!=null? Session["datawise"].ToString():datet)</span></p>
+            @*<p style=" display: flex; font-weight: bold; justify-content: space-between; padding: 0 48px; "><b>@Model.LATTERNOSerice</b><span>@datet</span></p>*@
+        </div>
+        <div class="tspaceHGF">
+            <table>
+
+                <thead>
+                    <tr>
+                        <td>
+                            <!--place holder for the fixed-position header-->
+                            <div class="page-header-space"></div>
+                        </td>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>
+                            <!--*** CONTENT GOES HERE ***-->
+                            <div class="page">
+                                @Html.Raw(Model.LatterData)
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <td>
+                            <!--place holder for the fixed-position footer-->
+                            <div class="page-footer-space"></div>
+                        </td>
+                    </tr>
+                </tfoot>
+
+            </table>
+        </div>
+        <div class="page-footer" >
+            <div style="text-align:center;">
+                <hr style="text-align:center; width:80%">
+                <b>Registered Office</b>- 14, Panchwati Colony, Ratanada, Jodhpur RJ 342001 IN<br />
+                <b>PAN:</b>AAHCH0406M,<b>80G Registration No.</b>: AAHCH0406MF2023101 (Provisional)<br />
+                <b>12A Registration No.</b>: AAHCH0406ME20231 (Provisional),<b>CSR Registration No.</b>: CSR00062051<br />
+                <b>Tel- +91 0291-2515327, +91 6367212378</b>,<b>Email Id</b>- csr@hginfra.com
+
+            </div>
+        </div>
+    </div>
+    <script>
+
+        window.print();
+        window.onafterprint = function (event) {
+            var url = '@Url.Action("LetterFoundationRequest", "Home")';
+           window.location.href = url;
+        };
+    </script>
+</body>
+
+</html>
+
+
+
+

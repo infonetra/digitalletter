@@ -1,0 +1,301 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="letterheadModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="letterheadEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Mst_Role" EntityType="letterheadModel.Mst_Role" />
+    <EntitySet Name="Mst104_DEPARTMENT" EntityType="letterheadModel.Mst104_DEPARTMENT" />
+    <EntitySet Name="settings" EntityType="letterheadModel.setting" />
+    <EntitySet Name="LetterCrateTypes" EntityType="letterheadModel.LetterCrateType" />
+    <EntitySet Name="USERSIGNs" EntityType="letterheadModel.USERSIGN" />
+    <EntitySet Name="usermanuals" EntityType="letterheadModel.usermanual" />
+    <EntitySet Name="mst_status" EntityType="letterheadModel.mst_status" />
+    <EntitySet Name="Mst_USER" EntityType="letterheadModel.Mst_USER" />
+    <EntitySet Name="Letter_Log_Process" EntityType="letterheadModel.Letter_Log_Process" />
+    <FunctionImport Name="loginsert" ReturnType="Collection(Int32)">
+      <Parameter Name="lid" Mode="In" Type="Int32" />
+      <Parameter Name="remark" Mode="In" Type="String" />
+      <Parameter Name="stsusid" Mode="In" Type="Int32" />
+      <Parameter Name="createby" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <EntitySet Name="AssignSPVs" EntityType="letterheadModel.AssignSPV" />
+    <EntitySet Name="errorlogs" EntityType="letterheadModel.errorlog" />
+    <EntitySet Name="spvmasters" EntityType="letterheadModel.spvmaster" />
+    <EntitySet Name="Letter_Log_SPV_Process" EntityType="letterheadModel.Letter_Log_SPV_Process" />
+    <FunctionImport Name="loginsertSPV" ReturnType="Collection(Int32)">
+      <Parameter Name="lid" Mode="In" Type="Int32" />
+      <Parameter Name="remark" Mode="In" Type="String" />
+      <Parameter Name="stsusid" Mode="In" Type="Int32" />
+      <Parameter Name="createby" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <EntitySet Name="Mst_SITE" EntityType="letterheadModel.Mst_SITE" />
+    <EntitySet Name="DeptAssignUsers" EntityType="letterheadModel.DeptAssignUser" />
+    <EntitySet Name="LocationAssignUsers" EntityType="letterheadModel.LocationAssignUser" />
+    <EntitySet Name="Mst_SUBDEPARTMENT" EntityType="letterheadModel.Mst_SUBDEPARTMENT" />
+    <EntitySet Name="LatterRequests" EntityType="letterheadModel.LatterRequest" />
+    <EntitySet Name="LatterSPVRequests" EntityType="letterheadModel.LatterSPVRequest" />
+    <EntitySet Name="hgfoundations" EntityType="letterheadModel.hgfoundation" />
+    <EntitySet Name="LatterFoundationRequests" EntityType="letterheadModel.LatterFoundationRequest" />
+  </EntityContainer>
+  <EntityType Name="Mst_Role">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TITLE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CREATEBY" Type="Int32" />
+    <Property Name="CRAETEDATE" Type="DateTime" Precision="3" />
+    <Property Name="ISACTIVE" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="Mst104_DEPARTMENT">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CODE" Type="Int32" />
+    <Property Name="DEPARTMENT" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="ISACTIVE" Type="Boolean" />
+    <Property Name="CREATEBY" Type="Int32" />
+    <Property Name="CREATEDATE" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="setting">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CNAME" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="FONTNAME" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="FONTSIZE" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="LetterCrateType">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TITLE" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ISACTIVE" Type="Boolean" />
+    <Property Name="CREATEDATE" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="USERSIGN">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="USERID" Type="Int32" />
+    <Property Name="SIGNTITLE" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="SIGNIMAGE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="CRERATEBY" Type="Int32" />
+    <Property Name="CREATEDATE" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="usermanual">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ManualTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ManualLink" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IsActive" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="mst_status">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TITLE" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ISACTIVE" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="Mst_USER">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FULLNAME" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="MOBILENO" Type="String" MaxLength="12" FixedLength="false" Unicode="true" />
+    <Property Name="EMAILID" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+    <Property Name="EMPCODE" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="USERNAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="USERPWD" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="DEPTID" Type="Int32" />
+    <Property Name="SITEID" Type="Int32" />
+    <Property Name="ROLEID" Type="Int32" />
+    <Property Name="Approver" Type="Int32" />
+    <Property Name="CANLOGIN" Type="Boolean" />
+    <Property Name="OneTimeUser" Type="Boolean" />
+    <Property Name="IsApprover" Type="Int32" />
+    <Property Name="ISACTIVE" Type="Boolean" />
+    <Property Name="CREATEBY" Type="Int32" />
+    <Property Name="CRAETEDATE" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="Letter_Log_Process">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="LID" Type="Int32" />
+    <Property Name="STATUSID" Type="Int32" />
+    <Property Name="REMARK" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="CREATEDATE" Type="DateTime" Precision="3" />
+    <Property Name="CREATEBY" Type="Int32" />
+    <Property Name="ISACTIVE" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="AssignSPV">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserID" Type="Int32" />
+    <Property Name="SpvID" Type="Int32" />
+    <Property Name="CREATEBY" Type="Int32" />
+    <Property Name="CREATEDATE" Type="DateTime" Precision="3" />
+    <Property Name="IsActive" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="errorlog">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="actionname" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="errormessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="createdate" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="spvmaster">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TITLE" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="StartName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="CREATEBY" Type="Int32" />
+    <Property Name="CREATEDATE" Type="DateTime" Precision="3" />
+    <Property Name="IsActive" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="Letter_Log_SPV_Process">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="LID" Type="Int32" />
+    <Property Name="STATUSID" Type="Int32" />
+    <Property Name="REMARK" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="CREATEDATE" Type="DateTime" Precision="3" />
+    <Property Name="CREATEBY" Type="Int32" />
+    <Property Name="ISACTIVE" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="Mst_SITE">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TITLE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CODE" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="SITENO" Type="Int32" />
+    <Property Name="SITENONAME" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="ISACTIVE" Type="Boolean" />
+    <Property Name="CREATEBY" Type="Int32" />
+    <Property Name="CRAETEDATE" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="DeptAssignUser">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DEPTID" Type="Int32" />
+    <Property Name="USERID" Type="Int32" />
+    <Property Name="CREATEBY" Type="Int32" />
+    <Property Name="CREATEDATE" Type="DateTime" Precision="3" />
+    <Property Name="IsActive" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="LocationAssignUser">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="LocID" Type="Int32" />
+    <Property Name="USERID" Type="Int32" />
+    <Property Name="CREATEBY" Type="Int32" />
+    <Property Name="CREATEDATE" Type="DateTime" Precision="3" />
+    <Property Name="IsActive" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="Mst_SUBDEPARTMENT">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DeptID" Type="Int32" />
+    <Property Name="CODE" Type="Int32" />
+    <Property Name="SubDEPARTMENT" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="ISACTIVE" Type="Boolean" />
+    <Property Name="CREATEBY" Type="Int32" />
+    <Property Name="CREATEDATE" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="LatterRequest">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="USERID" Type="Int32" />
+    <Property Name="DeptID" Type="Int32" />
+    <Property Name="LocID" Type="Int32" />
+    <Property Name="LATTERNO" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+    <Property Name="LetterType" Type="Int32" />
+    <Property Name="REMARK" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="LatterData" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="StatusId" Type="Int32" />
+    <Property Name="IsSpv" Type="Boolean" />
+    <Property Name="SPVID" Type="Int32" />
+    <Property Name="FinanceYear" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ApproveDate" Type="DateTime" Precision="3" />
+    <Property Name="ISACTIVE" Type="Boolean" />
+    <Property Name="CREATEBY" Type="Int32" />
+    <Property Name="CRAETEDATE" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="LatterSPVRequest">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="USERID" Type="Int32" />
+    <Property Name="DeptID" Type="Int32" />
+    <Property Name="LocID" Type="Int32" />
+    <Property Name="LATTERNO" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+    <Property Name="LetterType" Type="Int32" />
+    <Property Name="REMARK" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="LatterData" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="StatusId" Type="Int32" />
+    <Property Name="IsSpv" Type="Boolean" />
+    <Property Name="SPVID" Type="Int32" />
+    <Property Name="FinanceYear" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ApproveDate" Type="DateTime" Precision="3" />
+    <Property Name="ISACTIVE" Type="Boolean" />
+    <Property Name="CREATEBY" Type="Int32" />
+    <Property Name="CRAETEDATE" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="hgfoundation">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserID" Type="Int32" />
+    <Property Name="CREATEDATE" Type="DateTime" Precision="3" />
+    <Property Name="IsActive" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="LatterFoundationRequest">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="USERID" Type="Int32" />
+    <Property Name="DeptID" Type="Int32" />
+    <Property Name="LocID" Type="Int32" />
+    <Property Name="LATTERNO" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+    <Property Name="LetterType" Type="Int32" />
+    <Property Name="REMARK" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="LatterData" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="StatusId" Type="Int32" />
+    <Property Name="IsFoundation" Type="Boolean" />
+    <Property Name="FinanceYear" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ApproveDate" Type="DateTime" Precision="3" />
+    <Property Name="ISACTIVE" Type="Boolean" />
+    <Property Name="CREATEBY" Type="Int32" />
+    <Property Name="CRAETEDATE" Type="DateTime" Precision="3" />
+  </EntityType>
+</Schema>

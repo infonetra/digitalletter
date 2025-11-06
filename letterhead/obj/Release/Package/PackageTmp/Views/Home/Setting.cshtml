@@ -1,0 +1,44 @@
+﻿@model letterhead.Models.setting
+@{
+    ViewBag.Title = "Setting";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Setting Master</h5>
+                    <!-- Custom Styled Validation -->
+                    @using (Html.BeginForm("Setting", "Home", FormMethod.Post, new { @class = "row g-3 needs-validation", @novalidate = "novalidate" }))
+                    {
+                        <div class="col-md-4">
+                            <label for="validationCustom01" class="form-label">Company Name<span style="color:red;">*</span></label>
+                            @Html.TextBoxFor(x => x.CNAME, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                        <div class="col-md-4">
+                            <label for="validationCustom01" class="form-label">Font Name<span style="color:red;">*</span></label>
+                            @Html.TextBoxFor(x => x.FONTNAME, new { @class = "form-control", @required = "required" })
+                        </div>
+                        <div class="col-md-4">
+                            <label for="validationCustom01" class="form-label">Font Size<span style="color:red;">*</span></label>
+                            @Html.TextBoxFor(x => x.FONTSIZE, new { @class = "form-control", @required = "required" })
+                        </div>
+                        @Html.HiddenFor(a => a.ID)
+                        <div class="col-12">
+                            <button class="btn btn-primary" type="submit">Update</button>
+                            <a class="btn btn-danger" href="@Url.Action("Dashboard","Home")">Cancel</a>
+                        </div>
+                    }
+                    <!-- End Custom Styled Validation -->
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+

@@ -1,0 +1,302 @@
+﻿@model IEnumerable<letterhead.Models.latterrvm>
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var todaydate = DateTime.Now.ToString("dd-MM-yyyy");
+    int i = 0;
+}
+
+<section class="section dashboard">
+    <div class="row">
+        <div class="col-lg-12">
+
+            <div class="card">
+                <div class="card-body">
+                    @*<h5 class="card-title">Filter</h5>*@
+                    <form class="row g-3 mt-2">
+                        <div class="col-md-3">
+                            <label for="validationDefault04" class="form-label">Location</label>
+                            @if (Session["userrole"].ToString() == "1")
+                            {
+                                @Html.DropDownList("Location", ViewBag.Location as List<SelectListItem>, "Select", new { @class = "form-control select2" })
+                            }
+                            else
+                            {
+                                @Html.DropDownList("Location", ViewBag.Location as List<SelectListItem>, new { @class = "form-control select2" })
+                            }
+                        </div>
+                        <div class="col-md-3">
+                            <label for="validationDefault07" class="form-label">Department</label>
+                            @Html.DropDownList("DepId", ViewBag.Department as List<SelectListItem>, "Select Dept", new { @class = "form-control select2" })
+                        </div>
+                        <div class="col-md-2">
+                            <label for="validationDefault05" class="form-label">Start Date</label>
+                            <input type="date" id="sDate" max="9999-12-31" class="form-control" />
+                        </div>
+                        <div class="col-md-2">
+                            <label for="validationDefault06" class="form-label">End Date</label>
+                            <input type="date" id="eDate" max="9999-12-31" class="form-control" />
+                        </div>
+
+                        <div class="col-md-2">
+                            <label for="validationDefault07" class="form-label" style="color:#fff;">-</label>
+                            <input type="button" onclick="filterData()" style="width:100%;" class="btn btn-success" value="Apply" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Left side columns -->
+        <div class="col-lg-8">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Bar CHart</h5>
+                            <canvas id="barChart" style="max-height: 400px;"></canvas>
+                         
+
+                        </div>
+                    </div>
+                </div>
+             
+
+                <!-- Recent Sales -->
+                <div class="col-12">
+                    @if (Session["userrole"].ToString() == "1")
+                    {
+                        <div class="card recent-sales overflow-auto">
+
+                            <div class="card-body">
+                                <h5 class="card-title">Top 5 LetterHead </h5>
+
+                                <div class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
+                                    <div class="dataTable-container">
+                                        <table class="table table-borderless datatable dataTable-table">
+                                            <thead>
+                                                <tr><th scope="col" data-sortable="" style="width: 11.0108%;"><a href="#" class="dataTable-sorter">#</a></th><th scope="col" data-sortable="" style="width: 24.0072%;"><a href="#" class="dataTable-sorter">User Name</a></th><th scope="col" data-sortable="" style="width: 39.8917%;"><a href="#" class="dataTable-sorter">Letter No</a></th><th scope="col" data-sortable="" style="width: 9.9278%;"><a href="#" class="dataTable-sorter">Site Detail</a></th></tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model)
+                                                {
+                                                    i = i + 1;
+                                                    <tr>
+                                                        <th scope="row"><a href="#">@i</a></th>
+                                                        <td>@item.FULLNAME</td>
+                                                        <td><a href="#" class="text-primary">@item.LATTERNOSerice</a></td>
+                                                        <td>@item.TITLE</td>
+                                                    </tr>
+
+                                                }
+
+                                            </tbody>
+                                        </table>
+                                    </div><div class="dataTable-bottom"><div class="dataTable-info">Showing 1 to 5 of 5 entries</div><nav class="dataTable-pagination"><ul class="dataTable-pagination-list"></ul></nav></div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="card recent-sales overflow-auto">
+
+                            <div class="card-body">
+                                <h5 class="card-title">Top 5 LetterHead </h5>
+
+                                <div class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
+                                    <div class="dataTable-container">
+                                        <table class="table table-borderless datatable dataTable-table">
+                                            <thead>
+                                                <tr><th scope="col" data-sortable="" style="width: 11.0108%;"><a href="#" class="dataTable-sorter">#</a></th><th scope="col" data-sortable="" style="width: 39.8917%;"><a href="#" class="dataTable-sorter">Letter No</a></th><th scope="col" data-sortable="" style="width: 9.9278%;"><a href="#" class="dataTable-sorter">Site Detail</a></th></tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model)
+                                                {
+                                                    i = i + 1;
+                                                    <tr>
+                                                        <th scope="row"><a href="#">@i</a></th>
+                                                        <td><a href="#" class="text-primary">@item.LATTERNOSerice</a></td>
+                                                        <td>@item.TITLE</td>
+                                                    </tr>
+
+                                                }
+
+                                            </tbody>
+                                        </table>
+                                    </div><div class="dataTable-bottom"><div class="dataTable-info">Showing 1 to 5 of 5 entries</div><nav class="dataTable-pagination"><ul class="dataTable-pagination-list"></ul></nav></div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    }
+
+
+
+
+                </div><!-- End Recent Sales -->
+
+            </div>
+        </div><!-- End Left side columns -->
+        <!-- Right side columns -->
+        <div class="col-lg-4">
+            <!-- Website Traffic -->
+            <div class="card">
+
+                <div class="card-body pb-0">
+                    <h5 class="card-title">Summary <span>| Active</span></h5>
+
+                    <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
+
+                </div>
+            </div><!-- End Website Traffic -->
+        </div><!-- End Right side columns -->
+
+    </div>
+</section>
+
+
+
+@Html.Partial("_Alerts")@Html.Partial("_Alerts")
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        filterData();
+    })
+
+    function filterData() {
+        debugger;
+       /* $.loader.open('');*/
+        var Location = $('#Location').val();
+        var sDate = $('#sDate').val();
+        var eDate = $('#eDate').val();
+        var DepId = $('#DepId').val();
+
+        $('#crrLocation').val(Location);
+        $('#crrSDate').val(sDate);
+        $('#crrEDate').val(eDate);
+        $('#crrDepId').val(DepId);
+
+        if (sDate != '' && eDate == '') {
+            alert('Please Select End Date!')
+            $.loader.close(true);
+            return;
+        }
+
+        var formdata = new FormData();
+        formdata.append("Location", Location);
+        formdata.append("sDate", sDate);
+        formdata.append("eDate", eDate);
+        formdata.append("DepId", DepId);
+
+        $.ajax({
+            async: true,
+            type: "Post",
+            contentType: false,
+            data: formdata,
+            url: '/Home/GetFilteredData/',
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                if (data.success) {
+
+                    debugger;
+                  
+                   
+                    //document.addEventListener("DOMContentLoaded", () => {
+                    echarts.init(document.querySelector("#trafficChart")).setOption({
+                        tooltip: {
+                            trigger: 'item'
+                        },
+                        legend: {
+                            top: '5%',
+                            left: 'center'
+                        },
+                        series: [{
+                            name: 'Access From',
+                            type: 'pie',
+                            radius: ['40%', '70%'],
+                            avoidLabelOverlap: false,
+                            label: {
+                                show: false,
+                                position: 'center'
+                            },
+                            emphasis: {
+                                label: {
+                                    show: true,
+                                    fontSize: '18',
+                                    fontWeight: 'bold'
+                                }
+                            },
+                            labelLine: {
+                                show: false
+                            },
+                            data: [{
+                                value: data.totaluser,
+                                name: 'User'
+                            },
+                            {
+                                value: data.totalsite,
+                                name: 'Projects'
+                                },
+                                {
+                                    value: data.totalatter,
+                                    name: 'Letter Issue'
+                                }
+                            ]
+                        }]
+                    });
+
+                    var ctx = document.getElementById('barChart').getContext('2d');
+                    if (window.bar !== undefined) {
+                        window.bar.destroy(); // destroy previous chart instance if exists
+                    }
+                    window.bar = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                label: 'Letter Count',
+                                data: data.counts,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(255, 159, 64, 0.2)',
+                                    'rgba(255, 205, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(201, 203, 207, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgb(255, 99, 132)',
+                                    'rgb(255, 159, 64)',
+                                    'rgb(255, 205, 86)',
+                                    'rgb(75, 192, 192)',
+                                    'rgb(54, 162, 235)',
+                                    'rgb(153, 102, 255)',
+                                    'rgb(201, 203, 207)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                    //});
+                } else {
+                    alert('Something went wrong, please try again later!');
+                }
+                $.loader.close(true);
+            }
+        })
+    }
+</script>

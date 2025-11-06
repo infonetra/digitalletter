@@ -3,75 +3,67 @@
     Layout = null;
     var datet = DateTime.Now.ToString("dd-MM-yyyy");
 }
+
+<link rel="stylesheet" href="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/skins/content/default/content.min.css">
 <!DOCTYPE html>
 <html>
-
 <head>
-    <link href="~/Content/printpdf.css" rel="stylesheet" />
-</head>
-
-<body>
+    <meta charset="utf-8" />
+    <title>Letter Preview</title>
     <style>
-        p {
-            margin: 0;
-        }
         body {
-          /*  font-family: Verdana, sans-serif;
-            font-size: 12px;*/
-          font-family:@Session["fname"].ToString();
-          font-size:@Session["fsize"].ToString();
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header, .footer {
+            text-align: center;
+            width: 100%;
+        }
+
+            .header img, .footer img {
+                width: 100%;
+                max-width: 800px;
+            }
+
+        .page-headernew {
+            padding: 10px 50px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+
+        .rich-text-output {
+            padding: 30px 50px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
         }
     </style>
-    <div class="maindiv">
-        <div class="page-header">
-            <img src="~/Content/assets/img/LeaterHeader.png" style="margin-left:7px; margin-top:6px;" />
-            @*<img src="~/Content/assets/img/topnew.jpg" style="margin-top:-28px;" />*@
-        </div>
-        <div class="page-headernew">
-            <p style=" display: flex; font-weight: bold; justify-content: space-between; padding: 0 48px; "><b>xxxxxxxxxxxx</b><span>@(Session["datawise"]!=null? Session["datawise"].ToString():datet)</span></p>
-            @*<p style=" display: flex; font-weight: bold; justify-content: space-between; padding: 0 48px; "><b>@Model.LATTERNOSerice</b><span>@datet</span></p>*@
-        </div>
-        <div class="tspace">
-            <table>
+</head>
+<body>
 
-                <thead>
-                    <tr>
-                        <td>
-                            <!--place holder for the fixed-position header-->
-                            <div class="page-header-space"></div>
-                        </td>
-                    </tr>
-                </thead>
+    <!-- Header Image -->
+    <div class="header">
+        <img src="~/Content/assets/img/LeaterHeader.png" style="margin-left:7px; margin-top:6px;" />
+    </div>
 
-                <tbody>
-                    <tr>
-                        <td>
-                            <!--*** CONTENT GOES HERE ***-->
-                            <div class="page">
-                                @Html.Raw(Model.LatterData)
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
+    <!-- Dynamic Number and Date -->
+    <div class="page-headernew">
+        <span><b>xxxxxxxxxxxx</b></span>
+        <span>@(Session["datawise"] != null ? Session["datawise"].ToString() : DateTime.Now.ToString("dd-MM-yyyy"))</span>
+    </div>
 
-                <tfoot>
-                    <tr>
-                        <td>
-                            <!--place holder for the fixed-position footer-->
-                            <div class="page-footer-space"></div>
-                        </td>
-                    </tr>
-                </tfoot>
+    <!-- Letter Content -->
+    <div class="rich-text-output">
+        @Html.Raw(Model.LatterData)
+    </div>
 
-            </table>
-        </div>
-        <div class="page-footer">
-            <div>
-                <img src="~/Content/assets/img/LetterFooter.png" style="margin-left:7px;margin-top:5px;" />
-                @*<img src="~/Content/assets/img/d.jpg" style=" margin-bottom: -2px;" />
-        <img src="~/Content/assets/img/footer.png" style=" margin-top: 0px;" />*@
-            </div>
-        </div>
+    <!-- Footer Image -->
+    <div class="footer">
+        <img src="~/Content/assets/img/LetterFooter.png" style="margin-left:7px;margin-top:5px;" />
     </div>
     <script>
 
@@ -82,7 +74,92 @@
         };
     </script>
 </body>
-
 </html>
+
+
+
+
+
+
+
+@*
+
+        -------------------------------------------------
+        <!DOCTYPE html>
+    <html>
+
+    <head>
+        <link href="~/Content/printpdf.css" rel="stylesheet" />
+    </head>
+
+    <body>
+        <style>
+            p {
+                margin: 0;
+            }
+            body {
+              font-family:@Session["fname"].ToString();
+              font-size:@Session["fsize"].ToString();
+            }
+        </style>
+        <div class="maindiv">
+            <div class="page-header">
+                <img src="~/Content/assets/img/LeaterHeader.png" style="margin-left:7px; margin-top:6px;" />
+            </div>
+            <div class="page-headernew">
+                <p style=" display: flex; font-weight: bold; justify-content: space-between; padding: 0 48px; "><b>xxxxxxxxxxxx</b><span>@(Session["datawise"]!=null? Session["datawise"].ToString():datet)</span></p>
+            </div>
+            <div class="tspace">
+                <table>
+
+                    <thead>
+                        <tr>
+                            <td>
+
+                                <div class="page-header-space"></div>
+                            </td>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>
+
+                                <div class="page">
+                                    @Html.Raw(Model.LatterData)
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                    <tfoot>
+                        <tr>
+                            <td>
+
+                                <div class="page-footer-space"></div>
+                            </td>
+                        </tr>
+                    </tfoot>
+
+                </table>
+            </div>
+            <div class="page-footer">
+                <div>
+                    <img src="~/Content/assets/img/LetterFooter.png" style="margin-left:7px;margin-top:5px;" />
+
+                </div>
+            </div>
+        </div>
+        <script>
+
+            window.print();
+            window.onafterprint = function (event) {
+                var url = '@Url.Action("LetterRequest", "Home", new { id = Model.ID })';
+               window.location.href = url;
+            };
+        </script>
+    </body>
+
+    </html>*@
 
 

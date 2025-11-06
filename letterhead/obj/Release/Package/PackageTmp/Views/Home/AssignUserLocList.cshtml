@@ -1,0 +1,65 @@
+﻿@model IEnumerable<letterhead.Models.Locvm>
+@{
+    ViewBag.Title = "AssignUserLocList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int i = 0;
+}
+
+
+<div class="pagetitle">
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">Masters</li>
+            <li class="breadcrumb-item active">Assign Project</li>
+        </ol>
+    </nav>
+</div>
+<section class="section dashboard">
+    <div class="row">
+        <div class="col-12">
+            <div class="card recent-sales overflow-auto">
+                <div class="filter" style="right:23px;">
+                    @*<button type="button" class="btn btn-primary"><i class="bi bi-star me-1"></i> With Text</button>*@
+                    <a class="btn btn-primary" href="@Url.Action("AssignUserLocAdd", "Home")"><i class="bi bi-person-plus"></i>Assign Project</a>
+                    <a class="btn btn-danger" href="@Url.Action("Dashboard","Home")">Cancel</a>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Project Assign</h5>
+
+                    <table class="table table-borderless datatable">
+                        <thead>
+                            <tr>
+                                <th scope="col">S.No</th>
+                                <th scope="col">Project Name</th>
+                                <th scope="col">User Name</th>
+                                <th scope="col">EmpCode</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                i = i + 1;
+                                <tr>
+                                    <th scope="row"><a href="#">@i</a></th>
+                                    <td>@item.Location</td>
+                                    <td>@item.username</td>
+                                    <td>@item.empcode</td>
+                                    <td><span class="badge bg-@(item.ISACTIVE==true?"success":"danger")">@(item.ISACTIVE==true? "Active" : "De-Active")</span></td>
+                                    <td><a href="@Url.Action("AssignUserLocEdit", "Home", new {id=@item.ID})"><i class="bi bi-pencil"></i></a></td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+@Html.Partial("_Alerts")
+

@@ -1,4 +1,5 @@
 ﻿using letterhead.Models;
+using Microsoft.Ajax.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -58,9 +59,27 @@ namespace letterhead.Controllers
             Session["fsize"] = settingdata.FONTSIZE;
             if (role==2)
             {
-                ViewBag.totalsite = db.LocationAssignUsers.Where(a => a.IsActive == true && a.USERID== userid).Count();
-                ViewBag.totaluser = db.Mst_USER.Where(a => a.ISACTIVE == true).Count();
-                ViewBag.totalatter = db.LatterRequests.Where(a => a.ISACTIVE == true && a.USERID==userid).Count();
+               
+
+                ViewBag.Location = (from p in db.LatterRequests
+                                    join l in db.Mst_SITE on p.LocID equals l.ID
+                                    where l.ISACTIVE == true && p.USERID== userid
+                                    select new SelectListItem
+                                    {
+                                        Text = l.TITLE,
+                                        Value = l.ID.ToString()
+                                    }).DistinctBy(x => x.Value).ToList();
+
+                ViewBag.Department = (from p in db.LatterRequests
+                                      join l in db.Mst104_DEPARTMENT on p.DeptID equals l.ID
+                                      where l.ISACTIVE == true && p.USERID == userid
+                                      select new SelectListItem
+                                      {
+                                          Text = l.DEPARTMENT,
+                                          Value = l.ID.ToString()
+                                      }).DistinctBy(x => x.Value).ToList();
+
+
                 data = (from later in db.LatterRequests
                             join user in db.Mst_USER on later.USERID equals user.ID
                             join site in db.Mst_SITE on later.LocID equals site.ID
@@ -90,9 +109,27 @@ namespace letterhead.Controllers
             }
             else
             {
-                ViewBag.totalsite = db.Mst_SITE.Where(a => a.ISACTIVE == true).Count();
-                ViewBag.totaluser = db.Mst_USER.Where(a => a.ISACTIVE == true).Count();
-                ViewBag.totalatter = db.LatterRequests.Where(a => a.ISACTIVE == true).Count();
+              
+
+
+                ViewBag.Location = (from p in db.LatterRequests
+                                    join l in db.Mst_SITE on p.LocID equals l.ID
+                                    where l.ISACTIVE == true
+                                    select new SelectListItem
+                                    {
+                                        Text = l.TITLE,
+                                        Value = l.ID.ToString()
+                                    }).DistinctBy(x => x.Value).ToList();
+
+                ViewBag.Department = (from p in db.LatterRequests
+                                      join l in db.Mst104_DEPARTMENT on p.DeptID equals l.ID
+                                      where l.ISACTIVE == true
+                                      select new SelectListItem
+                                      {
+                                          Text = l.DEPARTMENT,
+                                          Value = l.ID.ToString()
+                                      }).DistinctBy(x => x.Value).ToList();
+
                 data = (from later in db.LatterRequests
                             join user in db.Mst_USER on later.USERID equals user.ID
                             join site in db.Mst_SITE on later.LocID equals site.ID
@@ -121,6 +158,185 @@ namespace letterhead.Controllers
             }
            
             return View(data);
+        }
+
+
+        public ActionResult GetFilteredData(int location = 0, string sDate = null, string eDate = null, int DepId = 0)
+        {
+            try
+            {
+                DateTime startDate;
+                DateTime endDate;
+
+                if (!DateTime.TryParse(sDate, out startDate))
+                {
+                    startDate = DateTime.Today.AddMonths(-6);
+                }
+
+                if (!DateTime.TryParse(eDate, out endDate))
+                {
+                    endDate = DateTime.Today;
+                }
+
+
+                int userid = Convert.ToInt32(Session["userid"]);
+                int role = Convert.ToInt32(Session["userrole"]);
+                if (role == 2)
+                {
+                    var users = db.Mst_USER.Where(u => u.ISACTIVE == true);
+                    var letters = db.LatterRequests.Where(l => l.ISACTIVE == true && l.CRAETEDATE.HasValue &&
+                                                               l.CRAETEDATE.Value >= startDate &&
+                                                               l.CRAETEDATE.Value <= endDate && l.USERID==userid);
+
+                    if (location > 0)
+                    {
+                        letters = letters.Where(l => l.LocID == location);
+                    }
+
+                    if (DepId > 0)
+                    {
+                        letters = letters.Where(l => l.DeptID == DepId);
+                    }
+
+                    // Now calculate totals
+                    int totalatter = letters.Count();
+
+                    // Filter users who issued filtered letters
+                    int totaluser = users
+                        .Where(u => letters.Select(l => l.USERID).Distinct().Contains(u.ID))
+                        .Count();
+
+                    // Total sites from filtered letters
+                    int totalsite = db.Mst_SITE
+                        .Where(s => letters.Select(l => l.LocID).Distinct().Contains(s.ID) && s.ISACTIVE == true)
+                        .Count();
+
+                    var query = db.LatterRequests
+      .Where(l => l.CRAETEDATE.HasValue &&
+                  l.CRAETEDATE.Value >= startDate &&
+                  l.CRAETEDATE.Value <= endDate &&
+                  l.USERID == userid);
+
+                    // Apply filters only if values are greater than zero
+                    if (location > 0)
+                    {
+                        query = query.Where(l => l.LocID == location);
+                    }
+                    if (DepId > 0)
+                    {
+                        query = query.Where(l => l.DeptID == DepId);
+                    }
+
+                    var data = query
+                        .GroupBy(l => new { l.CRAETEDATE.Value.Year, l.CRAETEDATE.Value.Month })
+                        .Select(g => new
+                        {
+                            Month = g.Key.Month,
+                            Year = g.Key.Year,
+                            Count = g.Count()
+                        })
+                        .AsEnumerable()
+                        .Select(g => new
+                        {
+                            Month = new DateTime(g.Year, g.Month, 1).ToString("MMM yyyy"),
+                            Count = g.Count
+                        })
+                        .OrderBy(g => DateTime.ParseExact(g.Month, "MMM yyyy", null))
+                        .ToList();
+                    var labels = data.Select(x => x.Month).ToList();
+                    var counts = data.Select(x => x.Count).ToList();
+
+
+                    return Json(data: new { success = true, totalsite = totalsite, totaluser = totaluser, totalatter = totalatter, labels = labels, counts = counts}, JsonRequestBehavior.AllowGet);
+                }
+                else 
+                {
+                    // Base variables
+                    var users = db.Mst_USER.Where(u => u.ISACTIVE==true);
+                    var letters = db.LatterRequests.Where(l => l.ISACTIVE == true && l.CRAETEDATE.HasValue &&
+                                                               l.CRAETEDATE.Value >= startDate &&
+                                                               l.CRAETEDATE.Value <= endDate);
+
+                    if (location > 0)
+                    {
+                        letters = letters.Where(l => l.LocID == location);
+                    }
+
+                    if (DepId > 0)
+                    {
+                        letters = letters.Where(l => l.DeptID == DepId);
+                    }
+
+                    // Now calculate totals
+                    int totalatter = letters.Count();
+
+                    // Filter users who issued filtered letters
+                    int totaluser = users
+                        .Where(u => letters.Select(l => l.USERID).Distinct().Contains(u.ID))
+                        .Count();
+
+                    // Total sites from filtered letters
+                    int totalsite = db.Mst_SITE
+                        .Where(s => letters.Select(l => l.LocID).Distinct().Contains(s.ID) && s.ISACTIVE == true)
+                        .Count();
+
+
+
+                    //               var data = db.LatterRequests
+                    //.Where(l => l.CRAETEDATE.HasValue && (l.CRAETEDATE.Value >= startDate && l.CRAETEDATE.Value <= endDate))
+                    //.GroupBy(l => l.CRAETEDATE.Value.ToString("MMM yyyy"))
+                    //.Select(g => new
+                    //{
+                    //    Month = g.Key,
+                    //    Count = g.Count()
+                    //})
+                    //.OrderBy(g => g.Month)  // ✅ Use 'Month' instead of 'key'
+                    //.ToList();
+                    var query = db.LatterRequests
+                        .Where(l => l.CRAETEDATE.HasValue &&
+                                    l.CRAETEDATE.Value >= startDate &&
+                                    l.CRAETEDATE.Value <= endDate);
+
+                    // Apply filters only if values are greater than zero
+                    if (location > 0)
+                    {
+                        query = query.Where(l => l.LocID == location);
+                    }
+                    if (DepId > 0)
+                    {
+                        query = query.Where(l => l.DeptID == DepId);
+                    }
+
+                    var data = query
+                        .GroupBy(l => new { l.CRAETEDATE.Value.Year, l.CRAETEDATE.Value.Month })
+                        .Select(g => new
+                        {
+                            Month = g.Key.Month,
+                            Year = g.Key.Year,
+                            Count = g.Count()
+                        })
+                        .AsEnumerable()
+                        .Select(g => new
+                        {
+                            Month = new DateTime(g.Year, g.Month, 1).ToString("MMM yyyy"),
+                            Count = g.Count
+                        })
+                        .OrderBy(g => DateTime.ParseExact(g.Month, "MMM yyyy", null))
+                        .ToList();
+                    var labels = data.Select(x => x.Month).ToList();
+                    var counts = data.Select(x => x.Count).ToList();
+
+
+                    return Json(data: new { success = true, totalsite = totalsite, totaluser = totaluser, totalatter = totalatter, labels = labels, counts = counts }, JsonRequestBehavior.AllowGet);
+                }
+
+             }
+            catch (Exception)
+            {
+
+                return Json(data: new { success = false }, JsonRequestBehavior.AllowGet);
+            }
+
         }
 
 
@@ -894,23 +1110,20 @@ namespace letterhead.Controllers
                 if (Session["userid"] != null && Session["userrole"].ToString() == "1")
                 {
                     var data = (from user in db.Mst_USER
-                                //join site in db.Mst_SITE on user.SITEID equals site.ID  
-                                //join dept in db.Mst104_DEPARTMENT on user.DEPTID equals dept.ID                               
+                                join ap in db.Mst_USER on user.Approver equals ap.ID into approverJoin
+                                from ap in approverJoin.DefaultIfEmpty()
                                 select new uservm
                                 {
                                     ID = user.ID,
                                     FULLNAME = user.FULLNAME,
                                     MOBILENO = user.MOBILENO,
                                     EMAILID = user.EMAILID,
-                                    //TITLE = site.TITLE,
-                                    //SITENO = site.SITENO,
-                                    //SITENONAME = site.SITENONAME,
-                                   // Department=dept.DEPARTMENT,
-                                    EMPCODE=user.EMPCODE,
-                                   // DeptID=dept.ID,
-                                    USERNAME=user.USERNAME,
-                                    USERPWD=user.USERPWD,
-                                    CANLOGIN=user.CANLOGIN,
+                                    Approvarname = ap != null ? ap.FULLNAME : "NA",
+                                    EMPCODE = user.EMPCODE,
+                                    IsApprover = user.IsApprover,
+                                    USERNAME = user.USERNAME,
+                                    USERPWD = user.USERPWD,
+                                    CANLOGIN = user.CANLOGIN,
                                     CREATEBY = user.CREATEBY,
                                     CRAETEDATE = user.CRAETEDATE,
                                     ISACTIVE = user.ISACTIVE
@@ -1640,6 +1853,154 @@ namespace letterhead.Controllers
             return View();
         }
 
+
+        public ActionResult LetterNo()
+        {
+            if (Session["userid"] == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }         
+            return View();
+        }
+
+        public ActionResult GetLetternoData(int lstype = 0 ,string empcode=null,string letterno=null)
+        {
+            if (Session["userid"] == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }          
+            if(lstype==1)
+            {
+              var  dataf = (from later in db.LatterRequests
+                            join ltype in db.LetterCrateTypes on later.LetterType equals ltype.ID
+                            join user in db.Mst_USER on later.USERID equals user.ID
+                            join site in db.Mst_SITE on later.LocID equals site.ID
+                            join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
+                            join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID
+                            where user.EMPCODE==empcode && (letterno!=null?later.LATTERNO==letterno : later.ISACTIVE==true)
+                            select new latterrvm
+                            {
+                                ID = later.ID,
+                                FULLNAME = user.FULLNAME,
+                                LATTERNO = later.LATTERNO,
+                                isapv = later.IsSpv,
+                                spvid = later.SPVID,
+                                LatterData = later.LatterData,
+                                StatusID = later.StatusId,
+                                Department = dept.DEPARTMENT,
+                                DeptID = dept.ID,
+                                LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/" + later.FinanceYear + "/" + later.LATTERNO.ToString()),
+                                REMARK = ltype.TITLE,
+                                TITLE = site.TITLE,
+                                SITEID = site.ID,
+                                CODE = site.CODE,
+                                EMPCODE = user.EMPCODE,
+                                SITENO = site.SITENO,
+                                SITENONAME = site.SITENONAME,
+                                CREATEBY = later.CREATEBY,
+                                CRAETEDATE = later.CRAETEDATE,
+                                ISACTIVE = later.ISACTIVE,
+                                lettertyped= lstype
+                            }).ToList().OrderByDescending(a => a.CRAETEDATE);
+                return PartialView("_letternoreport", dataf);
+            }
+            if (lstype == 2)
+            {
+               var datat = (from later in db.LatterSPVRequests
+                        join ltype in db.LetterCrateTypes on later.LetterType equals ltype.ID
+                        join user in db.Mst_USER on later.USERID equals user.ID
+                        join site in db.Mst_SITE on later.LocID equals site.ID
+                        join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
+                        join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID
+                        join spvm in db.spvmasters on later.SPVID equals spvm.ID
+                        where user.EMPCODE == empcode && (letterno != null ? later.LATTERNO == letterno : later.ISACTIVE == true)
+                        select new latterrvm
+                        {
+                            ID = later.ID,
+                            FULLNAME = user.FULLNAME,
+                            LATTERNO = later.LATTERNO,
+                            isapv = later.IsSpv,
+                            spvid = later.SPVID,
+                            LatterData = later.LatterData,
+                            StatusID = later.StatusId,
+                            Department = dept.DEPARTMENT,
+                            DeptID = dept.ID,
+                            LATTERNOSerice = (spvm.StartName + "/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/" + later.FinanceYear + "/" + later.LATTERNO.ToString()),
+                            REMARK = ltype.TITLE,
+                            TITLE = site.TITLE,
+                            SITEID = site.ID,
+                            CODE = site.CODE,
+                            EMPCODE = user.EMPCODE,
+                            SITENO = site.SITENO,
+                            SITENONAME = site.SITENONAME,
+                            CREATEBY = later.CREATEBY,
+                            CRAETEDATE = later.CRAETEDATE,
+                            ISACTIVE = later.ISACTIVE,
+                            lettertyped = lstype
+                        }).ToList().OrderByDescending(a => a.CRAETEDATE);
+                return PartialView("_letternoreport", datat);
+            }
+            if (lstype == 3)
+            {
+              var  datal = (from later in db.LatterFoundationRequests
+                        join ltype in db.LetterCrateTypes on later.LetterType equals ltype.ID
+                        join user in db.Mst_USER on later.USERID equals user.ID
+                        join site in db.Mst_SITE on later.LocID equals site.ID
+                        join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
+                        join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID
+                        where user.EMPCODE == empcode && (letterno != null ? later.LATTERNO == letterno : later.ISACTIVE == true)
+                        select new latterrvm
+                        {
+                            ID = later.ID,
+                            FULLNAME = user.FULLNAME,
+                            LATTERNO = later.LATTERNO,
+                            isapv = later.IsFoundation,
+                            LatterData = later.LatterData,
+                            StatusID = later.StatusId,
+                            Department = dept.DEPARTMENT,
+                            DeptID = dept.ID,
+                            LATTERNOSerice = (site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/" + later.FinanceYear + "/" + later.LATTERNO.ToString()),
+                            REMARK = ltype.TITLE,
+                            TITLE = site.TITLE,
+                            SITEID = site.ID,
+                            CODE = site.CODE,
+                            EMPCODE = user.EMPCODE,
+                            SITENO = site.SITENO,
+                            SITENONAME = site.SITENONAME,
+                            CREATEBY = later.CREATEBY,
+                            CRAETEDATE = later.CRAETEDATE,
+                            ISACTIVE = later.ISACTIVE,
+                            lettertyped = lstype
+                        }).ToList().OrderByDescending(a => a.CRAETEDATE);
+
+                return PartialView("_letternoreport", datal) ;
+            }
+            return RedirectToAction("LetterNo");
+        }
+
+
+        public ActionResult UpdateLetterData(int ID=0,string letterno = null, int ltype=0)
+        {
+            if(ltype==1 && (letterno!=null || letterno!= "undefined"))
+            {               
+                var data = db.LatterRequests.Where(a => a.ID == ID).FirstOrDefault();
+                data.LATTERNO = letterno;
+                db.SaveChanges();
+            }
+            if (ltype == 2 && (letterno != null || letterno != "undefined"))
+            {
+                var data = db.LatterSPVRequests.Where(a => a.ID == ID).FirstOrDefault();
+                data.LATTERNO = letterno;
+                db.SaveChanges();
+            }
+            if (ltype == 3 && (letterno != null || letterno != "undefined"))
+            {
+                var data = db.LatterFoundationRequests.Where(a => a.ID == ID).FirstOrDefault();
+                data.LATTERNO = letterno;
+                db.SaveChanges();
+            }
+            return Json(new { success = true,data=true }, JsonRequestBehavior.AllowGet);
+        }
         #endregion
 
         #region latter request     
@@ -1891,7 +2252,7 @@ namespace letterhead.Controllers
                     model.CREATEBY = 1;
                     model.ISACTIVE = true;
                     model.StatusId = 5;
-                    model.FinanceYear = "2024-25";
+                    model.FinanceYear = "2025-26";
                     model.IsSpv = false;
                     model.CRAETEDATE = DateTime.Now;
                     db.LatterRequests.Add(model);
@@ -2007,7 +2368,7 @@ namespace letterhead.Controllers
                                        }).ToList();
                     model.USERID = Convert.ToInt32(Session["userid"].ToString());
                     model.CREATEBY = 1;
-                    model.FinanceYear = "2024-25";
+                    model.FinanceYear = "2025-26";
                     model.ISACTIVE = true;
                     model.StatusId = 5;
                     model.IsSpv = true;
@@ -2111,7 +2472,7 @@ namespace letterhead.Controllers
                     ViewBag.ltype = db.LetterCrateTypes.Where(x => x.ISACTIVE == true).Select(x => new SelectListItem { Text = x.TITLE, Value = x.ID.ToString() }).ToList(); ;                  
                     model.USERID = Convert.ToInt32(Session["userid"].ToString());
                     model.CREATEBY = 1;
-                    model.FinanceYear = "2024-25";
+                    model.FinanceYear = "2025-26";
                     model.ISACTIVE = true;
                     model.StatusId = 5;
                     model.IsFoundation = true;
@@ -2448,7 +2809,7 @@ namespace letterhead.Controllers
 
                 var userdata = db.Mst_USER.Where(a => a.ID == cid).FirstOrDefault();
                 var approver = db.Mst_USER.Where(a => a.ID == userdata.Approver).FirstOrDefault();
-                var msgtemp = etemp.RequestSendHGF(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
+                var msgtemp = etemp.RequestSendHGF(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME,data.ID);
                 mailsend(approver.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
 
                 TempData["success"] = "Thanks.";
@@ -2567,6 +2928,52 @@ namespace letterhead.Controllers
                 }
             }
             catch(Exception ex)
+            {
+                return View();
+            }
+        }
+
+        public ActionResult printviewNew(int id = 0)
+        {
+            try
+            {
+                if (Session["userid"] != null)
+                {
+                    var data = (from later in db.LatterRequests
+                                join user in db.Mst_USER on later.USERID equals user.ID
+                                join site in db.Mst_SITE on later.LocID equals site.ID
+                                join subdept in db.Mst_SUBDEPARTMENT on later.DeptID equals subdept.ID
+                                join dept in db.Mst104_DEPARTMENT on subdept.DeptID equals dept.ID
+                                where later.ID == id
+                                select new latterrvm
+                                {
+                                    ID = later.ID,
+                                    FULLNAME = user.FULLNAME,
+                                    LATTERNO = later.LATTERNO,
+                                    LatterData = later.LatterData,
+                                    Department = dept.DEPARTMENT,
+                                    StatusID = later.StatusId,
+                                    ApproveDate = later.ApproveDate,
+                                    DeptID = dept.ID,
+                                    LATTERNOSerice = ("HGIEL/" + site.TITLE + "/" + dept.DEPARTMENT + "/" + subdept.SubDEPARTMENT + "/" + later.FinanceYear + "/" + later.LATTERNO.ToString()),
+                                    REMARK = later.REMARK,
+                                    TITLE = site.TITLE,
+                                    SITEID = site.ID,
+                                    CODE = site.CODE,
+                                    SITENO = site.SITENO,
+                                    SITENONAME = site.SITENONAME,
+                                    CREATEBY = later.CREATEBY,
+                                    CRAETEDATE = later.CRAETEDATE,
+                                    ISACTIVE = later.ISACTIVE
+                                }).FirstOrDefault();
+                    return View(data);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            catch (Exception ex)
             {
                 return View();
             }
@@ -3402,6 +3809,11 @@ namespace letterhead.Controllers
             try
             {
                 var data = db.LatterFoundationRequests.Where(a => a.ID == id).FirstOrDefault();
+                if (data.StatusId == 4)
+                {
+                    ViewBag.message = "Request has been already approved.";
+                    return View();
+                }
                 data.ApproveDate = DateTime.Now;
                 data.StatusId = 4;
                 db.SaveChanges();
@@ -3411,6 +3823,7 @@ namespace letterhead.Controllers
                 db.loginsert(data.ID, "Approved By Mail", 4, userdata.Approver);
                 var msgtemp = etemp.RequestApprove(userdata.FULLNAME, userdata.EMPCODE, approver.FULLNAME);
                 mailsend(userdata.EMAILID, msgtemp, "Electronic Letter Pad Request", true);
+                ViewBag.message = "Request has been approved.";
                 return View();
             }
             catch (Exception ex)
@@ -3813,8 +4226,17 @@ namespace letterhead.Controllers
             try
             {
                 //var locations = db.Mst108_COSTCENTER.Where(x => x.ISACTIVE == true && x.BusinessID == bid).Select(x => new SelectListItem { Text = x.COSTCENTER, Value = x.LocationID.ToString() }).ToList();
-
-                var subdept = db.LatterRequests.Where(a=>a.DeptID==did && a.LocID== lid && a.FinanceYear!="2023-24").Count();
+                var subdept = 0;
+                if (did==37 && lid==2)
+                {
+                    subdept = ((db.LatterRequests.Where(a => a.DeptID == did && a.LocID == lid && a.FinanceYear == "2024-25").Count()) + (db.LatterRequests.Where(a => a.DeptID == did && a.LocID == lid && a.FinanceYear == "2025-26").Count()));
+                    subdept= subdept+1466;
+                }
+                else
+                {
+                    subdept = ((db.LatterRequests.Where(a => a.DeptID == did && a.LocID == lid && a.FinanceYear == "2024-25").Count()) + (db.LatterRequests.Where(a => a.DeptID == did && a.LocID == lid && a.FinanceYear == "2025-26").Count()));
+                }
+                
                 int lno = Convert.ToInt32(subdept + 1);
 
                 return Json(data: new { success = true, lno = lno }, JsonRequestBehavior.AllowGet);

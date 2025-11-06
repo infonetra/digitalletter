@@ -1,0 +1,119 @@
+﻿/* ===== GLOBAL RESET AND BASE STYLES ===== */
+* {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: @Session["fname"].ToString();
+    font-size: @Session["fsize"].ToString();
+    line-height: 1.5;
+    color: #000;
+    background: #fff;
+}
+
+/* ===== HEADER / FOOTER HANDLING ===== */
+.page-header {
+    height: 80px;
+    position: fixed;
+    top: 0mm;
+    width: 100%;
+    margin-left: -8px;
+}
+
+.page-footer {
+    height: 100px;
+    position: fixed;
+    bottom: 0mm;
+    width: 100%;
+    margin-left: -8px;
+}
+
+.page-header-space {
+    height: 80px; /* matches header height */
+}
+
+.page-footer-space {
+    height: 100px; /* matches footer height */
+}
+
+/* ===== SPACE FOR HEADER ABOVE CONTENT ===== */
+.tspace {
+    padding-top: 90px; /* leave space for fixed header */
+}
+
+/* ===== MAIN CONTENT AREA ===== */
+.page {
+    padding: 1.5cm 1cm 1cm 1cm; /* top, right, bottom, left */
+    line-height: 1.6;
+}
+
+/* ===== TEXT FORMATTING ===== */
+p {
+    margin: 10px 0;
+    text-align: justify;
+}
+
+span, strong, u {
+    font-family: inherit !important;
+    font-size: inherit !important;
+}
+
+strong {
+    font-weight: bold;
+}
+
+u {
+    text-decoration: underline;
+}
+
+/* ===== IMAGE FORMATTING ===== */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ===== TABLE FORMATTING ===== */
+.page table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.page td, .page th {
+    padding: 5px;
+    vertical-align: top;
+    border: none;
+}
+
+/* ===== PAGE MARGINS FOR PRINTING ===== */
+@page {
+    margin: 1.5cm 1cm 1cm 1cm; /* Word-style: more top margin */
+}
+
+/* ===== PRINT-SPECIFIC RULES ===== */
+@media print {
+    thead {
+        display: table-header-group;
+    }
+
+    tfoot {
+        display: table-footer-group;
+    }
+
+    button, .noprint {
+        display: none !important;
+    }
+
+    .page {
+        page-break-inside: avoid;
+        line-height: 1.6;
+    }
+
+    p {
+        page-break-inside: avoid;
+    }
+}

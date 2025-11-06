@@ -1,0 +1,46 @@
+﻿@model letterhead.Models.spvmaster
+@{
+    ViewBag.Title = "AddSPV";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="section">
+    <div class="row">
+
+        <div class="col-lg-12">
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">SPV Type</h5>
+                    <!-- Custom Styled Validation -->
+                    @using (Html.BeginForm("AddSPV", "Home", FormMethod.Post, new { @class = "row g-3 needs-validation", @novalidate = "novalidate" }))
+                    {
+                        <div class="col-md-4">
+                            <label for="validationCustom01" class="form-label">SPV Name <span style="color:red;">*</span></label>
+                            @Html.TextBoxFor(x => x.TITLE, new { @class = "form-control", placeholder = "Enter SPV", @required = "required" })
+                        </div>
+                        <div class="col-md-4">
+                            <label for="validationCustom01" class="form-label">SPV Title <span style="color:red;">*</span></label>
+                            @Html.TextBoxFor(x => x.StartName, new { @class = "form-control", placeholder = "Enter SPV Title", @required = "required" })
+                        </div>
+                        <div class="col-md-4">
+                            <label for="validationDefault04" class="form-label">Status <span style="color:red;">*</span></label>
+                            @Html.DropDownListFor(x => x.IsActive, new List<SelectListItem>
+                        {
+                           new SelectListItem{Text="Active",Value="true",Selected=true},
+                           new SelectListItem{Text="DeActive",Value="false"}
+                        }, new { @id = "IsActive", @class = "form-select", @required = "required" })
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-primary" type="submit">Submit</button>
+                            <a class="btn btn-danger" href="@Url.Action("Dashboard","Home")">Cancel</a>
+                        </div>
+                    }
+                    <!-- End Custom Styled Validation -->
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

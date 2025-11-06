@@ -1,0 +1,89 @@
+﻿@model letterhead.Models.LatterRequest
+@{
+    ViewBag.Title = "AddLetterRequest";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<section class="section">
+    <div class="row">
+
+        <div class="col-lg-12">
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Letter Generate </h5>
+                    <!-- Custom Styled Validation -->
+                    @using (Html.BeginForm("AddLetterRequest", "Home", FormMethod.Post, new { @class = "row g-3 needs-validation", @novalidate = "novalidate" }))
+                    {
+                        <div class="col-md-4">
+                            <label class="form-label">Letter Used For<span style="color:red;">*</span></label>
+                            @Html.DropDownListFor(x => x.LetterType, ViewBag.ltype as List<SelectListItem>, "Select Type", new { @class = "form-control select2 UserType", @required = "required" })
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Project-Authorized<span style="color:red;">*</span></label>
+                            @Html.DropDownListFor(x => x.LocID, ViewBag.site as List<SelectListItem>, "Select Site", new { @class = "form-control select2 UserType", @required = "required", @onchange = "setnullv()" })
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Sub Department<span style="color:red;">*</span></label>
+                            @Html.DropDownListFor(x => x.DeptID, ViewBag.dept as List<SelectListItem>, "Select Type", new { @class = "form-control select2 UserType", @required = "required", @onchange = "getLno(this)" })
+                        </div>
+                        <div class="col-md-4">
+                            <label for="validationCustom01" class="form-label">Letter No.<span style="color:red;">*</span></label>
+                            @Html.TextBoxFor(x => x.LATTERNO, new { @class = "form-control", placeholder = "Latter No", @required = "required", @readonly = "readonly" })
+                        </div>
+
+                        @*<div class="col-md-4">
+                <label for="validationCustom01" class="form-label">Remark<span style="color:red;">*</span></label>
+                @Html.TextBoxFor(x => x.REMARK, new { @class = "form-control", placeholder = "Remark", @required = "required" })
+            </div>*@
+                        <div class="col-12">
+                            <button class="btn btn-primary" type="submit">Submit</button>
+                            <a class="btn btn-danger" href="@Url.Action("Dashboard","Home")">Cancel</a>
+                        </div>
+                    }
+                    <!-- End Custom Styled Validation -->
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<script>
+    
+
+    function getLno(item) {
+        debugger;
+        var did = $(item).val();
+        var lid = $('#LocID').val();
+        if (lid == "") {
+            alert("Please Select Project-Authorized");
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: '/Home/getLno/',
+            data: "{did:'" + did + "',lid:'" + lid + "'}",
+            dataType: "json",
+            async: true,
+            error: function (xhr) {
+                debugger;
+                alert("Invalid Data");
+            },
+            success: function (data) {
+                console.log(data);
+                $('#LATTERNO').val(data.lno);               
+            }
+        });
+    }
+
+    function setnullv() {
+        debugger;     
+        document.getElementById("LATTERNO").value = "";
+    }
+</script>
+
+
+

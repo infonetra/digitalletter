@@ -1,0 +1,291 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="letterheadModelStoreContainer" CdmEntityContainer="letterheadEntities">
+    <EntitySetMapping Name="Mst_Role">
+      <EntityTypeMapping TypeName="letterheadModel.Mst_Role">
+        <MappingFragment StoreEntitySet="Mst_Role">
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="CRAETEDATE" ColumnName="CRAETEDATE" />
+          <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+          <ScalarProperty Name="TITLE" ColumnName="TITLE" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Mst104_DEPARTMENT">
+      <EntityTypeMapping TypeName="letterheadModel.Mst104_DEPARTMENT">
+        <MappingFragment StoreEntitySet="Mst104_DEPARTMENT">
+          <ScalarProperty Name="CREATEDATE" ColumnName="CREATEDATE" />
+          <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="DEPARTMENT" ColumnName="DEPARTMENT" />
+          <ScalarProperty Name="CODE" ColumnName="CODE" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="settings">
+      <EntityTypeMapping TypeName="letterheadModel.setting">
+        <MappingFragment StoreEntitySet="setting">
+          <ScalarProperty Name="FONTSIZE" ColumnName="FONTSIZE" />
+          <ScalarProperty Name="FONTNAME" ColumnName="FONTNAME" />
+          <ScalarProperty Name="CNAME" ColumnName="CNAME" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="LetterCrateTypes">
+      <EntityTypeMapping TypeName="letterheadModel.LetterCrateType">
+        <MappingFragment StoreEntitySet="LetterCrateType">
+          <ScalarProperty Name="CREATEDATE" ColumnName="CREATEDATE" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="TITLE" ColumnName="TITLE" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="USERSIGNs">
+      <EntityTypeMapping TypeName="letterheadModel.USERSIGN">
+        <MappingFragment StoreEntitySet="USERSIGN">
+          <ScalarProperty Name="CREATEDATE" ColumnName="CREATEDATE" />
+          <ScalarProperty Name="CRERATEBY" ColumnName="CRERATEBY" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="SIGNIMAGE" ColumnName="SIGNIMAGE" />
+          <ScalarProperty Name="SIGNTITLE" ColumnName="SIGNTITLE" />
+          <ScalarProperty Name="USERID" ColumnName="USERID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="usermanuals">
+      <EntityTypeMapping TypeName="letterheadModel.usermanual">
+        <MappingFragment StoreEntitySet="usermanual">
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="ManualLink" ColumnName="ManualLink" />
+          <ScalarProperty Name="ManualTitle" ColumnName="ManualTitle" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="mst_status">
+      <EntityTypeMapping TypeName="letterheadModel.mst_status">
+        <MappingFragment StoreEntitySet="mst_status">
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="TITLE" ColumnName="TITLE" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Mst_USER">
+      <EntityTypeMapping TypeName="letterheadModel.Mst_USER">
+        <MappingFragment StoreEntitySet="Mst_USER">
+          <ScalarProperty Name="CRAETEDATE" ColumnName="CRAETEDATE" />
+          <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="IsApprover" ColumnName="IsApprover" />
+          <ScalarProperty Name="OneTimeUser" ColumnName="OneTimeUser" />
+          <ScalarProperty Name="CANLOGIN" ColumnName="CANLOGIN" />
+          <ScalarProperty Name="Approver" ColumnName="Approver" />
+          <ScalarProperty Name="ROLEID" ColumnName="ROLEID" />
+          <ScalarProperty Name="SITEID" ColumnName="SITEID" />
+          <ScalarProperty Name="DEPTID" ColumnName="DEPTID" />
+          <ScalarProperty Name="USERPWD" ColumnName="USERPWD" />
+          <ScalarProperty Name="USERNAME" ColumnName="USERNAME" />
+          <ScalarProperty Name="EMPCODE" ColumnName="EMPCODE" />
+          <ScalarProperty Name="EMAILID" ColumnName="EMAILID" />
+          <ScalarProperty Name="MOBILENO" ColumnName="MOBILENO" />
+          <ScalarProperty Name="FULLNAME" ColumnName="FULLNAME" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Letter_Log_Process">
+      <EntityTypeMapping TypeName="letterheadModel.Letter_Log_Process">
+        <MappingFragment StoreEntitySet="Letter_Log_Process">
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+          <ScalarProperty Name="CREATEDATE" ColumnName="CREATEDATE" />
+          <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+          <ScalarProperty Name="STATUSID" ColumnName="STATUSID" />
+          <ScalarProperty Name="LID" ColumnName="LID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="loginsert" FunctionName="letterheadModel.Store.loginsert" />
+    <EntitySetMapping Name="AssignSPVs">
+      <EntityTypeMapping TypeName="letterheadModel.AssignSPV">
+        <MappingFragment StoreEntitySet="AssignSPV">
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="CREATEDATE" ColumnName="CREATEDATE" />
+          <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+          <ScalarProperty Name="SpvID" ColumnName="SpvID" />
+          <ScalarProperty Name="UserID" ColumnName="UserID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="errorlogs">
+      <EntityTypeMapping TypeName="letterheadModel.errorlog">
+        <MappingFragment StoreEntitySet="errorlog">
+          <ScalarProperty Name="createdate" ColumnName="createdate" />
+          <ScalarProperty Name="errormessage" ColumnName="errormessage" />
+          <ScalarProperty Name="actionname" ColumnName="actionname" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="spvmasters">
+      <EntityTypeMapping TypeName="letterheadModel.spvmaster">
+        <MappingFragment StoreEntitySet="spvmaster">
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="CREATEDATE" ColumnName="CREATEDATE" />
+          <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+          <ScalarProperty Name="StartName" ColumnName="StartName" />
+          <ScalarProperty Name="TITLE" ColumnName="TITLE" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Letter_Log_SPV_Process">
+      <EntityTypeMapping TypeName="letterheadModel.Letter_Log_SPV_Process">
+        <MappingFragment StoreEntitySet="Letter_Log_SPV_Process">
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+          <ScalarProperty Name="CREATEDATE" ColumnName="CREATEDATE" />
+          <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+          <ScalarProperty Name="STATUSID" ColumnName="STATUSID" />
+          <ScalarProperty Name="LID" ColumnName="LID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="loginsertSPV" FunctionName="letterheadModel.Store.loginsertSPV" />
+    <EntitySetMapping Name="Mst_SITE">
+      <EntityTypeMapping TypeName="letterheadModel.Mst_SITE">
+        <MappingFragment StoreEntitySet="Mst_SITE">
+          <ScalarProperty Name="CRAETEDATE" ColumnName="CRAETEDATE" />
+          <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="SITENONAME" ColumnName="SITENONAME" />
+          <ScalarProperty Name="SITENO" ColumnName="SITENO" />
+          <ScalarProperty Name="CODE" ColumnName="CODE" />
+          <ScalarProperty Name="TITLE" ColumnName="TITLE" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="DeptAssignUsers">
+      <EntityTypeMapping TypeName="letterheadModel.DeptAssignUser">
+        <MappingFragment StoreEntitySet="DeptAssignUser">
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="CREATEDATE" ColumnName="CREATEDATE" />
+          <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+          <ScalarProperty Name="USERID" ColumnName="USERID" />
+          <ScalarProperty Name="DEPTID" ColumnName="DEPTID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="LocationAssignUsers">
+      <EntityTypeMapping TypeName="letterheadModel.LocationAssignUser">
+        <MappingFragment StoreEntitySet="LocationAssignUser">
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="CREATEDATE" ColumnName="CREATEDATE" />
+          <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+          <ScalarProperty Name="USERID" ColumnName="USERID" />
+          <ScalarProperty Name="LocID" ColumnName="LocID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Mst_SUBDEPARTMENT">
+      <EntityTypeMapping TypeName="letterheadModel.Mst_SUBDEPARTMENT">
+        <MappingFragment StoreEntitySet="Mst_SUBDEPARTMENT">
+          <ScalarProperty Name="CREATEDATE" ColumnName="CREATEDATE" />
+          <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="SubDEPARTMENT" ColumnName="SubDEPARTMENT" />
+          <ScalarProperty Name="CODE" ColumnName="CODE" />
+          <ScalarProperty Name="DeptID" ColumnName="DeptID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="LatterRequests">
+      <EntityTypeMapping TypeName="letterheadModel.LatterRequest">
+        <MappingFragment StoreEntitySet="LatterRequest">
+          <ScalarProperty Name="CRAETEDATE" ColumnName="CRAETEDATE" />
+          <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="ApproveDate" ColumnName="ApproveDate" />
+          <ScalarProperty Name="FinanceYear" ColumnName="FinanceYear" />
+          <ScalarProperty Name="SPVID" ColumnName="SPVID" />
+          <ScalarProperty Name="IsSpv" ColumnName="IsSpv" />
+          <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+          <ScalarProperty Name="LatterData" ColumnName="LatterData" />
+          <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+          <ScalarProperty Name="LetterType" ColumnName="LetterType" />
+          <ScalarProperty Name="LATTERNO" ColumnName="LATTERNO" />
+          <ScalarProperty Name="LocID" ColumnName="LocID" />
+          <ScalarProperty Name="DeptID" ColumnName="DeptID" />
+          <ScalarProperty Name="USERID" ColumnName="USERID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="LatterSPVRequests">
+      <EntityTypeMapping TypeName="letterheadModel.LatterSPVRequest">
+        <MappingFragment StoreEntitySet="LatterSPVRequest">
+          <ScalarProperty Name="CRAETEDATE" ColumnName="CRAETEDATE" />
+          <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="ApproveDate" ColumnName="ApproveDate" />
+          <ScalarProperty Name="FinanceYear" ColumnName="FinanceYear" />
+          <ScalarProperty Name="SPVID" ColumnName="SPVID" />
+          <ScalarProperty Name="IsSpv" ColumnName="IsSpv" />
+          <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+          <ScalarProperty Name="LatterData" ColumnName="LatterData" />
+          <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+          <ScalarProperty Name="LetterType" ColumnName="LetterType" />
+          <ScalarProperty Name="LATTERNO" ColumnName="LATTERNO" />
+          <ScalarProperty Name="LocID" ColumnName="LocID" />
+          <ScalarProperty Name="DeptID" ColumnName="DeptID" />
+          <ScalarProperty Name="USERID" ColumnName="USERID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="hgfoundations">
+      <EntityTypeMapping TypeName="letterheadModel.hgfoundation">
+        <MappingFragment StoreEntitySet="hgfoundation">
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="CREATEDATE" ColumnName="CREATEDATE" />
+          <ScalarProperty Name="UserID" ColumnName="UserID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="LatterFoundationRequests">
+      <EntityTypeMapping TypeName="letterheadModel.LatterFoundationRequest">
+        <MappingFragment StoreEntitySet="LatterFoundationRequest">
+          <ScalarProperty Name="CRAETEDATE" ColumnName="CRAETEDATE" />
+          <ScalarProperty Name="CREATEBY" ColumnName="CREATEBY" />
+          <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+          <ScalarProperty Name="ApproveDate" ColumnName="ApproveDate" />
+          <ScalarProperty Name="FinanceYear" ColumnName="FinanceYear" />
+          <ScalarProperty Name="IsFoundation" ColumnName="IsFoundation" />
+          <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+          <ScalarProperty Name="LatterData" ColumnName="LatterData" />
+          <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+          <ScalarProperty Name="LetterType" ColumnName="LetterType" />
+          <ScalarProperty Name="LATTERNO" ColumnName="LATTERNO" />
+          <ScalarProperty Name="LocID" ColumnName="LocID" />
+          <ScalarProperty Name="DeptID" ColumnName="DeptID" />
+          <ScalarProperty Name="USERID" ColumnName="USERID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>
